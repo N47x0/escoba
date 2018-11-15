@@ -23,24 +23,6 @@ def shuffle(deck :list):
 def deal(deck :list, n=1):
   return NotImplemented
 
-def deal_start(deck :list):
-  p1,p2, deck = deal_hand(deck)
-  start_table_cards = deck[:4]
-  deck = deck[4:]
-  return p1,p2,start_table_cards, deck
-
-def deal_hand(deck :list):
-  count = 0
-  p1 = []
-  p2 = []
-  # deal out to p1 and p2 alternating
-  for card in deck[:6]:
-    if count % 2 == 0:
-      p1 += card
-    else:
-      p2 += card
-    count += 1
-  return p1,p2,deck
 
 def get_combinations(cards: list):
   combos = []
@@ -50,14 +32,19 @@ def get_combinations(cards: list):
   return combos
 
 def valid_plays(cards , player_id):
-  visible_cards = [card for card_id, card in cards.items() if (card.owner == 'table' or card.owner == player_id)]#.sort(key=lambda x:x.face)
+  player_cards = [ card for card_id, card in cards.items() if (card.owner == player_id)]
+  visible_cards = [card for card_id, card in cards.items() if (card.owner == 'table') ]
   plays = []
-  for combo in get_combinations(visible_cards):
-    s = reduce(lambda a,b:a+b.face, combo, 0)
-    if ( s == 15):
-      plays.append(set(combo))
+  for card in player_cards:
+    combo_cards = visible_cards
+    combo_cards.append(card)
+    for combo in get_combinations(combo_cards):
+      s = reduce(lambda a,b:a+b.face, combo, 0)
+      if ( s == 15):
+        plays.append(combo)
   
-  return plays
+  # remove duplicates from list using set
+  return [list(c) for c in set(tuple(c) for c in plays)]
 
 def player_rewards(card_store):
   # point if more O cards
@@ -78,10 +65,13 @@ class Deck:
     print("Hello deck {}".format(self.deck_order))
   def shuffle(self):
     return random.shuffle(self.deck_order)
-  def deal(self, n=1):
+  def deal(self, owner, n=1):
     d = self.deck_order[:n]
     self.deck_order = self.deck_order[n:]
-    return Deck(make_deck_from(d))
+    def update_store(card,store, owner):
+      store.owner = owner
+      return store[card]
+    return [update_store(delt,self.card_store, owner) for delt in d]
   def cards(self):
     return self.card_store
   def order(self):
@@ -91,14 +81,14 @@ class Deck:
 
 class Player: 
   score = 0
-  hand = Deck()
+  hand = []
   name = ''
-  def __init__(self, name, deck=[]):
+  def __init__(self, name, hand=[]):
     self.name = name
   def play_turn(self,deck):
     return NotImplemented
-  def play_card(self, deck):
-    return NotImplemented
+  def new_hand(self, cards):
+    self.hand = cards
   def award_point(self, points):
     self.score += points
 
@@ -113,32 +103,79 @@ class Game:
     print("Start game")
     #return NotImplemented
 
+  def set_card_owner(self, card, owner):
+    self.deck.cards()[card].owner = owner
   def new_hand(self):
     return Deck()
+  def deal_hand(self, deck :list):
+    p1 = []
+    p2 = []
+    # deal out to p1 and p2 alternating 3 each
+    for count in range(0,6):
+      p1 += self.deck.deal(self.pl1.name)
+      p2 += self.deck.deal(self.pl2.name)
+    return p1,p2
+
+  def deal_start(self):
+    p1,p2 = self.deal_hand(self.deck.order())
+    start_table_cards = self.deck.deal(4)
+    for card in start_table_cards:
+      self.set_card_owner(card.name, 'table')
+    for card in p1:
+      self.set_card_owner(card.name, self.pl1.name)
+    for card in p2:
+      self.set_card_owner(card.name,self.pl2.name)
+
+    return p1,p2,start_table_cards
+
+  def valid_plays(self, player):
+    visible_cards = [card for card_id, card in self.deck.cards.items() if (card.owner == 'table') ]
+    plays = []
+    for card in player.hand:
+      combo_cards = visible_cards
+      combo_cards.append(card)
+      plays.append(get_combinations(combo_cards))
+    return plays
+
   def play_card(self):
     return NotImplemented
-  def apply_play(self,play):
+  def apply_play(self,play, player):
     # validate(play)
-    # assign card owners
-    # award escoba
-    return NotImplemented
-  def play_game(self):
-    p1,p2,table_cards,self.deck = deal_start(self.deck)
-    for card in table_cards:
-      self.deck.cards()[card] = 'table'
-    for card in p1:
-      self.deck.cards()[card] = self.pl1.name
-    for card in p2:
-      self.deck.cards()[card] = self.pl2.name
-    
-    # main loop per player
-    while (len(p1) and len(p2)):
-      playable = valid_plays(self.deck.cards(), self.pl1.name)
-      self.apply_play(self.pl1.get_play(playable))
-      playable = valid_plays(self.deck.cards(), self.pl2.name)
-      self.apply_play(self.pl2.get_play(playable))
-
+    playable = self.valid_plays(player)
+    if (play in playable):
+      # assign card owners
       
+      s = reduce(lambda a,b:a+b.face, play, 0)
+      if ( s == 15):   
+        for card in play:
+          self.set_card_owner(card, player.name)
+      else:
+        for card in play:
+          self.set_card_owner(card,'table')
+      
+
+    # move deck
+    # award escoba
+    return 
+  def play_game(self):
+    p1_cards, p2_cards ,table_cards = self.deal_start()
+    self.pl1.new_hand(p1_cards)
+    self.pl2.new_hand(p2_cards)
+    # main loop per player
+    
+    while (len(self.pl1.hand) and len(self.pl2.hand)):
+      if len(self.pl1.hand) == 0 and len(self.pl2.hand == 0):
+        self.deal_hand()
+      playable = self.valid_plays(self.pl1)
+      play = self.pl1.get_play(playable, table_cards)
+      self.apply_play(play,self.pl1)
+
+      playable = self.valid_plays(self.pl2)
+      play = self.pl2.get_play(playable, table_cards)
+      self.apply_play(play, self.pl2)
+
+    if len(self.deck.order()) > 0:
+      self.pl1, self.pl2 = self.deal_hand(self.deck.order())
 
     
 
@@ -152,7 +189,7 @@ if __name__ == "__main__":
 
   def make_test_card(n,s):
     o = 'none'
-    if n < 6:
+    if n <= 7:
       o = 'table'
     if n >= 8:
       o = 'p1'
@@ -162,7 +199,8 @@ if __name__ == "__main__":
 
   print("Pre sorted deck{}".format(test_table_sort))
 
-  test_combo = { str(n)+s:Card(s,n,owner='table') for s in suits[2:] for n in faces[6:8] }
+  test_combo = { str(n)+s:make_test_card(n,s) for s in suits[2:] for n in faces[6:9] }
   print("The combo: {}".format(get_combinations(test_combo)))
 
-  valid_plays(test_combo, 'p1')
+  plays = valid_plays(test_combo, 'p1')
+  print("The plays: {}".format(plays))
