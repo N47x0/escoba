@@ -20,11 +20,14 @@ def shuffle(deck :list):
   random.shuffle(deck)
   return deck
 
-def get_combinations(cards: list):
-  combos = []
+def get_combinations(cards: list, pivot: str):
+  combos = set()
+  combos.update(set([pivot]))
   for i in range(len(cards)-1):
     r = len(cards) - i
-    combos += combinations(cards,r)
+    for combo in  combinations(cards,r):
+      if pivot in combo:
+        combos.add(combo)
   return combos
 
 class Deck:
@@ -64,10 +67,21 @@ class Player:
   def award_point(self, points=1):
     self.score += points
   def get_play(self, playable: list, table_cards=[]):
-    play = random.choice(playable)
-    for card in play:
-      if card in self.hand:
-        self.hand.discard(card)
+    play = set()
+    play.add(random.choice(list(playable)))
+    for p in playable:
+      empty = self.name
+      if (isinstance(p,str)):
+        card_values = [ CardStore[p].face ]
+      else:
+        card_values = [CardStore[c].face for c in p ]
+      s = sum(card_values)
+      if s == 15:
+        play.add(p)
+    
+    #for card in play:
+      #if card in self.hand:
+        #self.hand.discard(card)
     return play 
 
 class Game:
@@ -83,7 +97,8 @@ class Game:
     #return NotImplemented
 
   def set_card_owner(self, card, owner):
-    self.deck.cards()[card].owner = owner
+    c = self.deck.cards()[card]
+    self.deck.cards()[card] = Card(suit=c.suit, face=c.face, owner=owner)
 
   def reset(self):
     return NotImplemented
@@ -92,9 +107,9 @@ class Game:
     p1 = set()
     p2 = set()
     # deal out to p1 and p2 alternating 3 each
-    for count in range(0,6):
-      p1.add(self.deck.deal()) 
-      p2.add(self.deck.deal()) 
+    for count in range(0,3):
+      [ p1.add(d) for d in self.deck.deal()]
+      [ p2.add(d) for d in self.deck.deal()]
     return p1,p2
 
   def deal_start(self):
@@ -104,28 +119,43 @@ class Game:
 
   def valid_plays(self, player, table_cards: set):
     # visible_cards = [card for card_id, card in self.deck.cards.items() if (card.owner == 'table') ]
-    plays = []
+    plays = set()
     for card in player.hand:
-      combo_cards = table_cards
+      combo_cards = set(table_cards)
       combo_cards.add(card)
-      plays.append(get_combinations(combo_cards))
+      for combo in get_combinations(combo_cards,card):
+        plays.add(combo)
+      plays.add(card)
     return plays
 
   def apply_play(self,play, player):
     # validate(play)
     playable = self.valid_plays(player, self.table_cards)
     scored = False
-    if play in playable:
+    t_cards = self.table_cards
+    p_cards = play.pop()
+    if p_cards in playable:
+      if isinstance(p_cards,str):
+        card_values = [self.deck.card_store[p_cards].face]
+      else:
+        card_values = [self.deck.card_store[c].face for c in p_cards ]
       # assign card owners
-      s = reduce(lambda a,b:a+b.face, play, 0)
+      s = reduce(lambda a,b:a+b, card_values, 0)
       if ( s == 15):
         scored = True
-        for card in play:
+        for card in p_cards:
           self.set_card_owner(card, player.name)
           if card in self.table_cards:
             self.table_cards.discard(card)
       else:
-        self.table_cards.intersection_update(set(play))
+        if isinstance(p_cards, str):
+          self.table_cards.update({p_cards})
+        else:
+          self.table_cards.update(p_cards)
+    
+    for card in p_cards:
+      if card in player.hand:
+        player.hand.discard(card)
     if not self.table_cards:
       player.award_point() #escoba
     return scored
@@ -142,7 +172,7 @@ class Game:
     for card_id,card in self.deck.cards().items():
       p1_total.add(card_id) if card.owner == self.pl1.name else p2_total.add(card_id)
       p1_oros.add(card_id) if card.suit == 'O' else p2_oros.add(card_id)
-      p1_sevens.add(card_id) if card.num == 7 else p2_sevens.add(card_id)
+      p1_sevens.add(card_id) if card.face == 7 else p2_sevens.add(card_id)
       if card_id == '7O':
         self.pl1.award_point() if card.owner == self.pl1.name else self.pl2.award_point()
       
@@ -168,24 +198,29 @@ class Game:
     self.table_cards = table_cards
     
     last_scored = ''
+    cards_left = len(self.deck.order())
     while len(self.deck.order()) > 0:
-      if len(self.pl1.hand) == 0 and len(self.pl2.hand == 0):
+      if len(self.pl1.hand) == 0 and len(self.pl2.hand) == 0:
         p1_cards, p2_cards = self.deal_hand()
         self.pl1.new_hand(p1_cards)
         self.pl2.new_hand(p2_cards)
+        cards_left = len(self.deck.order())
+
 
       # hand per player
-      while (len(self.pl1.hand) and len(self.pl2.hand)):
-        playable = self.valid_plays(self.pl1,self.table_cards)
-        play = self.pl1.get_play(playable)
-        if self.apply_play(play,self.pl1): last_scored = self.pl1.name
+      while (len(self.pl1.hand) + len(self.pl2.hand) > 0):
+        if (len(self.pl1.hand)):
+          playable = self.valid_plays(self.pl1,self.table_cards)
+          play = self.pl1.get_play(playable)
+          if self.apply_play(play,self.pl1): last_scored = self.pl1.name
 
-        playable = self.valid_plays(self.pl2,self.table_cards)
-        play = self.pl2.get_play(playable)
-        if self.apply_play(play,self.pl2): last_scored = self.pl2.name
+        if (len(self.pl2.hand)):
+          playable = self.valid_plays(self.pl2,self.table_cards)
+          play = self.pl2.get_play(playable)
+          if self.apply_play(play,self.pl2): last_scored = self.pl2.name
 
     # award last_player_to_score remaining cards
-    [self.set_card_owner(card, last_scored) for card_id, card in self.deck.cards().items() if card.owner == '']
+    [self.set_card_owner(card_id, last_scored) for card_id, card in self.deck.cards().items() if card.owner == '']
     self.apply_score()
 
     
@@ -194,7 +229,7 @@ if __name__ == "__main__":
   
   p1 = Player('player_1')
   p2 = Player('player_2')
-  
-  g = Game(p1,p2)
+  deck = Deck(make_deck())
+  g = Game(p1,p2,deck)
   g.play_game()
   print("Player 1 score: {}\nPlayer 2 score: {}".format( p1.score, p2.score))
