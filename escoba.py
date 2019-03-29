@@ -20,13 +20,17 @@ def shuffle(deck :list):
   random.shuffle(deck)
   return deck
 
-def get_combinations(cards: list, pivot: str):
+def get_escombinations(cards: set, pivot: str):
   combos = set()
-  combos.update(set([pivot]))
-  for i in range(len(cards)-1):
-    r = len(cards) - i
-    for combo in  combinations(cards,r):
-      if pivot in combo:
+  #combos.add(frozenset(cards | set([pivot])))
+  for i in range(len(cards)):
+    r = len(cards) + 1 - i
+    combs = combinations(cards | set([pivot]),r)
+    for combo in  combs:
+      combo_vals = [CardStore[c].face for c in combo ]
+      if (pivot in combo 
+      and sum(combo_vals) == 15
+      or r > len(cards) ):
         combos.add(combo)
   return combos
 
@@ -68,21 +72,16 @@ class Player:
     self.score += points
   def get_play(self, playable: list, table_cards=[]):
     play = set()
-    play.add(random.choice(list(playable)))
-    for p in playable:
-      empty = self.name
-      if (isinstance(p,str)):
-        card_values = [ CardStore[p].face ]
-      else:
-        card_values = [CardStore[c].face for c in p ]
-      s = sum(card_values)
-      if s == 15:
-        play.add(p)
-    
+    if len(playable) == 0:
+      play.add(random.choice(list(self.hand)))
+    else:
+      play = playable
     #for card in play:
       #if card in self.hand:
         #self.hand.discard(card)
-    return play 
+    if len(play) > 1 :
+      return random.choice(list(play))
+    return play.pop() 
 
 class Game:
   deck = Deck()
@@ -100,8 +99,8 @@ class Game:
     c = self.deck.cards()[card]
     self.deck.cards()[card] = Card(suit=c.suit, face=c.face, owner=owner)
 
-  def reset(self):
-    return NotImplemented
+  def reset_deck(self):
+    self.deck = Deck(make_deck())
     
   def deal_hand(self):
     p1 = set()
@@ -122,10 +121,9 @@ class Game:
     plays = set()
     for card in player.hand:
       combo_cards = set(table_cards)
-      combo_cards.add(card)
-      for combo in get_combinations(combo_cards,card):
+      escombinations = get_escombinations(combo_cards,card)
+      for combo in escombinations:
         plays.add(combo)
-      plays.add(card)
     return plays
 
   def apply_play(self,play, player):
@@ -133,14 +131,15 @@ class Game:
     playable = self.valid_plays(player, self.table_cards)
     scored = False
     t_cards = self.table_cards
-    p_cards = play.pop()
+    #p_cards = play.pop()
+    p_cards = play
     if p_cards in playable:
       if isinstance(p_cards,str):
         card_values = [self.deck.card_store[p_cards].face]
       else:
         card_values = [self.deck.card_store[c].face for c in p_cards ]
       # assign card owners
-      s = reduce(lambda a,b:a+b, card_values, 0)
+      s = sum(card_values)
       if ( s == 15):
         scored = True
         for card in p_cards:
@@ -190,34 +189,36 @@ class Game:
       self.pl1.award_point()
     elif len(p2_sevens) > len(p1_sevens):
       self.pl2.award_point()
+    
+    print("Points:\t1PL1\tPL2\nOros:\t[{pl1_oros}]\t[{pl2_oros}]\nSevens:\t[{pl1_sevens}]\t[{pl2_sevens}]\nCards:\t[{pl1_cards}]\t[{pl2_cards}]")
 
-  def play_game(self):
+  def play_round(self, first_player, second_player):
     p1_cards, p2_cards ,table_cards = self.deal_start()
-    self.pl1.new_hand(p1_cards)
-    self.pl2.new_hand(p2_cards)
+    first_player.new_hand(p1_cards)
+    second_player.new_hand(p2_cards)
     self.table_cards = table_cards
     
     last_scored = ''
     cards_left = len(self.deck.order())
     while len(self.deck.order()) > 0:
-      if len(self.pl1.hand) == 0 and len(self.pl2.hand) == 0:
+      if len(first_player.hand) == 0 and len(second_player.hand) == 0:
         p1_cards, p2_cards = self.deal_hand()
-        self.pl1.new_hand(p1_cards)
-        self.pl2.new_hand(p2_cards)
+        first_player.new_hand(p1_cards)
+        second_player.new_hand(p2_cards)
         cards_left = len(self.deck.order())
 
 
       # hand per player
-      while (len(self.pl1.hand) + len(self.pl2.hand) > 0):
-        if (len(self.pl1.hand)):
-          playable = self.valid_plays(self.pl1,self.table_cards)
-          play = self.pl1.get_play(playable)
-          if self.apply_play(play,self.pl1): last_scored = self.pl1.name
+      while (len(first_player.hand) + len(second_player.hand) > 0):
+        if (len(first_player.hand)):
+          playable = self.valid_plays(first_player,self.table_cards)
+          play = first_player.get_play(playable)
+          if self.apply_play(play,first_player): last_scored = first_player.name
 
-        if (len(self.pl2.hand)):
-          playable = self.valid_plays(self.pl2,self.table_cards)
-          play = self.pl2.get_play(playable)
-          if self.apply_play(play,self.pl2): last_scored = self.pl2.name
+        if (len(second_player.hand)):
+          playable = self.valid_plays(second_player,self.table_cards)
+          play = second_player.get_play(playable)
+          if self.apply_play(play,second_player): last_scored = second_player.name
 
     # award last_player_to_score remaining cards
     [self.set_card_owner(card_id, last_scored) for card_id, card in self.deck.cards().items() if card.owner == '']
@@ -231,5 +232,13 @@ if __name__ == "__main__":
   p2 = Player('player_2')
   deck = Deck(make_deck())
   g = Game(p1,p2,deck)
-  g.play_game()
-  print("Player 1 score: {}\nPlayer 2 score: {}".format( p1.score, p2.score))
+  
+  rounds = 0
+  while (p1.score < 15 and p2.score < 15):
+    rounds += 1
+    g.reset_deck()
+    if (rounds % 2 == 1):
+      g.play_round(p1,p2)
+    else:
+      g.play_round(p2,p1)
+    print("Round {}:\n\tPlayer 1 score: {}\n\tPlayer 2 score: {}".format(rounds, p1.score, p2.score))
