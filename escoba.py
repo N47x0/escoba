@@ -24,12 +24,12 @@ def get_escombinations(cards: set, pivot: str):
   combos = set()
   #combos.add(frozenset(cards | set([pivot])))
   for i in range(len(cards)):
-    r = len(cards) + 1 - i
+    r = len(cards) + 1 - i # combinatorial order (from the 5 choose 'x' where 'x' is order)
     combs = combinations(cards | set([pivot]),r)
     for combo in  combs:
       combo_vals = [CardStore[c].face for c in combo ]
-      if (pivot in combo 
-      and sum(combo_vals) == 15
+      if ( pivot in combo  # pivot card is the player's card - has to be part of combo
+      and sum(combo_vals) == 15 # only plays that add to 15 are considered, all other plays are equivalent to laying down card on table
       or r > len(cards) ):
         combos.add(combo)
   return combos
@@ -72,16 +72,19 @@ class Player:
     self.score += points
   def get_play(self, playable: list, table_cards=[]):
     play = set()
-    if len(playable) == 0:
-      play.add(random.choice(list(self.hand)))
+    if len(playable) == 0: # never happens
+      play.add(random.choice(list(self.hand)))  # no playable because table_cards were probably empty so play random card
     else:
       play = playable
     #for card in play:
       #if card in self.hand:
         #self.hand.discard(card)
     if len(play) > 1 :
+      good_hands = [p for p in play if sum([CardStore[c].face for c in p]) == 15 ]
+      if len(good_hands) > 0:
+        return random.choice(good_hands)
       return random.choice(list(play))
-    return play.pop() 
+    return play.pop()
 
 class Game:
   deck = Deck()
@@ -120,10 +123,13 @@ class Game:
     # visible_cards = [card for card_id, card in self.deck.cards.items() if (card.owner == 'table') ]
     plays = set()
     for card in player.hand:
-      combo_cards = set(table_cards)
-      escombinations = get_escombinations(combo_cards,card)
-      for combo in escombinations:
-        plays.add(combo)
+      if (len(table_cards) > 0):
+        combo_cards = set(table_cards)
+        escombinations = get_escombinations(combo_cards,card)
+        for combo in escombinations:
+          plays.add(combo)
+      else:
+        plays.add(tuple(player.hand))
     return plays
 
   def apply_play(self,play, player):
@@ -189,8 +195,7 @@ class Game:
       self.pl1.award_point()
     elif len(p2_sevens) > len(p1_sevens):
       self.pl2.award_point()
-    
-    print("Points:\t1PL1\tPL2\nOros:\t[{pl1_oros}]\t[{pl2_oros}]\nSevens:\t[{pl1_sevens}]\t[{pl2_sevens}]\nCards:\t[{pl1_cards}]\t[{pl2_cards}]")
+    print(f'Points:\tPL1\tPL2\nOros:\t[{len(p1_oros)}]\t[{len(p2_oros)}]\nSevens:\t[{len(p1_sevens)}]\t[{len(p2_sevens)}]\nCards:\t[{len(p1_total)}]\t[{len(p2_total)}]')
 
   def play_round(self, first_player, second_player):
     p1_cards, p2_cards ,table_cards = self.deal_start()
