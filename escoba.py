@@ -163,6 +163,8 @@ class Game:
         player.hand.discard(card)
     if not self.table_cards:
       player.award_point() #escoba
+      print(f"{player.name} Escoba!")
+      self.print_score()
     return scored
 
   def apply_score(self):
@@ -174,10 +176,16 @@ class Game:
     p2_sevens = set()
     p2_oros = set()
 
-    for card_id,card in self.deck.cards().items():
-      p1_total.add(card_id) if card.owner == self.pl1.name else p2_total.add(card_id)
-      p1_oros.add(card_id) if card.suit == 'O' else p2_oros.add(card_id)
-      p1_sevens.add(card_id) if card.face == 7 else p2_sevens.add(card_id)
+    for card_id, card in self.deck.cards().items():
+      if (card.owner == self.pl1.name):
+        p1_total.add(card_id)
+        if card.suit == 'O': p1_oros.add(card_id) 
+        if card.face == 7: p1_sevens.add(card_id) 
+      else:
+        p2_total.add(card_id)
+        if card.suit == 'O': p2_oros.add(card_id)
+        if card.face == 7: p2_sevens.add(card_id)
+
       if card_id == '7O':
         self.pl1.award_point() if card.owner == self.pl1.name else self.pl2.award_point()
       
@@ -229,6 +237,8 @@ class Game:
     [self.set_card_owner(card_id, last_scored) for card_id, card in self.deck.cards().items() if card.owner == '']
     self.apply_score()
 
+  def print_score(self):
+        print("Player 1 score: {}\nPlayer 2 score: {}".format(self.pl1.score, self.pl2.score))
     
 
 if __name__ == "__main__":
