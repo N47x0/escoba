@@ -1,3 +1,10 @@
 __pycache__
 **.pyc
 
+*.dll
+*.pdb
+**/obj
+**/bin
+.cache
+
+.vscode
