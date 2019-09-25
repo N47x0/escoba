@@ -6,9 +6,11 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    deckLoaded: false,
-    deckErrored: false,
-    deckData: [],
+    gameDataLoaded: false,
+    gameDataErrored: false,
+    gameData: {},
+    player1: {},
+    player2: {},
     validPlaysLoaded: false,
     validPlaysErrored: false,
     validPlays: []
@@ -16,17 +18,17 @@ export default new Vuex.Store({
   getters: {
     getCards: function (state) {
       var cards = []
-      // console.log(Object.entries(state.deckData.cards))
-      Object.entries(state.deckData.cards).forEach((v, i, a) => {
+      // console.log(Object.entries(state.gameData.cards))
+      Object.entries(state.gameData.cards).forEach((v, i, a) => {
         cards.push(v[0])
       })
       return cards
     },
     getDeck: function (state, getters) {
       var deck = []
-      console.log(state.deckData)
-      // console.log(Object.entries(state.deckData.cards))
-      Object.entries(state.deckData.cards).forEach((value, index, array) => {
+      console.log(state.gameData)
+      // console.log(Object.entries(state.gameData.cards))
+      Object.entries(state.gameData.cards).forEach((value, index, array) => {
         var [a, b, c] = value[1]
         var d = b.toString() + a
         deck.push({ 'suit': a, 'value': b, 'owner': c, 'card': d })
@@ -39,11 +41,11 @@ export default new Vuex.Store({
       console.log(deck)
       return deck
     },
-    getDeckLoaded: (state) => {
-      return state.deckLoaded
+    getGameDataLoaded: (state) => {
+      return state.gameDataLoaded
     },
     getDeckOrder: (state) => {
-      return state.deckData.order
+      return state.gameData.order
     },
     getValidPlaysLoaded: (state) => {
       return state.validPlaysLoaded
@@ -53,14 +55,14 @@ export default new Vuex.Store({
     }
   },
   mutations: {
-    changeDeckErrored: function (state, errored) {
-      state.deckErrored = errored
+    changeGameDataErrored: function (state, errored) {
+      state.gameDataErrored = errored
     },
-    changeDeckLoaded: function (state, loaded) {
-      state.deckLoaded = loaded
+    changeGameDataLoaded: function (state, loaded) {
+      state.gameDataLoaded = loaded
     },
-    initData: function (state, data) {
-      state.deckData = data
+    initGameData: function (state, data) {
+      state.gameData = data
     },
     changeValidPlaysErrored: function (state, errored) {
       state.validPlaysErrored = errored
@@ -77,15 +79,15 @@ export default new Vuex.Store({
       axios.get('http://127.0.0.1:5000/makedeck')
         .then(function (response) {
           console.log(response)
-          commit('initData', response.data)
+          commit('initGameData', response.data)
         })
         .catch(function (error) {
           console.log(error)
-          commit('changeDeckErrored', true)
+          commit('changeGameDataErrored', true)
         })
         .finally(function () {
           console.log('#### deck finally ####')
-          commit('changeDeckLoaded', true)
+          commit('changeGameDataLoaded', true)
         })
     },
     loadValidPlays: function ({ commit, state }) {

@@ -1,6 +1,6 @@
 <template>
   <div class="board">
-    <div v-if="getDeckLoaded">
+    <div v-if="getGameDataLoaded">
         <DeckComp />
     </div>
   </div>
@@ -18,7 +18,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'getDeckLoaded',
+      'getGameDataLoaded',
       'getDeck'
     ])
   },

@@ -1,6 +1,6 @@
 <template>
   <div class="card-comp">
-    <div v-if="getDeckLoaded">
+    <div v-if="getGameDataLoaded">
       <b-container>
         <b-row>
           <b-col md="2">
@@ -44,7 +44,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'getDeckLoaded',
+      'getGameDataLoaded',
       'getDeck'
     ]),
     iconName: function () {
@@ -75,7 +75,7 @@ export default {
   },
   mounted: function() {
     // this.log(this.getDeck)
-    // if(this.getDeckLoaded) {
+    // if(this.getGameDataLoaded) {
     //   console.log(this.getDeck)
     // }
   }

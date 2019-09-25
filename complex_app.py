@@ -21,6 +21,7 @@ from flask_cors import CORS, cross_origin
 
 from bson import json_util
 import json
+from json import JSONEncoder
 import re
 from datetime import datetime as dt
 
@@ -38,6 +39,10 @@ metadata = MetaData()
 
 Base = declarative_base()
 Base.metadata = metadata
+
+# class MyEncoder(JSONEncoder):
+#   def default(self, o):
+#     return o.__dict__ 
 
 Card = namedtuple("Card", ['suit', 'face', 'owner'])
 faces = list(range(1,11))
@@ -127,6 +132,7 @@ class Game:
   pl2 = Player('p2')
   table_cards = set()
   paused = True
+
   def __init__(self, pl1, pl2, deck=Deck()):
     self.pl1 = pl1
     self.pl2 = pl2
@@ -138,10 +144,10 @@ class Game:
     print(f"#### switching paused to:{switch} ####")
     self.paused = switch
 
-  def get_table_cards():
+  def get_table_cards(self):
     return self.table_cards
 
-  def get_pause_state():
+  def get_pause_state(self):
     return self.paused
 
   def set_card_owner(self, card, owner):
@@ -284,6 +290,7 @@ class Game:
           play = second_player.get_play(playable)
           if self.apply_play(play,second_player): last_scored = second_player.name
         while (self.paused):
+          print(first_player)
           get_play(play)
           
     # award last_player_to_score remaining cards
@@ -333,11 +340,14 @@ def tablenames():
 @cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
 def makedeck():
 
-    deck = Deck(CardStore)
+    #deck = Deck(CardStore)
 
     game_items = {
         "cards": g.deck.cards(),
-        "order": g.deck.order()
+        "order": g.deck.order(),
+        # "game": g.__dict__,
+        # "player1": p1,
+        # "player2": p2,
     }
     print('#### deck order ####')
     print(g.deck.order())
@@ -345,19 +355,19 @@ def makedeck():
     # response.headers.add('Access-Control-Allow-Origin', '*')
 
     if request.method == "POST":
-        context = request.get_json(force=True)
-        if context['isDeck'] == True:
-            log_item = LogItem(LogTime=dt.utcnow(), LogType='Deck', LogBlob=context)
-            # print(context['deck'][0])
-            # print(log_item)
-            # print(dt.utcnow())
-            session.add(log_item)
-            # print("#### checking update ####")
-        id_query = session.query(LogItem.LogId).all()
-        ids = []
-        for logid in id_query:
-          ids.append(logid)
-        last_id = ids[-1][0]
+        #context = request.get_json(force=True)
+        # if context['isDeck'] == True:
+        #     log_item = LogItem(LogTime=dt.utcnow(), LogType='Deck', LogBlob=context)
+        #     # print(context['deck'][0])
+        #     # print(log_item)
+        #     # print(dt.utcnow())
+        #     session.add(log_item)
+        #     # print("#### checking update ####")
+        # id_query = session.query(LogItem.LogId).all()
+        # ids = []
+        # for logid in id_query:
+        #   ids.append(logid)
+        # last_id = ids[-1][0]
         # print(int(last_id))
         # for item in session.query(LogItem).filter(LogItem.LogId==last_id):
           # print(item)
@@ -434,29 +444,32 @@ def unpause():
 @cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
 def validplays():
 
-    items = {
-    }
-    response = jsonify(items)
 
     deck = []
     
     if request.method == "POST":
+
       context = request.get_json(force=True)
       deck = context['deck']
+      valid_plays = {
+        "player_1": g.valid_plays(p1, deck),
+        "player_2": g.valid_plays(p2, deck),
+      }
+      # valid_plays = {
+      #   "player_1": "sample data",
+      #   "player_2": "sample data 2",
+      # }
+      # print(g.table_cards)
+      response = jsonify(list(valid_plays))
+      print("#### valid plays ####")
+      pprint(valid_plays)
+      #response.headers.add('Access-Control-Allow-Origin', '*')
+      print("#### deck ####")
       print(deck)
       return response
     else:
       return response
 
-    # valid_plays = {
-    #   "player_1": g.valid_plays(p1, deck),
-    #   "player_2": g.valid_plays(p2, deck),
-    # }
-    # print(g.table_cards)
-    # response = jsonify(list(valid_plays))
-    # print("#### valid plays ####")
-    # pprint(valid_plays)
-    # #response.headers.add('Access-Control-Allow-Origin', '*')
     # else:
     #   return response
 

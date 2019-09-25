@@ -3,7 +3,7 @@
     <div v-if="getValidPlaysLoaded">
       {{ getValidPlays }}
     </div>
-    <div v-if="getDeckLoaded">
+    <div v-if="getGameDataLoaded">
       <b-button
         @click="loadValidPlays()"
       >
@@ -39,6 +39,12 @@
       >
         Pause
       </b-button>
+      |
+      <b-button
+        @click="log"
+      >
+        Log
+      </b-button>
       <hr />
       <CardComp
         v-for="(card, i) in getDeck"
@@ -64,7 +70,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'getDeckLoaded',
+      'getGameDataLoaded',
       'getDeck',
       'getCards',
       'getDeckOrder',
@@ -136,13 +142,27 @@ export default {
         deck: this.getDeckOrder,
         isDeck: true
       }
-      this.post("http://127.0.0.1:5000/validplays", payload)
-      this.$store.dispatch('loadValidPlays')
+      var url = "http://127.0.0.1:5000/validplays"
+      var config = {
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+          }
+      }
+      axios
+        .post(url, payload , config)
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
     }
   },
   mounted: function() {
     this.log(this.getDeckOrder)
-    if(this.getDeckLoaded) {
+    if(this.getGameDataLoaded) {
       console.log(this.getCards)
       console.log(this.getDeck)
     }

@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <img alt="Vue logo" src="../assets/Broom_.svg">
-    <div v-if="getDeckLoaded">
+    <div v-if="getGameDataLoaded">
       <DeckTable />
     </div>
     <GamesList msg="Welcome to GamesList"/>
@@ -23,7 +23,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'getDeckLoaded',
+      'getGameDataLoaded',
       'getDeck'
     ])
   },

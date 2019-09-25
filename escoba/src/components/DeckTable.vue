@@ -1,6 +1,6 @@
 <template>
   <div class="deck-table">
-    <div v-if="getDeckLoaded">
+    <div v-if="getGameDataLoaded">
       <b-table responsive striped hover :items="this.getDeck"></b-table>
       {{ this.getDeck }}
     </div>
@@ -17,7 +17,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'getDeckLoaded',
+      'getGameDataLoaded',
       'getDeck'
     ])
   },
@@ -34,7 +34,7 @@ export default {
   },
   mounted: function() {
     //this.log(this.getDeck)
-    if(this.getDeckLoaded) {
+    if(this.getGameDataLoaded) {
       //console.log(this.getDeck)
     }
   }
