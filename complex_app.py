@@ -140,6 +140,10 @@ class Game:
     print("Start game")
     #return NotImplemented
 
+  def toJSON(self):
+    return json.loads(json.dumps(self, default=lambda o: o.__dict__, 
+      sort_keys=True))
+
   def set_pause_state(self, switch):
     print(f"#### switching paused to:{switch} ####")
     self.paused = switch
@@ -345,9 +349,9 @@ def makedeck():
     game_items = {
         "cards": g.deck.cards(),
         "order": g.deck.order(),
-        # "game": g.__dict__,
-        # "player1": p1,
-        # "player2": p2,
+        "game": g.toJSON(),
+        # "player1": p1.__dict__,
+        # "player2": p2.__dict__,
     }
     print('#### deck order ####')
     print(g.deck.order())
