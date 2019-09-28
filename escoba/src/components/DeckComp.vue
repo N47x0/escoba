@@ -109,6 +109,7 @@ export default {
         deck: this.getDeck,
         isDeck: true
       }
+      console.log(payload)
       this.post("http://127.0.0.1:5000/makedeck", payload)
     },
     dealHand: function () {
@@ -135,7 +136,7 @@ export default {
       var payload = {
         paused: true
       }
-      this.post("http://127.0.0.1:5000/unpause", payload)
+      this.post("http://127.0.0.1:5000/pause", payload)
     },
     loadValidPlays: function () {
       var payload = {

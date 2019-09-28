@@ -27,7 +27,7 @@ Vue.use(BootstrapVue)
 
 Vue.config.productionTip = false
 
-store.dispatch('loadDeck').then(() => {
+store.dispatch('loadGameData').then(() => {
   router.beforeEach((to, from, next) => {
     next()
   })

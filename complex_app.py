@@ -140,6 +140,7 @@ class Game:
     print("Start game")
     #return NotImplemented
 
+   # serialzer method
   def toJSON(self):
     return json.loads(json.dumps(self, default=lambda o: o.__dict__, 
       sort_keys=True))
@@ -294,7 +295,7 @@ class Game:
           play = second_player.get_play(playable)
           if self.apply_play(play,second_player): last_scored = second_player.name
         while (self.paused):
-          print(first_player)
+          #print(first_player)
           get_play(play)
           
     # award last_player_to_score remaining cards
