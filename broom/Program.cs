@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using GameManager;
 
 namespace broom
 {
@@ -9,6 +10,9 @@ namespace broom
   {
     static void Main(string[] args)
     {
+      AutoGame();
+    }
+    static void AutoGame () {
       Game g = new Game();
       Console.WriteLine("Starting a game of ESCOBA!");
 
@@ -22,6 +26,7 @@ namespace broom
         }
         Console.WriteLine($"Round {rounds}\t PL1: {g.pl1.score}\tPL2: {g.pl2.score}");
       }
+
     }
   }
 }

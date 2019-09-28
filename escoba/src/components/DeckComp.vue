@@ -110,7 +110,9 @@ export default {
         isDeck: true
       }
       console.log(payload)
-      this.post("http://127.0.0.1:5000/makedeck", payload)
+      this.axios.post("http://127.0.0.1:5000/makedeck", payload).then(function(){
+        console.log(this)
+      })
     },
     dealHand: function () {
       var payload = {

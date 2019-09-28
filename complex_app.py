@@ -360,7 +360,7 @@ def makedeck():
     # response.headers.add('Access-Control-Allow-Origin', '*')
 
     if request.method == "POST":
-        #context = request.get_json(force=True)
+        context = request.get_json(force=True)
         # if context['isDeck'] == True:
         #     log_item = LogItem(LogTime=dt.utcnow(), LogType='Deck', LogBlob=context)
         #     # print(context['deck'][0])
