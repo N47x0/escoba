@@ -19,7 +19,7 @@ export default new Vuex.Store({
     getCards: function (state) {
       var cards = []
       // console.log(Object.entries(state.gameData.cards))
-      Object.entries(state.gameData.cards).forEach((v, i, a) => {
+      Object.entries(state.gameData.game.deck.card_store).forEach((v, i, a) => {
         cards.push(v[0])
       })
       return cards
@@ -28,7 +28,7 @@ export default new Vuex.Store({
       var deck = []
       console.log(state.gameData)
       // console.log(Object.entries(state.gameData.cards))
-      Object.entries(state.gameData.cards).forEach((value, index, array) => {
+      Object.entries(state.gameData.game.deck.card_store).forEach((value, index, array) => {
         var [a, b, c] = value[1]
         var d = b.toString() + a
         deck.push({ 'suit': a, 'value': b, 'owner': c, 'card': d })
@@ -45,7 +45,7 @@ export default new Vuex.Store({
       return state.gameDataLoaded
     },
     getDeckOrder: (state) => {
-      return state.gameData.order
+      return state.gameData.game.deck.deck_order
     },
     getValidPlaysLoaded: (state) => {
       return state.validPlaysLoaded

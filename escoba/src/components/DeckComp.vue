@@ -23,9 +23,9 @@
       </b-button>
         |
       <b-button
-        @click="playRound()"
+        @click="playFirstRound()"
       >
-        Play Round
+        Play First Round
       </b-button>
       |
       <b-button
@@ -106,13 +106,25 @@ export default {
     },
     makeDeck: function () {
       var payload = {
-        deck: this.getDeck,
+        deck: this.getDeckOrder,
         isDeck: true
       }
+      var url = "http://127.0.0.1:5000/makedeck"
+      var config = {
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+          }
+      }
       console.log(payload)
-      this.axios.post("http://127.0.0.1:5000/makedeck", payload).then(function(){
-        console.log(this)
-      })
+      axios
+        .post(url, payload , config)
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     },
     dealHand: function () {
       var payload = {
@@ -121,12 +133,12 @@ export default {
       }
       this.post("http://127.0.0.1:5000/dealhand", payload)
     },
-    playRound: function () {
+    playFirstRound: function () {
       var payload = {
         deck: this.getDeck,
         isDeck: true
       }
-      this.post("http://127.0.0.1:5000/playround", payload)
+      this.post("http://127.0.0.1:5000/playfirstround", payload)
     },
     unpause: function () {
       var payload = {

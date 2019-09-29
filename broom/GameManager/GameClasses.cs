@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 
+
 namespace GameManager
 {
-    public class Class1
+    public class GameClasses
     {
     }
     class Card {

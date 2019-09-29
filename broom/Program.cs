@@ -13,6 +13,7 @@ namespace broom
       AutoGame();
     }
     static void AutoGame () {
+      
       Game g = new Game();
       Console.WriteLine("Starting a game of ESCOBA!");
 
