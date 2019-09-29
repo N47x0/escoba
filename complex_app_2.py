@@ -66,8 +66,7 @@ def returnJSON(game_object):
 
   pl1['score'] = game_object.pl1.score
   pl1['name'] = game_object.pl1.name
-  for x in range(len(game_object.pl1.hand)):
-    pl1['hand'].append(x)
+  pl1['hand'] = game_object.pl1.get_hand()
 
   pl2 = {
     "score": '',
@@ -77,14 +76,15 @@ def returnJSON(game_object):
 
   pl2['score'] = game_object.pl2.score
   pl2['name'] = game_object.pl2.name
-  for x in range(len(game_object.pl2.hand)):
-    pl2['hand'].append(x)
+  pl2['hand'] = game_object.pl2.get_hand()
 
   table_cards = []
 
-  if len(game_object.table_cards) > 0:
-    for x in range(len(game_object.table_cards)):
-      table_cards.append(x)
+  table_cards = game_object.get_table_cards()
+
+  # if len(game_object.table_cards) > 0:
+  #   for x in range(len(game_object.table_cards)):
+  #     table_cards.append(x)
 
   return {
     "game": {
@@ -179,6 +179,9 @@ class Player:
         return random.choice(good_hands)
       return random.choice(list(play))
     return play.pop()
+  def get_hand(self):
+    return list(self.hand)
+
 
 class Game:
   deck = Deck()
@@ -206,7 +209,7 @@ class Game:
     self.paused = switch
 
   def get_table_cards(self):
-    return self.table_cards
+    return list(self.table_cards)
 
   def get_pause_state(self):
     return self.paused
@@ -475,11 +478,11 @@ def playfirstround():
     if request.method == "POST":
 
         context = request.get_json(force=True)
-        response = g.play_first_round(p1, p2).toJSON()
+        response = returnJSON(g.play_first_round(p1, p2))
         # round_results = f"Player 1 score: {p1.score}\n\tPlayer 2 score: {p2.score}"
         print(context)
 
-        return response
+        return jsonify(response)
     else:
         return response
 
