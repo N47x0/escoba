@@ -409,17 +409,6 @@ def tablenames():
 @cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
 def makedeck():
 
-    #deck = Deck(CardStore)
-
-    game_items = {
-        "cards": g.deck.cards(),
-        "order": g.deck.order(),
-        "game": g.toJSON(),
-        # "player1": p1.__dict__,
-        # "player2": p2.__dict__,
-    }
-    print('#### deck order ####')
-    print(g.deck.order())
     response = jsonify(returnJSON(g))
     # response.headers.add('Access-Control-Allow-Origin', '*')
 

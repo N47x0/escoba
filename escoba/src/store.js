@@ -41,6 +41,12 @@ export default new Vuex.Store({
       console.log(deck)
       return deck
     },
+    getPlayer1: (state) => {
+      return state.gameData.game.pl1
+    },
+    getPlayer2: (state) => {
+      return state.gameData.game.pl2
+    },
     getGameDataLoaded: (state) => {
       return state.gameDataLoaded
     },

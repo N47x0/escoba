@@ -15,6 +15,8 @@ import 'vue-awesome/icons/trophy'
 import 'vue-awesome/icons/screwdriver'
 import 'vue-awesome/icons/hammer'
 import 'vue-awesome/icons/brands/bitcoin'
+import 'vue-awesome/icons/brands/stack-overflow'
+import 'vue-awesome/icons/poo'
 import VueSwing from 'vue-swing'
 
 import Icon from 'vue-awesome/components/Icon'
