@@ -2,8 +2,8 @@
   <div class="player-comp">
     <div v-if="getGameDataLoaded">
       <b-card
-        class="player-card"
-        :id="'player-card-' + getPlayer.name"
+        class="player"
+        :id="'player-' + getPlayer.name"
         style="width: 20rem; height: 25rem"
       >
         <b-row class="player-info">
@@ -20,6 +20,21 @@
               scale=3.5
             ></v-icon>
           </b-col>
+          <b-col>
+            <span
+              v-for="(c, i) in cards" 
+              :key="i"
+            >{{ c.card }} | </span>
+          </b-col>
+          <b-col></b-col>
+        </b-row>
+        <b-row>
+          <CardComp
+            class="player-card"
+            v-for="(c, i) in cards" 
+            :key="i"
+            :card="c"
+          />
           <b-col></b-col>
           <b-col></b-col>
         </b-row>
@@ -31,20 +46,32 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import CardComp from '@/components/CardComp'
 
 export default {
   name: 'PlayerComp',
   props: {
     player: String
   },
+  components: {
+    CardComp
+  },
   computed: {
     ...mapGetters([
       'getGameDataLoaded',
       'getPlayer1',
-      'getPlayer2'
+      'getPlayer2',
+      'getDeck'
     ]),
     getPlayer: function () {
       return this[`getPlayer${this.player}`]
+    },
+    getHand: function () {
+      return this.getPlayer.hand
+    },
+    cards: function () {
+      console.log(this.getHand)
+      return this.getDeck.filter(x => this.getHand.includes(x.card))
     }
   },
   methods: {
@@ -66,6 +93,13 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
+/* make player cards relative to parent */
+
+.player-card {
+  position: relative;
+  height: .5em;
+  width: .5em;
+}
 
 /* set all cards to center of div and position: relative for absolute positioning of child icons */
 

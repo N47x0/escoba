@@ -131,7 +131,23 @@ export default {
         deck: this.getDeck,
         isDeck: true
       }
-      this.post("http://127.0.0.1:5000/playfirstround", payload)
+      var url = "http://127.0.0.1:5000/playfirstround"
+      var config = {
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+          }
+      }
+      console.log(payload)
+      axios
+        .post(url, payload , config)
+        .then(function (response) {
+          console.log(response)
+          this.$store.dispatch('updateGameData', response.data)
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     },
     unpause: function () {
       var payload = {

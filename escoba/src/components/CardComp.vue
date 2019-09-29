@@ -1,35 +1,24 @@
 <template>
   <div class="card-comp">
     <div v-if="getGameDataLoaded">
-      <b-container>
-        <b-row>
-          <b-col md="2">
-            <h1>
-              {{ card.suit }}
-            </h1>
-          </b-col>
-          <b-col md="8">
-            <b-card
-              :class="'play-card-'+card.value" 
-              :id="'card-'+card.suit"
-              style="width: 20rem; height: 25rem"
-            >
-              <v-icon
-                v-for="(value, i) in card.value"
-                :id="'icon-'+(i+1)"
-                :key="i" 
-                :name="iconName"
-                scale=3.5
-              ></v-icon>
-            </b-card>
-          </b-col>
-          <b-col md="2">
-            <h1>
-              {{ card.value }}
-            </h1>
-          </b-col>
-        </b-row>
-      </b-container>
+      <div class="card-container">
+        <b-card
+          :class="'play-card-'+card.value" 
+          :id="'card-'+card.suit"
+          style="width: 20em; height: 25em"
+        >
+          <!-- TODO suit and value in top left and bottom right mirrored -->
+          {{ card.suit }}
+          {{ card.value }}
+          <v-icon
+            v-for="(value, i) in card.value"
+            :id="'icon-'+(i+1)"
+            :key="i" 
+            :name="iconName"
+            scale=3.5
+          ></v-icon>
+        </b-card>
+      </div>
     </div>
   </div>
 </template>
@@ -85,6 +74,11 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
+/* set card-container to absolute for relative relationship to parent #### UNWANTED SIDE EFFECT #### */
+
+/* .card-container {
+  position: absolute;
+} */
 
 /* set all cards to center of div and position: relative for absolute positioning of child icons */
 

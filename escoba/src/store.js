@@ -70,6 +70,9 @@ export default new Vuex.Store({
     initGameData: function (state, data) {
       state.gameData = data
     },
+    changeGameData: function (state, payload) {
+      state.gameData = payload.game
+    },
     changeValidPlaysErrored: function (state, errored) {
       state.validPlaysErrored = errored
     },
@@ -81,6 +84,9 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    updateGameData: function ({ commit }, payload) {
+      commit(changeGameData, payload)
+    },
     loadGameData: function ({ commit, state }) {
       axios.get('http://127.0.0.1:5000/makedeck')
         .then(function (response) {
