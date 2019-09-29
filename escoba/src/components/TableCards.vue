@@ -1,30 +1,28 @@
 <template>
-  <div class="player-comp">
+  <div class="table-cards-comp">
     <div v-if="getGameDataLoaded">
       <b-card
-        class="player-card"
-        :id="'player-card-' + getPlayer.name"
+        class="table-cards" 
+        id="table-cards"
         style="width: 20rem; height: 25rem"
       >
-        <b-row class="player-info">
-          <b-col>{{ getPlayer.name }}</b-col>
-          <b-col>Score: {{ getPlayer.score }}</b-col> 
+        <b-row>
+          <b-col></b-col>
+          <b-col>Table Cards</b-col>
           <b-col></b-col>
         </b-row>
         <b-row>
-          <b-col>              
+          <b-col></b-col>
+          <b-col>
             <v-icon
-              :id="'-player-icon' + getPlayer.name"
-              :class="'-player-icon' + getPlayer.name"
-              name="poo"
+              id="table-cards-icon"
+              name="brands/stack-overflow"
               scale=3.5
             ></v-icon>
           </b-col>
           <b-col></b-col>
-          <b-col></b-col>
         </b-row>
       </b-card>
-      <!-- TODO add dynamic icon according to player rank -->
     </div>
   </div>
 </template>
@@ -33,19 +31,14 @@
 import { mapGetters } from 'vuex'
 
 export default {
-  name: 'PlayerComp',
+  name: 'TableCards',
   props: {
-    player: String
+    card: Object
   },
   computed: {
     ...mapGetters([
       'getGameDataLoaded',
-      'getPlayer1',
-      'getPlayer2'
     ]),
-    getPlayer: function () {
-      return this[`getPlayer${this.player}`]
-    }
   },
   methods: {
     log: function(input) {

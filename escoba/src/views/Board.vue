@@ -3,7 +3,19 @@
     <div v-if="getGameDataLoaded">
       <GameControls />
       <hr />
-      <PlayerComp />
+      <b-container>
+        <b-row>
+          <b-col md="4">
+            <PlayerComp player=1 />
+          </b-col>
+          <b-col md="4">
+            <TableCards />
+          </b-col>
+          <b-col md="4">
+            <PlayerComp player=2 />
+          </b-col>
+        </b-row>
+      </b-container>
       <hr />
       <DeckComp />
     </div>
@@ -15,6 +27,7 @@
 import DeckComp from '@/components/DeckComp.vue'
 import PlayerComp from '@/components/PlayerComp.vue'
 import GameControls from '@/components/GameControls'
+import TableCards from '@/components/TableCards'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -22,7 +35,8 @@ export default {
   components: {
     DeckComp,
     PlayerComp,
-    GameControls
+    GameControls,
+    TableCards
   },
   computed: {
     ...mapGetters([
