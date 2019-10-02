@@ -1,72 +1,68 @@
 <template>
-  <div class="card-comp">
+  <div class="hand-comp">
     <div v-if="getGameDataLoaded">
-      <div class="card-container">
-        <b-card
-          :class="'play-card-'+card.value" 
-          :id="'card-'+card.suit"
-          :style="cardStyle"
-        >
-          <!-- TODO suit and value in top left and bottom right mirrored -->
-          {{ card.suit }}
-          {{ card.value }}
-          <v-icon
-            v-for="(value, i) in card.value"
-            :id="'icon-'+(i+1)"
-            :key="i" 
-            :name="iconName"
-            :scale="iconSize"
-          ></v-icon>
-        </b-card>
-      </div>
+      <b-card
+        :class="'hand-' +player.name" 
+        :id="'hand-' +player.name" 
+      >
+        <b-row>
+          <b-col></b-col>
+          <b-col>{{player.name}}'s Hand</b-col>
+          <b-col></b-col>
+        </b-row>
+        <b-row>
+          <b-col></b-col>
+          <b-col>
+            <v-icon
+              id="hand-icon"
+              name="hand-spock"
+              scale=3.5
+            ></v-icon>
+          </b-col>
+          <b-col></b-col>
+        </b-row>
+        <hr />
+        <b-row>
+          <b-col
+            v-for="(c, i) in cards" 
+            :key="i"
+          >
+            <CardComp
+              class="player-card"
+              :card="c"
+              :isHand="true"
+            />
+          </b-col>
+        </b-row>
+      </b-card>
     </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import CardComp from '@/components/CardComp'
 
 export default {
-  name: 'CardComp',
+  name: 'HandComp',
   props: {
     card: Object,
-    isDeck: Boolean,
-    isHand: Boolean
+    player: Object
+  },
+  components: {
+    CardComp
   },
   computed: {
     ...mapGetters([
       'getGameDataLoaded',
       'getDeck'
     ]),
-    iconSize: function () {
-      if (this.isDeck === true) {
-        return 3.5
-      }
-      if (this.isHand === true) {
-        return 1
-      }
+    getHand: function () {
+      return this.player.hand
     },
-    cardStyle: function () {
-      if (this.isDeck === true) {
-        return "width: 20em; height: 25em"
-      }
-      if (this.isHand === true) {
-        return "width: 4em; height: 5em"
-      }
-    },
-    iconName: function () {
-      if (this.card.suit === 'O') {
-        return 'brands/bitcoin'
-      }
-      if (this.card.suit === 'B') {
-        return 'hammer'
-      }
-      if (this.card.suit === 'C') {
-        return 'trophy'
-      }
-      if (this.card.suit === 'E') {
-        return 'screwdriver'
-      }
+    cards: function () {
+      console.log(this.getHand)
+      return this.getDeck.filter(x => this.getHand.includes(x.card))
     }
   },
   methods: {
@@ -81,10 +77,6 @@ export default {
     }
   },
   mounted: function() {
-    // this.log(this.getDeck)
-    // if(this.getGameDataLoaded) {
-    //   console.log(this.getDeck)
-    // }
   }
 }
 </script>
@@ -92,11 +84,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
-/* set card-container to absolute for relative relationship to parent #### UNWANTED SIDE EFFECT #### */
-
-/* .card-container {
-  position: absolute;
-} */
+/* set hand comp top padding smaller to separate from icon */
 
 /* set all cards to center of div and position: relative for absolute positioning of child icons */
 

@@ -8,6 +8,7 @@
         v-for="(card, i) in getDeck"
         :key="i"
         :card="card"
+        :isDeck="true"
       />
     </div>
   </div>

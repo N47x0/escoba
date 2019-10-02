@@ -11,6 +11,7 @@
           <b-col>Score: {{ getPlayer.score }}</b-col> 
           <b-col></b-col>
         </b-row>
+        <hr />
         <b-row>
           <b-col>              
             <v-icon
@@ -28,15 +29,13 @@
           </b-col>
           <b-col></b-col>
         </b-row>
+        <hr />
         <b-row>
-          <CardComp
-            class="player-card"
-            v-for="(c, i) in cards" 
-            :key="i"
-            :card="c"
-          />
-          <b-col></b-col>
-          <b-col></b-col>
+          <b-col>
+            <HandComp 
+              :player="getPlayer"
+            />
+          </b-col>
         </b-row>
       </b-card>
       <!-- TODO add dynamic icon according to player rank -->
@@ -46,7 +45,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import CardComp from '@/components/CardComp'
+import HandComp from '@/components/HandComp'
 
 export default {
   name: 'PlayerComp',
@@ -54,7 +53,7 @@ export default {
     player: String
   },
   components: {
-    CardComp
+    HandComp
   },
   computed: {
     ...mapGetters([
@@ -97,8 +96,8 @@ export default {
 
 .player-card {
   position: relative;
-  height: .5em;
-  width: .5em;
+  /* height: .5em;
+  width: .5em; */
 }
 
 /* set all cards to center of div and position: relative for absolute positioning of child icons */
