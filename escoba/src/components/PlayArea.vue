@@ -1,22 +1,22 @@
 <template>
-  <div class="table-cards-comp">
+  <div class="play-area-comp">
     <div v-if="getGameDataLoaded">
       <b-card
-        class="table-cards" 
-        id="table-cards"
+        class="play-area" 
+        id="play-area"
         style="width: 20rem; height: 25rem"
       >
         <b-row>
           <b-col></b-col>
-          <b-col>Table Cards</b-col>
+          <b-col>Play Area</b-col>
           <b-col></b-col>
         </b-row>
         <b-row>
           <b-col></b-col>
           <b-col>
             <v-icon
-              id="table-cards-icon"
-              name="brands/stack-overflow"
+              id="play-area-icon"
+              name="child"
               scale=3.5
             ></v-icon>
           </b-col>
@@ -24,16 +24,6 @@
         </b-row>
         <hr />
         <b-row>
-          <b-col
-            v-for="(c, i) in cards" 
-            :key="i"
-          >
-            <CardComp
-              class="player-card"
-              :card="c"
-              :isHand="true"
-            />
-          </b-col>
         </b-row>
       </b-card>
     </div>
@@ -42,15 +32,12 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import CardComp from '@/components/CardComp'
 
 export default {
-  name: 'TableCards',
+  name: 'PlayArea',
   props: {
-    tableCards: Array,
   },
   components: {
-    CardComp
   },
   computed: {
     ...mapGetters([

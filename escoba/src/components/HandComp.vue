@@ -19,7 +19,13 @@
               scale=3.5
             ></v-icon>
           </b-col>
-          <b-col></b-col>
+          <b-col>
+            <b-button
+              @click="getBestPlay"
+            >
+              Get Best Play
+            </b-button>
+          </b-col>
         </b-row>
         <hr />
         <b-row>
@@ -74,7 +80,29 @@ export default {
       else {
         console.log(comp)
       }
-    }
+    },
+    getBestPlay: function () {
+      var payload = {
+        deck: this.getDeckOrder,
+        isDeck: true
+      }
+      var url = "http://127.0.0.1:5000/getbestplay"
+      var config = {
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+          }
+      }
+      console.log(payload)
+      axios
+        .post(url, payload , config)
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
   },
   mounted: function() {
   }

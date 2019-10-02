@@ -9,15 +9,24 @@
             <PlayerComp player=1 />
           </b-col>
           <b-col md="4">
-            <TableCards />
+            <TableCards 
+              :table-cards="getTableCards"
+            />
           </b-col>
           <b-col md="4">
             <PlayerComp player=2 />
           </b-col>
         </b-row>
+        <b-row>
+          <b-col></b-col>
+          <b-col>
+            <PlayArea />
+          </b-col>
+          <b-col></b-col>
+        </b-row>
       </b-container>
       <hr />
-      <DeckComp />
+      <!-- <DeckComp /> -->
     </div>
   </div>
 </template>
@@ -28,6 +37,7 @@ import DeckComp from '@/components/DeckComp.vue'
 import PlayerComp from '@/components/PlayerComp.vue'
 import GameControls from '@/components/GameControls'
 import TableCards from '@/components/TableCards'
+import PlayArea from '@/components/PlayArea'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -36,12 +46,14 @@ export default {
     DeckComp,
     PlayerComp,
     GameControls,
-    TableCards
+    TableCards,
+    PlayArea
   },
   computed: {
     ...mapGetters([
       'getGameDataLoaded',
-      'getDeck'
+      'getDeck',
+      'getTableCards'
     ])
   },
   methods: {

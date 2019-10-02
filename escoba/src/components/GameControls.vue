@@ -68,7 +68,9 @@ export default {
       'getCards',
       'getDeckOrder',
       'getValidPlaysLoaded',
-      'getValidPlays'
+      'getValidPlays',
+      'getPlayer1',
+      'getPlayer2'
     ])
   },
   methods: {
@@ -110,10 +112,12 @@ export default {
           }
       }
       console.log(payload)
+      var component = this
       axios
         .post(url, payload , config)
         .then(function (response) {
-          console.log(response);
+          console.log(response)
+          component.$store.dispatch('updateGameData', response.data)
         })
         .catch(function (error) {
           console.log(error);
@@ -139,11 +143,12 @@ export default {
           }
       }
       console.log(payload)
+      var component = this
       axios
         .post(url, payload , config)
         .then(function (response) {
           console.log(response)
-          this.$store.dispatch('updateGameData', response.data)
+          component.$store.dispatch('updateGameData', response.data)
         })
         .catch(function (error) {
           console.log(error);
@@ -162,10 +167,13 @@ export default {
       this.post("http://127.0.0.1:5000/pause", payload)
     },
     loadValidPlays: function () {
+      // send current deck and player states as input to getvalidplays endpoint functions
       var payload = {
         deck: this.getDeckOrder,
-        isDeck: true
+        player1: this.getPlayer1,
+        player2: this.getPlayer2
       }
+      console.log(payload)
       var url = "http://127.0.0.1:5000/validplays"
       var config = {
         headers: {

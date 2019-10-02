@@ -58,6 +58,10 @@ export default new Vuex.Store({
     },
     getValidPlays: (state) => {
       return state.validPlays
+    },
+    getTableCards: (state) => {
+      console.log(state.gameData)
+      return state.gameData.game.table_cards
     }
   },
   mutations: {
@@ -71,7 +75,9 @@ export default new Vuex.Store({
       state.gameData = data
     },
     changeGameData: function (state, payload) {
-      state.gameData = payload.game
+      console.log(payload)
+      state.gameData.game = payload.game
+      console.log(state.gameData)
     },
     changeValidPlaysErrored: function (state, errored) {
       state.validPlaysErrored = errored
@@ -85,7 +91,8 @@ export default new Vuex.Store({
   },
   actions: {
     updateGameData: function ({ commit }, payload) {
-      commit(changeGameData, payload)
+      console.log(payload)
+      commit('changeGameData', payload)
     },
     loadGameData: function ({ commit, state }) {
       axios.get('http://127.0.0.1:5000/makedeck')

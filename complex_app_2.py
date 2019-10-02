@@ -409,6 +409,12 @@ def tablenames():
 @cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
 def makedeck():
 
+    # TODO new random seed deck
+    p1 = Player('player_1')
+    p2 = Player('player_2')
+    deck = Deck(make_deck())
+    g = Game(p1,p2,deck)
+
     response = jsonify(returnJSON(g))
     # response.headers.add('Access-Control-Allow-Origin', '*')
 
@@ -475,6 +481,29 @@ def playfirstround():
     else:
         return response
 
+@app.route("/getbestplay", methods=["GET", "POST"])
+@cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
+def getbestplay():
+
+
+    items = {
+
+    }
+
+    response = jsonify(items)
+    # response.headers.add('Access-Control-Allow-Origin', '*')
+
+    if request.method == "POST":
+
+        context = request.get_json(force=True)
+        response = returnJSON(g.play_first_round(p1, p2))
+        # round_results = f"Player 1 score: {p1.score}\n\tPlayer 2 score: {p2.score}"
+        print(context)
+
+        return jsonify(response)
+    else:
+        return response
+
 @app.route("/unpause", methods=["GET", "POST"])
 @cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
 def unpause():
@@ -505,20 +534,24 @@ def validplays():
 
     deck = []
     
+    
     if request.method == "POST":
 
       context = request.get_json(force=True)
       deck = context['deck']
+      player1 = context['player1']
+      player2 = context['player2']
+      g = Game(player1,player2,deck)
       valid_plays = {
-        "player_1": g.valid_plays(p1, deck),
-        "player_2": g.valid_plays(p2, deck),
+        "player_1": returnJSON(g.valid_plays(player1, deck)),
+        "player_2": returnJSON(g.valid_plays(player2, deck)),
       }
       # valid_plays = {
       #   "player_1": "sample data",
       #   "player_2": "sample data 2",
       # }
       # print(g.table_cards)
-      response = jsonify(list(valid_plays))
+      response = jsonify(valid_plays)
       print("#### valid plays ####")
       pprint(valid_plays)
       #response.headers.add('Access-Control-Allow-Origin', '*')
