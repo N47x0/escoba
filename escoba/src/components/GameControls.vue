@@ -70,7 +70,8 @@ export default {
       'getValidPlaysLoaded',
       'getValidPlays',
       'getPlayer1',
-      'getPlayer2'
+      'getPlayer2',
+      'getTableCards'
     ])
   },
   methods: {
@@ -169,7 +170,7 @@ export default {
     loadValidPlays: function () {
       // send current deck and player states as input to getvalidplays endpoint functions
       var payload = {
-        deck: this.getDeckOrder,
+        tableCards: this.getTableCards,
         player1: this.getPlayer1,
         player2: this.getPlayer2
       }

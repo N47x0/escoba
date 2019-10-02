@@ -47,6 +47,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import axios from 'axios'
 import CardComp from '@/components/CardComp'
 
 export default {
@@ -61,7 +62,9 @@ export default {
   computed: {
     ...mapGetters([
       'getGameDataLoaded',
-      'getDeck'
+      'getDeck',
+      'getPlayer1',
+      'getPlayer2'
     ]),
     getHand: function () {
       return this.player.hand
@@ -83,8 +86,8 @@ export default {
     },
     getBestPlay: function () {
       var payload = {
-        deck: this.getDeckOrder,
-        isDeck: true
+        player1: this.getPlayer1,
+        player2: this.getPlayer2
       }
       var url = "http://127.0.0.1:5000/getbestplay"
       var config = {

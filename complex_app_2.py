@@ -95,7 +95,8 @@ def returnJSON(game_object):
     }
   }
   
-
+def playsJSON(plays_set):
+  return
 
 
 Card = namedtuple("Card", ['suit', 'face', 'owner'])
@@ -156,8 +157,12 @@ class Player:
   score = 0
   hand = set()
   name = ''
-  def __init__(self, name, hand=[]):
+  actual_hand = []
+  def __init__(self, name, score, hand=[], actual_hand=[]):
     self.name = name
+    # added score and hand to init so they can be passed in to deserializer
+    self.score = score
+    self.hand = hand if hand is not None else []
   def play_turn(self,deck):
     return NotImplemented
   def new_hand(self, cards):
@@ -178,22 +183,32 @@ class Player:
       if len(good_hands) > 0:
         return random.choice(good_hands)
       return random.choice(list(play))
-    return play.pop()
+    # return player object for frontend   
+    self.actual_hand = play.pop()  
+    return self
+    # original game logic to return just one card
+    #return play.pop
   def get_hand(self):
     return list(self.hand)
+  #deserialzer  
+  @classmethod
+  def from_json(cls, data):
+      return cls(**data)
 
 
 class Game:
   deck = Deck()
-  pl1 = Player('p1')
-  pl2 = Player('p2')
+  pl1 = Player('p1', 0)
+  pl2 = Player('p2', 0)
   table_cards = set()
   paused = True
 
-  def __init__(self, pl1, pl2, deck=Deck()):
+  def __init__(self, pl1, pl2, deck=Deck(), valid_plays=[]):
     self.pl1 = pl1
     self.pl2 = pl2
     self.deck = deck
+    self.valid_plays = valid_plays if valid_plays is not None else []
+
     print("Start game")
     #return NotImplemented
 
@@ -248,7 +263,8 @@ class Game:
           plays.add(combo)
       else:
         plays.add(tuple(player.hand))
-    return plays
+    self.valid_plays = list(plays)
+    return self
 
   def apply_play(self,play, player):
     # validate(play)
@@ -332,6 +348,11 @@ class Game:
     self.table_cards = table_cards
     return self
 
+  def get_best_play(self, player):
+    playable = self.valid_plays(player,self.table_cards)
+    player.get_play(playable)
+    return self 
+
   def play_round(self, first_player, second_player):
     
     last_scored = ''
@@ -393,8 +414,8 @@ log_table = metadata.tables['Log']
 sm = orm.sessionmaker(bind=db, autoflush=True, autocommit=True, expire_on_commit=True)
 session = orm.scoped_session(sm)
 
-p1 = Player('player_1')
-p2 = Player('player_2')
+p1 = Player('player_1', 0)
+p2 = Player('player_2', 0)
 deck = Deck(make_deck())
 g = Game(p1,p2,deck)
 
@@ -410,8 +431,8 @@ def tablenames():
 def makedeck():
 
     # TODO new random seed deck
-    p1 = Player('player_1')
-    p2 = Player('player_2')
+    p1 = Player('player_1', 0)
+    p2 = Player('player_2', 0)
     deck = Deck(make_deck())
     g = Game(p1,p2,deck)
 
@@ -475,7 +496,7 @@ def playfirstround():
         context = request.get_json(force=True)
         response = returnJSON(g.play_first_round(p1, p2))
         # round_results = f"Player 1 score: {p1.score}\n\tPlayer 2 score: {p2.score}"
-        print(context)
+        print(response)
 
         return jsonify(response)
     else:
@@ -496,11 +517,15 @@ def getbestplay():
     if request.method == "POST":
 
         context = request.get_json(force=True)
-        response = returnJSON(g.play_first_round(p1, p2))
-        # round_results = f"Player 1 score: {p1.score}\n\tPlayer 2 score: {p2.score}"
+        player1 = context['player1']
+        player2 = context['player2']
+        best_plays = {
+        "player_1": returnJSON(g.get_best_play(Player.from_json(player1))),
+        "player_2": returnJSON(g.get_best_play(Player.from_json(player2))),
+        }
         print(context)
 
-        return jsonify(response)
+        return jsonify(best_plays)
     else:
         return response
 
@@ -538,13 +563,13 @@ def validplays():
     if request.method == "POST":
 
       context = request.get_json(force=True)
-      deck = context['deck']
+      table_cards = context['tableCards']
       player1 = context['player1']
       player2 = context['player2']
       g = Game(player1,player2,deck)
       valid_plays = {
-        "player_1": returnJSON(g.valid_plays(player1, deck)),
-        "player_2": returnJSON(g.valid_plays(player2, deck)),
+        "player_1": returnJSON(g.valid_plays(Player.from_json(player1), table_cards)),
+        "player_2": returnJSON(g.valid_plays(Player.from_json(player2), table_cards))
       }
       # valid_plays = {
       #   "player_1": "sample data",
