@@ -15,31 +15,13 @@
       >
         Get New Deck
       </b-button>
-        |
-      <b-button
-        @click="dealHand()"
-      >
-        Deal Hand
-      </b-button>
-        |
+        |        |
       <b-button
         @click="playFirstRound()"
       >
         Play First Round
       </b-button>
-      |
-      <b-button
-        @click="unpause()"
-      >
-        Unpause
-      </b-button>
-      |
-      <b-button
-        @click="pause()"
-      >
-        Pause
-      </b-button>
-      |
+      |      |
       <b-button
         @click="log"
       >
@@ -84,22 +66,6 @@ export default {
         console.log(comp)
       }
     },
-    post: function (url, payload) {
-      var config = {
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
-          }
-      }
-      axios
-        .post(url, payload , config)
-        .then(function (response) {
-          console.log(response);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    },
     makeDeck: function () {
       var payload = {
         deck: this.getDeckOrder,
@@ -124,13 +90,6 @@ export default {
           console.log(error);
         });
     },
-    dealHand: function () {
-      var payload = {
-        deck: this.getDeck,
-        isDeck: true
-      }
-      this.post("http://127.0.0.1:5000/dealhand", payload)
-    },
     playFirstRound: function () {
       var payload = {
         deck: this.getDeck,
@@ -154,18 +113,6 @@ export default {
         .catch(function (error) {
           console.log(error);
         });
-    },
-    unpause: function () {
-      var payload = {
-        paused: false
-      }
-      this.post("http://127.0.0.1:5000/unpause", payload)
-    },
-    pause: function () {
-      var payload = {
-        paused: true
-      }
-      this.post("http://127.0.0.1:5000/pause", payload)
     },
     loadValidPlays: function () {
       // send current deck and player states as input to getvalidplays endpoint functions

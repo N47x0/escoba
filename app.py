@@ -1,141 +1,122 @@
 from flask import Flask, render_template, redirect, Markup, url_for, jsonify, request
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.ext.automap import automap_base
-from sqlalchemy.orm import Session
-from sqlalchemy import create_engine, func
-from sqlalchemy import *
-from sqlalchemy import orm
-from sqlalchemy.engine import reflection
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship, mapper
 from flask_cors import CORS, cross_origin
-
-import random
-from collections import namedtuple
-from typing import List
-from itertools import combinations
-from functools import reduce
-
-from bson import json_util
 import json
 import re
 from datetime import datetime as dt
+from pprint import pprint
+from package.broom import Player, Deck, Game, make_deck, returnJSON
 
-
-connection_string = "root:password@localhost/test"
-engine = create_engine(f'mysql://{connection_string}')
+p1 = Player('player_1', 0)
+p2 = Player('player_2', 0)
+deck = Deck(make_deck())
+g = Game(p1,p2,deck)
 
 app = Flask(__name__)
 CORS(app, resources={r"/makedeck": {"origins": "http://localhost:8080"}})
 
 app.config['CORS_HEADERS'] = 'Content-Type'
 
-metadata = MetaData()
-
-Base = declarative_base()
-Base.metadata = metadata
-
-class LogItem(Base):
-    __tablename__ = 'log'
-    LogId = Column(Integer, primary_key=True)
-    LogTime = Column(TIMESTAMP, default=dt.utcnow())
-    LogType = Column(String(32))
-    LogBlob = Column(String)
-    # def __init__(self):
-    #     self.LogTime = dt.utcnow()
-    #     self.LogType = self.LogType
-    def __repr__(self):
-        return f"<LogItem(LogTime={self.LogTime}, LogType={self.LogType}, LogBlob={self.LogBlob})>"
-
-db = create_engine('mysql://root:password@localhost/test',echo=False)
-metadata.reflect(bind=db)
-
-log_table = metadata.tables['log']
-
-sm = orm.sessionmaker(bind=db, autoflush=True, autocommit=True, expire_on_commit=True)
-session = orm.scoped_session(sm)
-
-@app.route("/tablenames")
-def tablenames():
-
-    table_names = engine.table_names()
-    return jsonify(table_names)
-
 @app.route("/makedeck", methods=["GET", "POST"])
 @cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
 def makedeck():
 
-    Card = namedtuple("Card", ['suit', 'face', 'owner'])
-    faces = list(range(1,11))
-    suits = ['B', 'O', 'E', 'C']
+    # TODO new random seed deck
+    p1 = Player('player_1', 0)
+    p2 = Player('player_2', 0)
+    deck = Deck(make_deck())
+    g = Game(p1,p2,deck)
 
-    def make_deck():
-        return {  str(n) + s: Card(suit=s, face=n, owner='') for n in faces for s in suits }
+    response = jsonify(returnJSON(g))
+    # response.headers.add('Access-Control-Allow-Origin', '*')
 
-    CardStore = make_deck()
+    if request.method == "POST":
+        context = request.get_json(force=True)
+        return response
+    else:
+        return response
 
-    def make_deck_from(card_ids :list):
-        return { card_id: CardStore[card_id] for card_id in card_ids }
+@app.route("/playfirstround", methods=["GET", "POST"])
+@cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
+def playfirstround():
 
-    def shuffle(deck :list):
-        random.shuffle(deck)
-        return deck
-
-    class Deck:
-        card_store = {}
-
-        deck_order = []
-        def __init__(self,card_store={}):
-            self.card_store = card_store
-            self.deck_order = list(card_store.keys())
-            random.shuffle(self.deck_order)
-            print("Hello deck {}".format(self.deck_order))
-        def shuffle(self):
-            return random.shuffle(self.deck_order)
-        def deal(self, n=1, owner=''):
-            d = self.deck_order[:n]
-            self.deck_order = self.deck_order[n:]
-            return set(d)
-            # def update_store(card,store, owner):
-            #   store.owner = owner
-            #   return store[card]
-            # return [update_store(delt,self.card_store, owner) for delt in d]
-        def cards(self):
-            return self.card_store
-        def order(self):
-            return self.deck_order
-
-    deck = Deck(CardStore)
-
-    cards = deck.cards()
-
-    order = deck.order()
 
     items = {
-        "cards": cards,
-        "order": order
     }
 
     response = jsonify(items)
     # response.headers.add('Access-Control-Allow-Origin', '*')
 
     if request.method == "POST":
-        context = request.get_json(force=True)
-        id_query = session.query(LogItem.LogId).all()
-        ids = []
-        for logid in id_query:
-            ids.append(logid)
-        last_id = ids[-1][0]
-        if context['isDeck'] == True:
-            log_item = LogItem(LogTime=dt.utcnow(), LogType='Deck', LogBlob=context)
-            session.add(log_item)
-            print("#### checking update ####")
-            for item in session.query(LogItem).filter(LogItem.LogId==last_id):
-                print(f"Last Added LogId: {item.LogId}")
 
-        return response
+        context = request.get_json(force=True)
+        response = returnJSON(g.play_first_round(p1, p2))
+        # round_results = f"Player 1 score: {p1.score}\n\tPlayer 2 score: {p2.score}"
+        print(response)
+
+        return jsonify(response)
     else:
         return response
+
+@app.route("/getbestplay", methods=["GET", "POST"])
+@cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
+def getbestplay():
+
+
+    items = {
+
+    }
+
+    response = jsonify(items)
+    # response.headers.add('Access-Control-Allow-Origin', '*')
+
+    if request.method == "POST":
+
+        context = request.get_json(force=True)
+        player1 = context['player1']
+        player2 = context['player2']
+        best_plays = {
+        "player_1": returnJSON(g.get_best_play(Player.from_json(player1))),
+        "player_2": returnJSON(g.get_best_play(Player.from_json(player2))),
+        }
+        print(context)
+
+        return jsonify(best_plays)
+    else:
+        return response
+
+@app.route("/validplays", methods=["GET", "POST"])
+@cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
+def validplays():
+
+
+    deck = []
+    
+    
+    if request.method == "POST":
+
+      context = request.get_json(force=True)
+      table_cards = context['tableCards']
+      player1 = context['player1']
+      player2 = context['player2']
+      g = Game(player1,player2,deck)
+      valid_plays = {
+        "player_1": returnJSON(g.valid_plays_list(Player.from_json(player1), table_cards)),
+        "player_2": returnJSON(g.valid_plays_list(Player.from_json(player2), table_cards))
+      }
+      # valid_plays = {
+      #   "player_1": "sample data",
+      #   "player_2": "sample data 2",
+      # }
+      # print(g.table_cards)
+      response = jsonify(valid_plays)
+      print("#### valid plays ####")
+      pprint(valid_plays)
+      #response.headers.add('Access-Control-Allow-Origin', '*')
+      print("#### deck ####")
+      print(deck)
+      return response
+    else:
+      return response
 
 if __name__ == "__main__":
     app.run(host='127.0.0.1', port='5000', debug=True)
