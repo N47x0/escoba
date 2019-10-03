@@ -84,7 +84,7 @@ export default {
         .post(url, payload , config)
         .then(function (response) {
           console.log(response)
-          component.$store.dispatch('updateGameData', response.data)
+          component.$store.dispatch('updateGameData', response.data.game_state)
         })
         .catch(function (error) {
           console.log(error);

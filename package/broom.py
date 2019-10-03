@@ -5,61 +5,7 @@ from typing import List
 from itertools import combinations
 from functools import reduce
 import time
-
-
-
-def returnJSON(game_object):
-  deck = {
-    "card_store": {},
-    "deck_order": []
-  }
-
-  for k, v in game_object.deck.card_store.items():
-    deck['card_store'][k] = v
-
-  # deck['deck_order'] = list(game_object.deck.card_store.keys())
-  deck['deck_order'] = game_object.deck.order()
-
-  pl1 = {
-    "score": '',
-    "hand": [],
-    "name": ''
-  }
-
-  pl1['score'] = game_object.pl1.score
-  pl1['name'] = game_object.pl1.name
-  pl1['hand'] = game_object.pl1.get_hand()
-
-  pl2 = {
-    "score": '',
-    "hand": [],
-    "name": ''
-  }
-
-  pl2['score'] = game_object.pl2.score
-  pl2['name'] = game_object.pl2.name
-  pl2['hand'] = game_object.pl2.get_hand()
-
-  table_cards = []
-
-  table_cards = game_object.get_table_cards()
-
-  # if len(game_object.table_cards) > 0:
-  #   for x in range(len(game_object.table_cards)):
-  #     table_cards.append(x)
-
-  return {
-    "game": {
-      "pl1": pl1,
-      "pl2": pl2,
-      "deck": deck,
-      "table_cards": table_cards
-    }
-  }
-  
-def playsJSON(plays_set):
-  return
-
+import json
 
 Card = namedtuple("Card", ['suit', 'face', 'owner'])
 faces = list(range(1,11))
@@ -115,13 +61,16 @@ class Deck:
   def order(self):
     return self.deck_order
 
+
 class Play:
+
   def __init__(self, Card={}):
     self.card = Card
   def get_card(self):
     return self.card
 
 class PlayList:
+
   def __init__(self, owner, plays=set()):
     self.owner = owner
     self.plays = plays
@@ -140,8 +89,6 @@ class PlayList:
 # for key, card in CardStore.items():
 #   #playlist.append(Play(card))
 #   pl1_pl.add_play(Play(card))
-
-
 
 # #pl = PlayList(playlist).get_plays()
 # pl = pl1_pl.get_plays()
@@ -184,6 +131,7 @@ class Player:
     # return player object for frontend   
     self.actual_play = play.pop()  
     return self
+
     # original game logic to return just one card
     #return play.pop
   def get_hand(self):
@@ -199,13 +147,12 @@ class Game:
   pl1 = Player('p1', 0)
   pl2 = Player('p2', 0)
   table_cards = set()
-  paused = True
 
   def __init__(self, pl1, pl2, deck=Deck(), valid_plays=[]):
     self.pl1 = pl1
     self.pl2 = pl2
     self.deck = deck
-    self.valid_plays = valid_plays if valid_plays is not None else []
+    self.valid_plays_list = valid_plays if valid_plays is not None else []
 
     print("Start game")
     #return NotImplemented
@@ -216,16 +163,8 @@ class Game:
     #   sort_keys=True))
     return json.loads(json.dumps(self, default=lambda o: o.__dict__ , sort_keys=True))
     
-
-  def set_pause_state(self, switch):
-    print(f"#### switching paused to:{switch} ####")
-    self.paused = switch
-
   def get_table_cards(self):
     return list(self.table_cards)
-
-  def get_pause_state(self):
-    return self.paused
 
   def set_card_owner(self, card, owner):
     c = self.deck.cards()[card]
@@ -262,7 +201,7 @@ class Game:
       else:
         plays.add(tuple(player.hand))
     self.valid_plays_list = list(plays)
-    return self
+    return plays
 
   def apply_play(self,play, player):
     # validate(play)
@@ -337,8 +276,6 @@ class Game:
       self.pl2.award_point()
     print(f'Points:\tPL1\tPL2\nOros:\t[{len(p1_oros)}]\t[{len(p2_oros)}]\nSevens:\t[{len(p1_sevens)}]\t[{len(p2_sevens)}]\nCards:\t[{len(p1_total)}]\t[{len(p2_total)}]')
 
-
-
   def play_first_round(self, first_player, second_player):
     p1_cards, p2_cards ,table_cards = self.deal_start()
     first_player.new_hand(p1_cards)
@@ -362,10 +299,6 @@ class Game:
         second_player.new_hand(p2_cards)
         cards_left = len(self.deck.order())
 
-      def get_play(play):
-        #print(play)
-        return play
-
       # hand per player
       while (len(first_player.hand) + len(second_player.hand) > 0):
         if (len(first_player.hand)):
@@ -377,9 +310,6 @@ class Game:
           playable = self.valid_plays(second_player,self.table_cards)
           play = second_player.get_play(playable)
           if self.apply_play(play,second_player): last_scored = second_player.name
-        while (self.paused):
-          #print(first_player)
-          get_play(play)
           
     # award last_player_to_score remaining cards
     [self.set_card_owner(card_id, last_scored) for card_id, card in self.deck.cards().items() if card.owner == '']
@@ -388,5 +318,51 @@ class Game:
   def print_score(self):
         print("Player 1 score: {}\nPlayer 2 score: {}".format(self.pl1.score, self.pl2.score))
     
-def test():
-    return 'test'
+  def returnJSON(self):
+    deck = {
+      "card_store": {},
+      "deck_order": []
+    }
+
+    for k, v in self.deck.card_store.items():
+      deck['card_store'][k] = v
+
+    # deck['deck_order'] = list(self.deck.card_store.keys())
+    deck['deck_order'] = self.deck.order()
+
+    pl1 = {
+      "score": '',
+      "hand": [],
+      "name": ''
+    }
+
+    pl1['score'] = self.pl1.score
+    pl1['name'] = self.pl1.name
+    pl1['hand'] = self.pl1.get_hand()
+
+    pl2 = {
+      "score": '',
+      "hand": [],
+      "name": ''
+    }
+
+    pl2['score'] = self.pl2.score
+    pl2['name'] = self.pl2.name
+    pl2['hand'] = self.pl2.get_hand()
+
+    table_cards = []
+
+    table_cards = self.get_table_cards()
+
+    # if len(self.table_cards) > 0:
+    #   for x in range(len(self.table_cards)):
+    #     table_cards.append(x)
+
+    return {
+      "game": {
+        "pl1": pl1,
+        "pl2": pl2,
+        "deck": deck,
+        "table_cards": table_cards
+      }
+    }

@@ -4,17 +4,28 @@ import json
 import re
 from datetime import datetime as dt
 from pprint import pprint
-from package.broom import Player, Deck, Game, make_deck, returnJSON
+from package.broom import Player, Deck, Game, make_deck
 
-p1 = Player('player_1', 0)
-p2 = Player('player_2', 0)
-deck = Deck(make_deck())
-g = Game(p1,p2,deck)
 
 app = Flask(__name__)
 CORS(app, resources={r"/makedeck": {"origins": "http://localhost:8080"}})
+# CORS(app, resources={r"/makedeck": {"origins": "http://192.168.1.106:8080"}})
 
 app.config['CORS_HEADERS'] = 'Content-Type'
+
+client_sessions = {}
+
+class ClientSession:
+    
+    id_count = 0
+
+    def __init__(self, player1, player2, deck, game):
+        ClientSession.id_count += 1
+        self.id = ClientSession.id_count
+        self.p1 = player1
+        self.p2 = player2
+        self.deck = deck
+        self.g = game
 
 @app.route("/makedeck", methods=["GET", "POST"])
 @cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
@@ -26,7 +37,13 @@ def makedeck():
     deck = Deck(make_deck())
     g = Game(p1,p2,deck)
 
-    response = jsonify(returnJSON(g))
+    cs = ClientSession(p1, p2, deck, g)
+    client_sessions[cs.id] = cs
+
+    response = jsonify({
+        "game_state": g.returnJSON(),
+        "id": cs.id
+        })
     # response.headers.add('Access-Control-Allow-Origin', '*')
 
     if request.method == "POST":
@@ -39,17 +56,15 @@ def makedeck():
 @cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
 def playfirstround():
 
-
     items = {
     }
-
     response = jsonify(items)
     # response.headers.add('Access-Control-Allow-Origin', '*')
 
     if request.method == "POST":
 
         context = request.get_json(force=True)
-        response = returnJSON(g.play_first_round(p1, p2))
+        response = g.play_first_round(p1, p2).returnJSON()
         # round_results = f"Player 1 score: {p1.score}\n\tPlayer 2 score: {p2.score}"
         print(response)
 
@@ -63,9 +78,7 @@ def getbestplay():
 
 
     items = {
-
     }
-
     response = jsonify(items)
     # response.headers.add('Access-Control-Allow-Origin', '*')
 
@@ -87,10 +100,6 @@ def getbestplay():
 @app.route("/validplays", methods=["GET", "POST"])
 @cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
 def validplays():
-
-
-    deck = []
-    
     
     if request.method == "POST":
 
@@ -100,14 +109,9 @@ def validplays():
       player2 = context['player2']
       g = Game(player1,player2,deck)
       valid_plays = {
-        "player_1": returnJSON(g.valid_plays_list(Player.from_json(player1), table_cards)),
-        "player_2": returnJSON(g.valid_plays_list(Player.from_json(player2), table_cards))
+        "player_1": returnJSON(g.valid_plays(Player.from_json(player1), table_cards)),
+        "player_2": returnJSON(g.valid_plays(Player.from_json(player2), table_cards))
       }
-      # valid_plays = {
-      #   "player_1": "sample data",
-      #   "player_2": "sample data 2",
-      # }
-      # print(g.table_cards)
       response = jsonify(valid_plays)
       print("#### valid plays ####")
       pprint(valid_plays)

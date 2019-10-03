@@ -98,7 +98,7 @@ export default new Vuex.Store({
       axios.get('http://127.0.0.1:5000/makedeck')
         .then(function (response) {
           console.log(response)
-          commit('initGameData', response.data)
+          commit('initGameData', response.data.game_state)
         })
         .catch(function (error) {
           console.log(error)
