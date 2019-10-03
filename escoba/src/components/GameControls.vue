@@ -46,6 +46,7 @@ export default {
   computed: {
     ...mapGetters([
       'getGameDataLoaded',
+      'getClientSessionId',
       'getDeck',
       'getCards',
       'getDeckOrder',
@@ -68,8 +69,7 @@ export default {
     },
     makeDeck: function () {
       var payload = {
-        deck: this.getDeckOrder,
-        isDeck: true
+        clientSessionId: this.getClientSessionId
       }
       var url = "http://127.0.0.1:5000/makedeck"
       var config = {
@@ -117,9 +117,7 @@ export default {
     loadValidPlays: function () {
       // send current deck and player states as input to getvalidplays endpoint functions
       var payload = {
-        tableCards: this.getTableCards,
-        player1: this.getPlayer1,
-        player2: this.getPlayer2
+        clientSessionId: this.getClientSessionId
       }
       console.log(payload)
       var url = "http://127.0.0.1:5000/validplays"

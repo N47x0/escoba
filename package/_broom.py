@@ -61,12 +61,53 @@ class Deck:
   def order(self):
     return self.deck_order
 
+
+class Play:
+
+  def __init__(self, Card={}):
+    self.card = Card
+  def get_card(self):
+    return self.card
+
+class PlayList:
+
+  def __init__(self, owner, plays=set()):
+    self.owner = owner
+    self.plays = plays
+
+  def get_plays(self):
+    return list(self.plays)
+  def get_owner(self):
+    return self.owner
+  def add_play(self, Play):
+    self.plays.add(Play)
+    return self.plays
+
+# print(CardStore)
+# playlist = []
+# pl1_pl = PlayList('Player1')
+# for key, card in CardStore.items():
+#   #playlist.append(Play(card))
+#   pl1_pl.add_play(Play(card))
+
+# #pl = PlayList(playlist).get_plays()
+# pl = pl1_pl.get_plays()
+
+# for card in pl:
+#   print(card.card)
+# #print(pl.plays.card)
+
+
 class Player: 
   score = 0
   hand = set()
   name = ''
-  def __init__(self, name, hand=[]):
+  def __init__(self, name, score, hand=[], actual_play=[], ):
     self.name = name
+    # added score and hand to init so they can be passed in to deserializer
+    self.score = score
+    self.hand = hand if hand is not None else []
+    self.playlist = PlayList(name)
   def play_turn(self,deck):
     return NotImplemented
   def new_hand(self, cards):
@@ -87,7 +128,12 @@ class Player:
       if len(good_hands) > 0:
         return random.choice(good_hands)
       return random.choice(list(play))
-    return play.pop()
+    # return player object for frontend   
+    self.actual_play = play.pop()  
+    return self
+
+    # original game logic to return just one card
+    #return play.pop
   def get_hand(self):
     return list(self.hand)
   #deserialzer  
@@ -98,16 +144,25 @@ class Player:
 
 class Game:
   deck = Deck()
-  pl1 = Player('p1')
-  pl2 = Player('p2')
+  pl1 = Player('p1', 0)
+  pl2 = Player('p2', 0)
   table_cards = set()
-  def __init__(self, pl1, pl2, deck=Deck()):
+
+  def __init__(self, pl1, pl2, deck=Deck(), valid_plays=[]):
     self.pl1 = pl1
     self.pl2 = pl2
     self.deck = deck
+    self.valid_plays_list = valid_plays if valid_plays is not None else []
+
     print("Start game")
     #return NotImplemented
 
+   # serialzer method
+  def toJSON(self):
+    # return json.loads(json.dumps(self, default=lambda o: o.__dict__ if type(o.__dict__) == '__dict__' else o.__set__, 
+    #   sort_keys=True))
+    return json.loads(json.dumps(self, default=lambda o: o.__dict__ , sort_keys=True))
+    
   def get_table_cards(self):
     return list(self.table_cards)
 
@@ -121,10 +176,12 @@ class Game:
   def deal_hand(self):
     p1 = set()
     p2 = set()
+    print(f"cards_remaining_before_deal: {len(self.deck.order())}")
     # deal out to p1 and p2 alternating 3 each
     for count in range(0,3):
       [ p1.add(d) for d in self.deck.deal()]
       [ p2.add(d) for d in self.deck.deal()]
+    print(f"cards_remaining_after_deal: {len(self.deck.order())}")
     return p1,p2
 
   def deal_start(self):
@@ -143,6 +200,7 @@ class Game:
           plays.add(combo)
       else:
         plays.add(tuple(player.hand))
+    self.valid_plays_list = list(plays)
     return plays
 
   def apply_play(self,play, player):
@@ -225,11 +283,12 @@ class Game:
     self.table_cards = table_cards
     return self
 
+  def get_best_play(self, player):
+    playable = self.valid_plays(player,self.table_cards)
+    player.get_play(playable)
+    return self 
+
   def play_round(self, first_player, second_player):
-    p1_cards, p2_cards ,table_cards = self.deal_start()
-    first_player.new_hand(p1_cards)
-    second_player.new_hand(p2_cards)
-    self.table_cards = table_cards
     
     last_scored = ''
     cards_left = len(self.deck.order())
@@ -239,7 +298,6 @@ class Game:
         first_player.new_hand(p1_cards)
         second_player.new_hand(p2_cards)
         cards_left = len(self.deck.order())
-
 
       # hand per player
       while (len(first_player.hand) + len(second_player.hand) > 0):
@@ -252,7 +310,7 @@ class Game:
           playable = self.valid_plays(second_player,self.table_cards)
           play = second_player.get_play(playable)
           if self.apply_play(play,second_player): last_scored = second_player.name
-
+          
     # award last_player_to_score remaining cards
     [self.set_card_owner(card_id, last_scored) for card_id, card in self.deck.cards().items() if card.owner == '']
     self.apply_score()

@@ -9,6 +9,7 @@ export default new Vuex.Store({
     gameDataLoaded: false,
     gameDataErrored: false,
     gameData: {},
+    clientSessionId: null,
     player1: {},
     player2: {},
     validPlaysLoaded: false,
@@ -16,6 +17,9 @@ export default new Vuex.Store({
     validPlays: []
   },
   getters: {
+    getClientSessionId: function (state) {
+      return state.clientSessionId
+    },
     getCards: function (state) {
       var cards = []
       // console.log(Object.entries(state.gameData.cards))
@@ -65,6 +69,9 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    setClientSessionId: function (state, payload) {
+      state.clientSessionId = payload
+    },
     changeGameDataErrored: function (state, errored) {
       state.gameDataErrored = errored
     },
@@ -94,11 +101,34 @@ export default new Vuex.Store({
       console.log(payload)
       commit('changeGameData', payload)
     },
+    async fetchData({ rootState, commit }, payload) {
+      try {
+          let body = { language: rootState.authStore.currentLocale.locale };
+          if (payload) {
+              body = Object.assign({}, payload.body, body);
+          }
+          let response = await axios.post(
+              `api.factory.com/${payload.url}`,
+              body,
+              rootState.config.serviceHeaders
+          );
+          if (payload.commit) {
+              commit('mutate', {
+                  property: payload.stateProperty,
+                  with: response.data[payload.stateProperty]
+              });
+          }
+          return response.data;
+      } catch (error) {
+          throw error;
+      }
+    },
     loadGameData: function ({ commit, state }) {
       axios.get('http://127.0.0.1:5000/makedeck')
         .then(function (response) {
           console.log(response)
           commit('initGameData', response.data.game_state)
+          commit('setClientSessionId', response.data.id)
         })
         .catch(function (error) {
           console.log(error)

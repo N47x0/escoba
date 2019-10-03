@@ -32,24 +32,33 @@ class ClientSession:
 def makedeck():
 
     # TODO new random seed deck
-    p1 = Player('player_1', 0)
-    p2 = Player('player_2', 0)
-    deck = Deck(make_deck())
-    g = Game(p1,p2,deck)
 
-    cs = ClientSession(p1, p2, deck, g)
-    client_sessions[cs.id] = cs
-
-    response = jsonify({
-        "game_state": g.returnJSON(),
-        "id": cs.id
-        })
     # response.headers.add('Access-Control-Allow-Origin', '*')
 
     if request.method == "POST":
         context = request.get_json(force=True)
+        csId = context['clientSessionId']
+        cs = client_sessions[csId]
+        response = jsonify({
+            "game_state": cs.g.returnJSON(),
+            "id": cs.id,
+            'post_response': True
+        })
+
         return response
     else:
+        p1 = Player('player_1', 0)
+        p2 = Player('player_2', 0)
+        deck = Deck(make_deck())
+        g = Game(p1,p2,deck)
+
+        cs = ClientSession(p1, p2, deck, g)
+        client_sessions[cs.id] = cs
+        response = jsonify({
+            "game_state": g.returnJSON(),
+            "id": cs.id
+        })
+
         return response
 
 @app.route("/playfirstround", methods=["GET", "POST"])
@@ -64,7 +73,13 @@ def playfirstround():
     if request.method == "POST":
 
         context = request.get_json(force=True)
-        response = g.play_first_round(p1, p2).returnJSON()
+        csId = context['clientSessionId']
+        response = jsonify({
+            "game_state": client_sessions[csId],
+            "id": cs.id
+        })
+
+        #response = g.play_first_round(p1, p2).returnJSON()
         # round_results = f"Player 1 score: {p1.score}\n\tPlayer 2 score: {p2.score}"
         print(response)
 
@@ -103,24 +118,25 @@ def validplays():
     
     if request.method == "POST":
 
-      context = request.get_json(force=True)
-      table_cards = context['tableCards']
-      player1 = context['player1']
-      player2 = context['player2']
-      g = Game(player1,player2,deck)
-      valid_plays = {
-        "player_1": returnJSON(g.valid_plays(Player.from_json(player1), table_cards)),
-        "player_2": returnJSON(g.valid_plays(Player.from_json(player2), table_cards))
-      }
-      response = jsonify(valid_plays)
-      print("#### valid plays ####")
-      pprint(valid_plays)
-      #response.headers.add('Access-Control-Allow-Origin', '*')
-      print("#### deck ####")
-      print(deck)
-      return response
+        context = request.get_json(force=True)
+        csId = context['clientSessionId']
+        cs = client_sessions[csId]
+
+        first_player = list(cs.g.valid_plays(cs.p1, cs.g.table_cards))
+        second_player = list(cs.g.valid_plays(cs.p1, cs.g.table_cards))
+
+        response = jsonify({
+            "first_player": first_player,
+            "second_player": second_player,
+            "id": cs.id,
+            'post_response': True
+        })
+        # print("#### valid plays ####")
+        # print("#### deck ####")
+        return response
+
     else:
-      return response
+        return response
 
 if __name__ == "__main__":
     app.run(host='127.0.0.1', port='5000', debug=True)
