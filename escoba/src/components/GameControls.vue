@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import axios from 'axios'
 
 export default {
@@ -58,6 +58,11 @@ export default {
     ])
   },
   methods: {
+    ...mapActions([
+      'loadValidPlays',
+      'makeDeck',
+      'playFirstRound'
+    ]),
     log: function(input) {
       var comp = this
       if(input) {
@@ -67,82 +72,12 @@ export default {
         console.log(comp)
       }
     },
-    makeDeck: function () {
-      var payload = {
-        clientSessionId: this.getClientSessionId
-      }
-      var url = "http://127.0.0.1:5000/makedeck"
-      var config = {
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
-          }
-      }
-      console.log(payload)
-      var component = this
-      axios
-        .post(url, payload , config)
-        .then(function (response) {
-          console.log(response)
-          component.$store.dispatch('updateGameData', response.data.game_state)
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    },
-    playFirstRound: function () {
-      var payload = {
-        deck: this.getDeck,
-        isDeck: true
-      }
-      var url = "http://127.0.0.1:5000/playfirstround"
-      var config = {
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
-          }
-      }
-      console.log(payload)
-      var component = this
-      axios
-        .post(url, payload , config)
-        .then(function (response) {
-          console.log(response)
-          component.$store.dispatch('updateGameData', response.data)
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    },
-    loadValidPlays: function () {
-      // send current deck and player states as input to getvalidplays endpoint functions
-      var payload = {
-        clientSessionId: this.getClientSessionId
-      }
-      console.log(payload)
-      var url = "http://127.0.0.1:5000/validplays"
-      var config = {
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
-          }
-      }
-      axios
-        .post(url, payload , config)
-        .then(function (response) {
-          console.log(response);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-
-    }
   },
   mounted: function() {
-    this.log(this.getDeckOrder)
+    // this.log(this.getDeckOrder)
     if(this.getGameDataLoaded) {
-      console.log(this.getCards)
-      console.log(this.getDeck)
+      // console.log(this.getCards)
+      // console.log(this.getDeck)
     }
   }
 }

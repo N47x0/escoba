@@ -58,7 +58,6 @@ export default {
       'getDeck'
     ]),
     cards: function () {
-      console.log(this.getHand)
       return this.getDeck.filter(x => this.tableCards.includes(x.card))
     }
   },

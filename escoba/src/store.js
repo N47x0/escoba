@@ -30,25 +30,27 @@ export default new Vuex.Store({
     },
     getDeck: function (state, getters) {
       var deck = []
-      console.log(state.gameData)
+      // console.log(state.gameData)
       // console.log(Object.entries(state.gameData.cards))
       Object.entries(state.gameData.game.deck.card_store).forEach((value, index, array) => {
         var [a, b, c] = value[1]
         var d = b.toString() + a
         deck.push({ 'suit': a, 'value': b, 'owner': c, 'card': d })
       })
-      console.log(deck)
-      console.log(getters.getDeckOrder)
+      // console.log(deck)
+      // console.log(getters.getDeckOrder)
       deck.sort(function (a, b) {
         return getters.getDeckOrder.indexOf(a.card) - getters.getDeckOrder.indexOf(b.card)
       })
-      console.log(deck)
+      // console.log(deck)
       return deck
     },
     getPlayer1: (state) => {
+      return state.player1
       return state.gameData.game.pl1
     },
     getPlayer2: (state) => {
+      return state.player2
       return state.gameData.game.pl2
     },
     getGameDataLoaded: (state) => {
@@ -64,7 +66,7 @@ export default new Vuex.Store({
       return state.validPlays
     },
     getTableCards: (state) => {
-      console.log(state.gameData)
+      // console.log(state.gameData)
       return state.gameData.game.table_cards
     }
   },
@@ -82,9 +84,9 @@ export default new Vuex.Store({
       state.gameData = data
     },
     changeGameData: function (state, payload) {
-      console.log(payload)
+      // console.log(payload)
       state.gameData.game = payload.game
-      console.log(state.gameData)
+      // console.log(state.gameData)
     },
     changeValidPlaysErrored: function (state, errored) {
       state.validPlaysErrored = errored
@@ -94,7 +96,18 @@ export default new Vuex.Store({
     },
     changeValidPlays: function (state, data) {
       state.validPlays = data
+    },
+    changePlayer1Data: function (state, payload) {
+      console.log(state.player1)
+      state.player1 = payload
+      console.log(state.player1)
+    },
+    changePlayer2Data: function (state, payload) {
+      console.log(state.player2)
+      state.player2 = payload
+      console.log(state.player2)
     }
+    
   },
   actions: {
     updateGameData: function ({ commit }, payload) {
@@ -129,6 +142,8 @@ export default new Vuex.Store({
           console.log(response)
           commit('initGameData', response.data.game_state)
           commit('setClientSessionId', response.data.id)
+          commit('changePlayer1Data', response.data.game_state.game.pl1)
+          commit('changePlayer2Data', response.data.game_state.game.pl2)
         })
         .catch(function (error) {
           console.log(error)
@@ -139,20 +154,74 @@ export default new Vuex.Store({
           commit('changeGameDataLoaded', true)
         })
     },
-    loadValidPlays: function ({ commit, state }) {
-      axios.get('http://127.0.0.1:5000/validplays')
+    makeDeck: function ({ commit, dispatch, getters }) {
+      var payload = {
+        clientSessionId: getters.getClientSessionId
+      }
+      var url = "http://127.0.0.1:5000/makedeck"
+      var config = {
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+          }
+      }
+      console.log(payload)
+      var component = this
+      axios
+        .post(url, payload , config)
         .then(function (response) {
           console.log(response)
-          commit('changeValidPlays', response.data)
+          //dispatch('updateGameData', response.data.game_state)
         })
         .catch(function (error) {
-          console.log(error)
-          commit('changeValidPlaysErrored', true)
+          console.log(error);
+        });
+    },
+    playFirstRound: function ({ commit, dispatch, getters }) {
+      var payload = {
+        clientSessionId: getters.getClientSessionId
+      }
+      console.log(payload)
+      var url = "http://127.0.0.1:5000/playfirstround"
+      var config = {
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+          }
+      }
+      var component = this
+      axios
+        .post(url, payload , config)
+        .then(function (response) {
+          console.log(response)
+          commit('changePlayer1Data', response.data.game_state.game.pl1)
+          commit('changePlayer2Data', response.data.game_state.game.pl2)
         })
-        .finally(function () {
-          console.log('#### deck finally ####')
-          commit('changeValidPlaysLoaded', true)
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+    loadValidPlays: function ({ commit, getters }) {
+      // send current deck and player states as input to getvalidplays endpoint functions
+      var payload = {
+        clientSessionId: getters.getClientSessionId
+      }
+      console.log(payload)
+      var url = "http://127.0.0.1:5000/validplays"
+      var config = {
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+          }
+      }
+      axios
+        .post(url, payload , config)
+        .then(function (response) {
+          console.log(response);
         })
+        .catch(function (error) {
+          console.log(error);
+        });
     }
   }
 })

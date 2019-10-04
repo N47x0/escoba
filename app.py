@@ -74,16 +74,17 @@ def playfirstround():
 
         context = request.get_json(force=True)
         csId = context['clientSessionId']
-        response = jsonify({
-            "game_state": client_sessions[csId],
+        cs = client_sessions[csId]
+        game = cs.g.play_first_round(cs.p1, cs.p2).returnJSON()
+        #game = game.returnJSON()
+        return jsonify({
+            "game_state": game,
             "id": cs.id
         })
 
         #response = g.play_first_round(p1, p2).returnJSON()
         # round_results = f"Player 1 score: {p1.score}\n\tPlayer 2 score: {p2.score}"
-        print(response)
 
-        return jsonify(response)
     else:
         return response
 

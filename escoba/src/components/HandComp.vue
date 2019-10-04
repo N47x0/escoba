@@ -70,7 +70,6 @@ export default {
       return this.player.hand
     },
     cards: function () {
-      console.log(this.getHand)
       return this.getDeck.filter(x => this.getHand.includes(x.card))
     }
   },
