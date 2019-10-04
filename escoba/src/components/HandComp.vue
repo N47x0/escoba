@@ -2,12 +2,12 @@
   <div class="hand-comp">
     <div v-if="getGameDataLoaded">
       <b-card
-        :class="'hand-' +player.name" 
-        :id="'hand-' +player.name" 
+        :class="'hand-' +getPlayer.name" 
+        :id="'hand-' +getPlayer.name" 
       >
         <b-row>
           <b-col></b-col>
-          <b-col>{{player.name}}'s Hand</b-col>
+          <b-col>{{getPlayer.name}}'s Hand</b-col>
           <b-col></b-col>
         </b-row>
         <b-row>
@@ -21,7 +21,7 @@
           </b-col>
           <b-col>
             <b-button
-              @click="getBestPlay"
+              @click="getBestPlay()"
             >
               Get Best Play
             </b-button>
@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import axios from 'axios'
 import CardComp from '@/components/CardComp'
 
@@ -54,7 +54,7 @@ export default {
   name: 'HandComp',
   props: {
     card: Object,
-    player: Object
+    player: String
   },
   components: {
     CardComp
@@ -62,18 +62,25 @@ export default {
   computed: {
     ...mapGetters([
       'getGameDataLoaded',
-      'getDeck',
       'getPlayer1',
-      'getPlayer2'
+      'getPlayer2',
+      'getDeck'
     ]),
+    getPlayer: function () {
+      return this[`getPlayer${this.player}`]
+    },
     getHand: function () {
-      return this.player.hand
+      // console.log(this.getPlayer)
+      return this.getPlayer.hand
     },
     cards: function () {
       return this.getDeck.filter(x => this.getHand.includes(x.card))
     }
   },
   methods: {
+    ...mapActions([
+      'getBestPlay'
+    ]),
     log: function(input) {
       var comp = this
       if(input) {
@@ -82,28 +89,6 @@ export default {
       else {
         console.log(comp)
       }
-    },
-    getBestPlay: function () {
-      var payload = {
-        player1: this.getPlayer1,
-        player2: this.getPlayer2
-      }
-      var url = "http://127.0.0.1:5000/getbestplay"
-      var config = {
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
-          }
-      }
-      console.log(payload)
-      axios
-        .post(url, payload , config)
-        .then(function (response) {
-          console.log(response);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
     },
   },
   mounted: function() {

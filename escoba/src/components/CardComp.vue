@@ -8,8 +8,10 @@
           :style="cardStyle"
         >
           <!-- TODO suit and value in top left and bottom right mirrored -->
-          {{ card.suit }}
-          {{ card.value }}
+          <div v-show="isDeck">
+            {{ card.suit }}
+            {{ card.value }}
+          </div>
           <v-icon
             v-for="(value, i) in card.value"
             :id="'icon-'+(i+1)"
@@ -43,7 +45,10 @@ export default {
         return 3.5
       }
       if (this.isHand === true) {
-        return 1
+        return 1.5
+      }
+      if (this.isPlays === true) {
+        return .75
       }
     },
     cardStyle: function () {
@@ -51,7 +56,10 @@ export default {
         return "width: 20em; height: 25em"
       }
       if (this.isHand === true) {
-        return "width: 4em; height: 5em"
+        return "width: 6em; height: 7.5em"
+      }
+      if (this.isPlays === true) {
+        return "width: 3em; height: 3.75em"
       }
     },
     iconName: function () {

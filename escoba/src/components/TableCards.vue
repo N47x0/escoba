@@ -55,7 +55,8 @@ export default {
   computed: {
     ...mapGetters([
       'getGameDataLoaded',
-      'getDeck'
+      'getDeck',
+      'getTableCards'
     ]),
     cards: function () {
       return this.getDeck.filter(x => this.tableCards.includes(x.card))

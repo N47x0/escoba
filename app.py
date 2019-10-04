@@ -88,31 +88,6 @@ def playfirstround():
     else:
         return response
 
-@app.route("/getbestplay", methods=["GET", "POST"])
-@cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
-def getbestplay():
-
-
-    items = {
-    }
-    response = jsonify(items)
-    # response.headers.add('Access-Control-Allow-Origin', '*')
-
-    if request.method == "POST":
-
-        context = request.get_json(force=True)
-        player1 = context['player1']
-        player2 = context['player2']
-        best_plays = {
-        "player_1": returnJSON(g.get_best_play(Player.from_json(player1))),
-        "player_2": returnJSON(g.get_best_play(Player.from_json(player2))),
-        }
-        print(context)
-
-        return jsonify(best_plays)
-    else:
-        return response
-
 @app.route("/validplays", methods=["GET", "POST"])
 @cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
 def validplays():
@@ -126,18 +101,39 @@ def validplays():
         first_player = list(cs.g.valid_plays(cs.p1, cs.g.table_cards))
         second_player = list(cs.g.valid_plays(cs.p1, cs.g.table_cards))
 
-        response = jsonify({
+        return jsonify({
             "first_player": first_player,
             "second_player": second_player,
             "id": cs.id,
             'post_response': True
         })
-        # print("#### valid plays ####")
-        # print("#### deck ####")
-        return response
 
     else:
-        return response
+        return 
+
+@app.route("/getbestplay", methods=["GET", "POST"])
+@cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
+def getbestplay():
+
+    if request.method == "POST":
+
+        context = request.get_json(force=True)
+        csId = context['clientSessionId']
+        cs = client_sessions[csId]
+
+        playable1 = cs.g.valid_plays(cs.p1, cs.g.table_cards)
+        playable2 = cs.g.valid_plays(cs.p2, cs.g.table_cards)
+        first_player = cs.p1.get_play(playable1)
+        second_player = cs.p2.get_play(playable2)
+        return jsonify({
+            "first_player": first_player,
+            "second_player": second_player,
+            "id": cs.id,
+            'post_response': True
+        })
+
+    else:
+        return 
 
 if __name__ == "__main__":
     app.run(host='127.0.0.1', port='5000', debug=True)

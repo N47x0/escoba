@@ -12,6 +12,7 @@ export default new Vuex.Store({
     clientSessionId: null,
     player1: {},
     player2: {},
+    tableCards: [],
     validPlaysLoaded: false,
     validPlaysErrored: false,
     validPlays: []
@@ -67,7 +68,7 @@ export default new Vuex.Store({
     },
     getTableCards: (state) => {
       // console.log(state.gameData)
-      return state.gameData.game.table_cards
+      return state.tableCards
     }
   },
   mutations: {
@@ -98,14 +99,19 @@ export default new Vuex.Store({
       state.validPlays = data
     },
     changePlayer1Data: function (state, payload) {
-      console.log(state.player1)
+      // console.log(state.player1)
       state.player1 = payload
-      console.log(state.player1)
+      // console.log(state.player1)
     },
     changePlayer2Data: function (state, payload) {
-      console.log(state.player2)
+      // console.log(state.player2)
       state.player2 = payload
-      console.log(state.player2)
+      // console.log(state.player2)
+    },
+    changeTableCardData: function (state, payload) {
+      // console.log(state.player2)
+      state.tableCards = payload
+      // console.log(state.player2)
     }
     
   },
@@ -196,13 +202,13 @@ export default new Vuex.Store({
           console.log(response)
           commit('changePlayer1Data', response.data.game_state.game.pl1)
           commit('changePlayer2Data', response.data.game_state.game.pl2)
+          commit('changeTableCardData', response.data.game_state.game.table_cards)
         })
         .catch(function (error) {
           console.log(error);
         });
     },
     loadValidPlays: function ({ commit, getters }) {
-      // send current deck and player states as input to getvalidplays endpoint functions
       var payload = {
         clientSessionId: getters.getClientSessionId
       }
@@ -214,6 +220,28 @@ export default new Vuex.Store({
           'Access-Control-Allow-Origin': '*'
           }
       }
+      axios
+        .post(url, payload , config)
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+    getBestPlay: function ({ commit, getters}) {
+      var payload = {
+        clientSessionId: getters.getClientSessionId
+      }
+      console.log(payload)
+      var url = "http://127.0.0.1:5000/getbestplay"
+      var config = {
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+          }
+      }
+      console.log(payload)
       axios
         .post(url, payload , config)
         .then(function (response) {

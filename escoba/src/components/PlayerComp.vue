@@ -29,14 +29,6 @@
           </b-col>
           <b-col></b-col>
         </b-row>
-        <hr />
-        <b-row>
-          <b-col>
-            <HandComp 
-              :player="getPlayer"
-            />
-          </b-col>
-        </b-row>
       </b-card>
       <!-- TODO add dynamic icon according to player rank -->
     </div>
@@ -66,7 +58,7 @@ export default {
       return this[`getPlayer${this.player}`]
     },
     getHand: function () {
-      console.log(this.getPlayer)
+      // console.log(this.getPlayer)
       return this.getPlayer.hand
     },
     cards: function () {
