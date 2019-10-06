@@ -10,6 +10,8 @@ LOCAL_HOST = '127.0.0.1'
 LOCAL_HOST_PORT = '5000'
 NPM_LOCALHOST = "http://localhost:8080"
 NPM_LOCALHOST_MOBILE = "http://192.168.1.106:8080"
+ORIGIN = 'localhost'
+HEADERS = ['Content- Type','Authorization']
 
 def make_url(args, base=NPM_LOCALHOST):
     return base
@@ -19,6 +21,12 @@ def make_localhost(args, localhost=LOCAL_HOST):
 
 def make_port(args, port=LOCAL_HOST_PORT):
     return port
+
+def make_origin(args, origin=ORIGIN):
+    return origin
+
+def make_headers(args, headers=HEADERS):
+    return headers
 
 app = Flask(__name__)
 CORS(app, resources={r"/makedeck": {"origins": make_url}})
@@ -41,7 +49,7 @@ class ClientSession:
         self.g = game
 
 @app.route("/makedeck", methods=["GET", "POST"])
-@cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
+@cross_origin(origin=make_origin,headers=make_headers)
 def makedeck():
 
     # TODO new random seed deck
@@ -75,7 +83,7 @@ def makedeck():
         return response
 
 @app.route("/playfirstround", methods=["GET", "POST"])
-@cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
+@cross_origin(origin=make_origin,headers=make_headers)
 def playfirstround():
 
     items = {
@@ -102,7 +110,7 @@ def playfirstround():
         return response
 
 @app.route("/validplays", methods=["GET", "POST"])
-@cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
+@cross_origin(origin=make_origin,headers=make_headers)
 def validplays():
     
     if request.method == "POST":
@@ -125,7 +133,7 @@ def validplays():
         return 
 
 @app.route("/getbestplay", methods=["GET", "POST"])
-@cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
+@cross_origin(origin=make_origin,headers=make_headers)
 def getbestplay():
 
     if request.method == "POST":
