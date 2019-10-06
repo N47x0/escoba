@@ -11,9 +11,17 @@ LOCAL_HOST_PORT = '5000'
 NPM_LOCALHOST = "http://localhost:8080"
 NPM_LOCALHOST_MOBILE = "http://192.168.1.106:8080"
 
+def make_url(args, base=NPM_LOCALHOST):
+    return base
+
+def make_localhost(args, localhost=LOCAL_HOST):
+    return localhost
+
+def make_port(args, port=LOCAL_HOST_PORT):
+    return port
 
 app = Flask(__name__)
-CORS(app, resources={r"/makedeck": {"origins": NPM_LOCALHOST}})
+CORS(app, resources={r"/makedeck": {"origins": make_url}})
 # CORS(app, resources={r"/makedeck": {"origins": NPM_LOCALHOST_MOBILE}})
 
 app.config['CORS_HEADERS'] = 'Content-Type'
@@ -141,4 +149,4 @@ def getbestplay():
         return 
 
 if __name__ == "__main__":
-    app.run(host=LOCAL_HOST, port=LOCAL_HOST_PORT, debug=True)
+    app.run(host=make_localhost(LOCAL_HOST), port=make_port(LOCAL_HOST_PORT), debug=True)
