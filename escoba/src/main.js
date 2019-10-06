@@ -28,7 +28,8 @@ Vue.component('v-icon', Icon)
 
 Vue.component('vue-swing', VueSwing)
 
-Vue.use(BootstrapVue, VueCookies)
+Vue.use(BootstrapVue)
+Vue.use(VueCookies)
 
 Vue.config.productionTip = false
 

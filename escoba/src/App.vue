@@ -9,6 +9,26 @@
     <router-view/>
   </div>
 </template>
+<script>
+// @ is an alias to /src
+import { mapGetters } from 'vuex'
+
+export default {
+  name: 'Home',
+  components: {
+  },
+  computed: {
+    ...mapGetters([
+      'getGameDataLoaded',
+    ])
+  },
+  methods: {
+  },
+  mounted: function () {
+    console.log(this)
+  }
+}
+</script>
 
 <style>
 #app {

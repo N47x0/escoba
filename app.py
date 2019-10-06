@@ -36,6 +36,8 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 
 client_sessions = {}
 
+client_ids = [x for x in client_sessions.items()]
+
 class ClientSession:
     
     id_count = 0
@@ -60,11 +62,11 @@ def makedeck():
         context = request.get_json(force=True)
         csId = context['clientSessionId']
         cs = client_sessions[csId]
-        response = {
+        response = jsonify({
             "game_state": cs.g.returnJSON(),
             "id": cs.id,
             'post_response': True
-        }
+        })
 
         return response
     else:
@@ -75,10 +77,13 @@ def makedeck():
 
         cs = ClientSession(p1, p2, deck, g)
         client_sessions[cs.id] = cs
+        client_ids = [k for k, v in client_sessions.items()]
         response = jsonify({
             "game_state": g.returnJSON(),
             "id": cs.id
         })
+        print(f"response_cs_id: {cs.id}")
+        print(f"client_ids: {client_ids}")
 
         return response
 
@@ -155,6 +160,8 @@ def getbestplay():
 
     else:
         return 
+
+print(f"client_ids: {client_ids}")
 
 if __name__ == "__main__":
     app.run(host=make_localhost(LOCAL_HOST), port=make_port(LOCAL_HOST_PORT), debug=True)

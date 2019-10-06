@@ -1,8 +1,11 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
+import VueCookies from 'vue-cookies'
+
 import {
   SET_CLIENT_SESSION_ID,
+  SET_CLIENT_SESSION_COOKIE,
   CHANGE_GAME_DATA_ERRORED,
   CHANGE_GAME_DATA_LOADED,
   INIT_GAME_DATA,
@@ -30,6 +33,7 @@ export default new Vuex.Store({
     gameDataErrored: false,
     gameData: {},
     clientSessionId: null,
+    clientSessionCookie: VueCookies.get('client-session-id') != null ? VueCookies.get('client-session-id') : null,
     player1: {},
     player2: {},
     tableCards: [],
@@ -44,6 +48,12 @@ export default new Vuex.Store({
     },
     getClientSessionId: function (state) {
       return state.clientSessionId
+    },
+    getClientSessionCookie: function (state) {
+      return state.clientSessionCookie
+    },
+    hasCookie: function (state) {
+      return state.clientSessionCookie != null
     },
     getCards: function (state) {
       var cards = []
@@ -96,6 +106,9 @@ export default new Vuex.Store({
   mutations: {
     [SET_CLIENT_SESSION_ID]: function (state, payload) {
       state.clientSessionId = payload
+    },
+    [SET_CLIENT_SESSION_COOKIE]: function (state, payload) {
+      state.clientSessionCookie = payload
     },
     [CHANGE_GAME_DATA_ERRORED]: function (state, errored) {
       state.gameDataErrored = errored
@@ -171,6 +184,9 @@ export default new Vuex.Store({
           console.log(response)
           commit(INIT_GAME_DATA, response.data.game_state)
           commit(SET_CLIENT_SESSION_ID, response.data.id)
+          VueCookies.set('client-session-id', response.data.id, 0)
+          console.log(VueCookies.get('client-session-id'))
+          commit(SET_CLIENT_SESSION_COOKIE, VueCookies.get('client-session-id'))
           commit(CHANGE_PLAYER_1_DATA, response.data.game_state.game.pl1)
           commit(CHANGE_PLAYER_2_DATA, response.data.game_state.game.pl2)
         })
@@ -208,7 +224,7 @@ export default new Vuex.Store({
     },
     playFirstRound: function ({ commit, dispatch, getters }) {
       var payload = {
-        clientSessionId: getters.getClientSessionId
+        clientSessionId: getters.hasCookie ? getters.getClientSessionCookie : getters.getClientSessionId
       }
       console.log(payload)
       var url = getters.getBaseUrl + PLAY_FIRST_ROUND
@@ -233,7 +249,7 @@ export default new Vuex.Store({
     },
     loadValidPlays: function ({ commit, getters }) {
       var payload = {
-        clientSessionId: getters.getClientSessionId
+        clientSessionId: getters.hasCookie ? getters.getClientSessionCookie : getters.getClientSessionId
       }
       console.log(payload)
       var url = getters.getBaseUrl + GET_VALID_PLAYS
@@ -254,7 +270,7 @@ export default new Vuex.Store({
     },
     getBestPlay: function ({ commit, getters}) {
       var payload = {
-        clientSessionId: getters.getClientSessionId
+        clientSessionId: getters.hasCookie ? getters.getClientSessionCookie : getters.getClientSessionId
       }
       console.log(payload)
       var url = getters.getBaseUrl + GET_BEST_PLAYS
