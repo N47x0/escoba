@@ -20,6 +20,7 @@ import 'vue-awesome/icons/brands/bitcoin'
 import 'vue-awesome/icons/brands/stack-overflow'
 import 'vue-awesome/icons/poo'
 import VueSwing from 'vue-swing'
+import VueCookies from 'vue-cookies'
 
 import Icon from 'vue-awesome/components/Icon'
 
@@ -27,7 +28,7 @@ Vue.component('v-icon', Icon)
 
 Vue.component('vue-swing', VueSwing)
 
-Vue.use(BootstrapVue)
+Vue.use(BootstrapVue, VueCookies)
 
 Vue.config.productionTip = false
 
