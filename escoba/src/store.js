@@ -1,6 +1,19 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
+import {
+  SET_CLIENT_SESSION_ID, 
+  CHANGE_GAME_DATA_ERRORED, 
+  CHANGE_GAME_DATA_LOADED, 
+  INIT_GAME_DATA, 
+  CHANGE_GAME_DATA, 
+  CHANGE_VALID_PLAYS_ERRORED, 
+  CHANGE_VALID_PLAYS_LOADED, 
+  CHANGE_VALID_PLAYS, 
+  CHANGE_PLAYER_1_DATA, 
+  CHANGE_PLAYER_2_DATA, 
+  CHANGE_TABLE_CARD_DATA
+} from './mutation-types'
 
 Vue.use(Vuex)
 
@@ -72,43 +85,43 @@ export default new Vuex.Store({
     }
   },
   mutations: {
-    setClientSessionId: function (state, payload) {
+    [SET_CLIENT_SESSION_ID]: function (state, payload) {
       state.clientSessionId = payload
     },
-    changeGameDataErrored: function (state, errored) {
+    [CHANGE_GAME_DATA_ERRORED]: function (state, errored) {
       state.gameDataErrored = errored
     },
-    changeGameDataLoaded: function (state, loaded) {
+    [CHANGE_GAME_DATA_LOADED]: function (state, loaded) {
       state.gameDataLoaded = loaded
     },
-    initGameData: function (state, data) {
+    [INIT_GAME_DATA]: function (state, data) {
       state.gameData = data
     },
-    changeGameData: function (state, payload) {
+    [CHANGE_GAME_DATA]: function (state, payload) {
       // console.log(payload)
       state.gameData.game = payload.game
       // console.log(state.gameData)
     },
-    changeValidPlaysErrored: function (state, errored) {
+    [CHANGE_VALID_PLAYS_ERRORED]: function (state, errored) {
       state.validPlaysErrored = errored
     },
-    changeValidPlaysLoaded: function (state, loaded) {
+    [CHANGE_VALID_PLAYS_LOADED]: function (state, loaded) {
       state.validPlaysLoaded = loaded
     },
-    changeValidPlays: function (state, data) {
+    [CHANGE_VALID_PLAYS]: function (state, data) {
       state.validPlays = data
     },
-    changePlayer1Data: function (state, payload) {
+    [CHANGE_PLAYER_1_DATA]: function (state, payload) {
       // console.log(state.player1)
       state.player1 = payload
       // console.log(state.player1)
     },
-    changePlayer2Data: function (state, payload) {
+    [CHANGE_PLAYER_2_DATA]: function (state, payload) {
       // console.log(state.player2)
       state.player2 = payload
       // console.log(state.player2)
     },
-    changeTableCardData: function (state, payload) {
+    [CHANGE_TABLE_CARD_DATA]: function (state, payload) {
       // console.log(state.player2)
       state.tableCards = payload
       // console.log(state.player2)
@@ -118,7 +131,7 @@ export default new Vuex.Store({
   actions: {
     updateGameData: function ({ commit }, payload) {
       console.log(payload)
-      commit('changeGameData', payload)
+      commit(CHANGE_GAME_DATA, payload)
     },
     async fetchData({ rootState, commit }, payload) {
       try {
@@ -146,18 +159,18 @@ export default new Vuex.Store({
       axios.get('http://127.0.0.1:5000/makedeck')
         .then(function (response) {
           console.log(response)
-          commit('initGameData', response.data.game_state)
-          commit('setClientSessionId', response.data.id)
-          commit('changePlayer1Data', response.data.game_state.game.pl1)
-          commit('changePlayer2Data', response.data.game_state.game.pl2)
+          commit(INIT_GAME_DATA, response.data.game_state)
+          commit(SET_CLIENT_SESSION_ID, response.data.id)
+          commit(CHANGE_PLAYER_2_DATA, response.data.game_state.game.pl1)
+          commit(CHANGE_PLAYER_2_DATA, response.data.game_state.game.pl2)
         })
         .catch(function (error) {
           console.log(error)
-          commit('changeGameDataErrored', true)
+          commit(CHANGE_GAME_DATA_ERRORED, true)
         })
         .finally(function () {
           console.log('#### deck finally ####')
-          commit('changeGameDataLoaded', true)
+          commit(CHANGE_GAME_DATA_LOADED, true)
         })
     },
     makeDeck: function ({ commit, dispatch, getters }) {
