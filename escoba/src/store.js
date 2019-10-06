@@ -2,18 +2,25 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 import {
-  SET_CLIENT_SESSION_ID, 
-  CHANGE_GAME_DATA_ERRORED, 
-  CHANGE_GAME_DATA_LOADED, 
-  INIT_GAME_DATA, 
-  CHANGE_GAME_DATA, 
-  CHANGE_VALID_PLAYS_ERRORED, 
+  SET_CLIENT_SESSION_ID,
+  CHANGE_GAME_DATA_ERRORED,
+  CHANGE_GAME_DATA_LOADED,
+  INIT_GAME_DATA,
+  CHANGE_GAME_DATA,
+  CHANGE_VALID_PLAYS_ERRORED,
   CHANGE_VALID_PLAYS_LOADED, 
-  CHANGE_VALID_PLAYS, 
-  CHANGE_PLAYER_1_DATA, 
-  CHANGE_PLAYER_2_DATA, 
+  CHANGE_VALID_PLAYS,
+  CHANGE_PLAYER_1_DATA,
+  CHANGE_PLAYER_2_DATA,
   CHANGE_TABLE_CARD_DATA
 } from './mutation-types'
+
+import {
+  MAKE_DECK,
+  PLAY_FIRST_ROUND,
+  GET_VALID_PLAYS,
+  GET_BEST_PLAYS
+} from './api-endpoints'
 
 Vue.use(Vuex)
 
@@ -28,9 +35,13 @@ export default new Vuex.Store({
     tableCards: [],
     validPlaysLoaded: false,
     validPlaysErrored: false,
-    validPlays: []
+    validPlays: [],
+    baseUrl: process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:5000' : 'TODO prod URL'
   },
   getters: {
+    getBaseUrl: function (state) {
+      return state.baseUrl
+    },
     getClientSessionId: function (state) {
       return state.clientSessionId
     },
@@ -155,13 +166,14 @@ export default new Vuex.Store({
           throw error;
       }
     },
-    loadGameData: function ({ commit, state }) {
-      axios.get('http://127.0.0.1:5000/makedeck')
+    loadGameData: function ({ commit, state, getters }) {
+      var url = getters.getBaseUrl + MAKE_DECK
+      axios.get(url)
         .then(function (response) {
           console.log(response)
           commit(INIT_GAME_DATA, response.data.game_state)
           commit(SET_CLIENT_SESSION_ID, response.data.id)
-          commit(CHANGE_PLAYER_2_DATA, response.data.game_state.game.pl1)
+          commit(CHANGE_PLAYER_1_DATA, response.data.game_state.game.pl1)
           commit(CHANGE_PLAYER_2_DATA, response.data.game_state.game.pl2)
         })
         .catch(function (error) {
@@ -177,7 +189,7 @@ export default new Vuex.Store({
       var payload = {
         clientSessionId: getters.getClientSessionId
       }
-      var url = "http://127.0.0.1:5000/makedeck"
+      var url = getters.getBaseUrl + MAKE_DECK
       var config = {
         headers: {
           'Content-Type': 'application/json',
@@ -201,7 +213,7 @@ export default new Vuex.Store({
         clientSessionId: getters.getClientSessionId
       }
       console.log(payload)
-      var url = "http://127.0.0.1:5000/playfirstround"
+      var url = getters.getBaseUrl + PLAY_FIRST_ROUND
       var config = {
         headers: {
           'Content-Type': 'application/json',
@@ -213,9 +225,9 @@ export default new Vuex.Store({
         .post(url, payload , config)
         .then(function (response) {
           console.log(response)
-          commit('changePlayer1Data', response.data.game_state.game.pl1)
-          commit('changePlayer2Data', response.data.game_state.game.pl2)
-          commit('changeTableCardData', response.data.game_state.game.table_cards)
+          commit(CHANGE_PLAYER_1_DATA, response.data.game_state.game.pl1)
+          commit(CHANGE_PLAYER_2_DATA, response.data.game_state.game.pl2)
+          commit(CHANGE_TABLE_CARD_DATA, response.data.game_state.game.table_cards)
         })
         .catch(function (error) {
           console.log(error);
@@ -226,7 +238,7 @@ export default new Vuex.Store({
         clientSessionId: getters.getClientSessionId
       }
       console.log(payload)
-      var url = "http://127.0.0.1:5000/validplays"
+      var url = getters.getBaseUrl + GET_VALID_PLAYS
       var config = {
         headers: {
           'Content-Type': 'application/json',
@@ -247,7 +259,7 @@ export default new Vuex.Store({
         clientSessionId: getters.getClientSessionId
       }
       console.log(payload)
-      var url = "http://127.0.0.1:5000/getbestplay"
+      var url = getters.getBaseUrl + GET_BEST_PLAYS
       var config = {
         headers: {
           'Content-Type': 'application/json',
