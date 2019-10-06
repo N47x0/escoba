@@ -25,7 +25,7 @@
             <PlayArea />
           </b-col>
           <b-col>
-            <HandComp player=1 />
+            <HandComp player=2 />
           </b-col>
         </b-row>
       </b-container>

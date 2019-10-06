@@ -72,11 +72,9 @@ export default new Vuex.Store({
     },
     getPlayer1: (state) => {
       return state.player1
-      return state.gameData.game.pl1
     },
     getPlayer2: (state) => {
       return state.player2
-      return state.gameData.game.pl2
     },
     getGameDataLoaded: (state) => {
       return state.gameDataLoaded

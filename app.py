@@ -60,11 +60,11 @@ def makedeck():
         context = request.get_json(force=True)
         csId = context['clientSessionId']
         cs = client_sessions[csId]
-        response = jsonify({
+        response = {
             "game_state": cs.g.returnJSON(),
             "id": cs.id,
             'post_response': True
-        })
+        }
 
         return response
     else:
