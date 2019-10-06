@@ -6,10 +6,15 @@ from datetime import datetime as dt
 from pprint import pprint
 from package.broom import Player, Deck, Game, make_deck
 
+LOCAL_HOST = '127.0.0.1'
+LOCAL_HOST_PORT = '5000'
+NPM_LOCALHOST = "http://localhost:8080"
+NPM_LOCALHOST_MOBILE = "http://192.168.1.106:8080"
+
 
 app = Flask(__name__)
-CORS(app, resources={r"/makedeck": {"origins": "http://localhost:8080"}})
-# CORS(app, resources={r"/makedeck": {"origins": "http://192.168.1.106:8080"}})
+CORS(app, resources={r"/makedeck": {"origins": NPM_LOCALHOST}})
+# CORS(app, resources={r"/makedeck": {"origins": NPM_LOCALHOST_MOBILE}})
 
 app.config['CORS_HEADERS'] = 'Content-Type'
 
@@ -136,4 +141,4 @@ def getbestplay():
         return 
 
 if __name__ == "__main__":
-    app.run(host='127.0.0.1', port='5000', debug=True)
+    app.run(host=LOCAL_HOST, port=LOCAL_HOST_PORT, debug=True)
