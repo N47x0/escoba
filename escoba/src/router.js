@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
 import Board from './views/Board.vue'
+import SwipeBoard from './views/SwipeBoard.vue'
 import SwingTest from './views/SwingTest.vue'
 
 Vue.use(Router)
@@ -22,6 +23,11 @@ export default new Router({
       path: '/swingtest',
       name: 'SwingTest',
       component: SwingTest
+    },
+    {
+      path: '/swipeboard',
+      name: 'SwipeBoard',
+      component: SwipeBoard
     },
     {
       path: '/about',
