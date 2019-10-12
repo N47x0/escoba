@@ -21,10 +21,7 @@
 
 <script>
 import VueSwing from 'vue-swing'
-import { mapGetters, mapActions } from 'vuex'
-import axios from 'axios'
-import CardComp from '@/components/CardComp'
-
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'app',
@@ -40,8 +37,8 @@ export default {
         ],
         minThrowOutDistance: 250,
         maxThrowOutDistance: 300
-      },
-      //cards: ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
+      }
+      // cards: ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
     }
   },
   computed: {
@@ -60,7 +57,7 @@ export default {
     },
     cards: function () {
       return this.getDeck
-      //return this.getDeck.filter(x => this.getHand.includes(x.card))
+      // return this.getDeck.filter(x => this.getHand.includes(x.card))
     }
   },
   methods: {

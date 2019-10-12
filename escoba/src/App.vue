@@ -20,7 +20,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'getGameDataLoaded',
+      'getGameDataLoaded'
     ])
   },
   methods: {

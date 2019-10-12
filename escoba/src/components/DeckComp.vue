@@ -17,7 +17,6 @@
 <script>
 import { mapGetters } from 'vuex'
 import CardComp from '@/components/CardComp'
-import axios from 'axios'
 
 export default {
   name: 'DeckComp',
@@ -38,18 +37,17 @@ export default {
     ])
   },
   methods: {
-    log: function(input) {
+    log: function (input) {
       var comp = this
-      if(input) {
+      if (input) {
         console.log(input)
-      }
-      else {
+      } else {
         console.log(comp)
       }
-    },
+    }
   },
-  mounted: function() {
-    if(this.getGameDataLoaded) {
+  mounted: function () {
+    if (this.getGameDataLoaded) {
     }
   }
 }

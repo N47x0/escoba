@@ -2,8 +2,8 @@
   <div class="hand-comp">
     <div v-if="getGameDataLoaded">
       <b-card
-        :class="'hand-' +getPlayer.name" 
-        :id="'hand-' +getPlayer.name" 
+        :class="'hand-' +getPlayer.name"
+        :id="'hand-' +getPlayer.name"
       >
         <b-row>
           <b-col></b-col>
@@ -30,7 +30,7 @@
         <hr />
         <b-row>
           <b-col
-            v-for="(c, i) in cards" 
+            v-for="(c, i) in cards"
             :key="i"
           >
             <CardComp
@@ -47,7 +47,6 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import axios from 'axios'
 import CardComp from '@/components/CardComp'
 
 export default {
@@ -81,17 +80,16 @@ export default {
     ...mapActions([
       'getBestPlay'
     ]),
-    log: function(input) {
+    log: function (input) {
       var comp = this
-      if(input) {
+      if (input) {
         console.log(input)
-      }
-      else {
+      } else {
         console.log(comp)
       }
-    },
+    }
   },
-  mounted: function() {
+  mounted: function () {
   }
 }
 </script>
@@ -531,8 +529,6 @@ export default {
   left: 72%;
   transform: translate(-50%, -50%)
 } */
-
-
 
 h3 {
   margin: 40px 0 0;

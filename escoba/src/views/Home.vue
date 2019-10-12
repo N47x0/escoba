@@ -12,7 +12,6 @@
 // @ is an alias to /src
 import GamesList from '@/components/GamesList.vue'
 import DeckTable from '@/components/DeckTable.vue'
-import axios from 'axios'
 import { mapGetters } from 'vuex'
 
 export default {

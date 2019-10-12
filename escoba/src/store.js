@@ -11,7 +11,7 @@ import {
   INIT_GAME_DATA,
   CHANGE_GAME_DATA,
   CHANGE_VALID_PLAYS_ERRORED,
-  CHANGE_VALID_PLAYS_LOADED, 
+  CHANGE_VALID_PLAYS_LOADED,
   CHANGE_VALID_PLAYS,
   CHANGE_PLAYER_1_DATA,
   CHANGE_PLAYER_2_DATA,
@@ -148,33 +148,33 @@ export default new Vuex.Store({
       state.tableCards = payload
       // console.log(state.player2)
     }
-    
+
   },
   actions: {
     updateGameData: function ({ commit }, payload) {
       console.log(payload)
       commit(CHANGE_GAME_DATA, payload)
     },
-    async fetchData({ rootState, commit }, payload) {
+    async fetchData ({ rootState, commit }, payload) {
       try {
-          let body = { language: rootState.authStore.currentLocale.locale };
-          if (payload) {
-              body = Object.assign({}, payload.body, body);
-          }
-          let response = await axios.post(
-              `api.factory.com/${payload.url}`,
-              body,
-              rootState.config.serviceHeaders
-          );
-          if (payload.commit) {
-              commit('mutate', {
-                  property: payload.stateProperty,
-                  with: response.data[payload.stateProperty]
-              });
-          }
-          return response.data;
+        let body = { language: rootState.authStore.currentLocale.locale }
+        if (payload) {
+          body = Object.assign({}, payload.body, body)
+        }
+        let response = await axios.post(
+          `api.factory.com/${payload.url}`,
+          body,
+          rootState.config.serviceHeaders
+        )
+        if (payload.commit) {
+          commit('mutate', {
+            property: payload.stateProperty,
+            with: response.data[payload.stateProperty]
+          })
+        }
+        return response.data
       } catch (error) {
-          throw error;
+        throw error
       }
     },
     loadGameData: function ({ commit, state, getters }) {
@@ -208,19 +208,18 @@ export default new Vuex.Store({
         headers: {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*'
-          }
+        }
       }
       console.log(payload)
-      var component = this
       axios
-        .post(url, payload , config)
+        .post(url, payload, config)
         .then(function (response) {
           console.log(response)
-          //dispatch('updateGameData', response.data.game_state)
+          // dispatch('updateGameData', response.data.game_state)
         })
         .catch(function (error) {
-          console.log(error);
-        });
+          console.log(error)
+        })
     },
     playFirstRound: function ({ commit, dispatch, getters }) {
       var payload = {
@@ -232,11 +231,10 @@ export default new Vuex.Store({
         headers: {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*'
-          }
+        }
       }
-      var component = this
       axios
-        .post(url, payload , config)
+        .post(url, payload, config)
         .then(function (response) {
           console.log(response)
           commit(CHANGE_PLAYER_1_DATA, response.data.game_state.game.pl1)
@@ -244,8 +242,8 @@ export default new Vuex.Store({
           commit(CHANGE_TABLE_CARD_DATA, response.data.game_state.game.table_cards)
         })
         .catch(function (error) {
-          console.log(error);
-        });
+          console.log(error)
+        })
     },
     loadValidPlays: function ({ commit, getters }) {
       var payload = {
@@ -257,18 +255,18 @@ export default new Vuex.Store({
         headers: {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*'
-          }
+        }
       }
       axios
-        .post(url, payload , config)
+        .post(url, payload, config)
         .then(function (response) {
-          console.log(response);
+          console.log(response)
         })
         .catch(function (error) {
-          console.log(error);
-        });
+          console.log(error)
+        })
     },
-    getBestPlay: function ({ commit, getters}) {
+    getBestPlay: function ({ commit, getters }) {
       var payload = {
         clientSessionId: getters.hasCookie ? getters.getClientSessionCookie : getters.getClientSessionId
       }
@@ -278,17 +276,17 @@ export default new Vuex.Store({
         headers: {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*'
-          }
+        }
       }
       console.log(payload)
       axios
-        .post(url, payload , config)
+        .post(url, payload, config)
         .then(function (response) {
-          console.log(response);
+          console.log(response)
         })
         .catch(function (error) {
-          console.log(error);
-        });
+          console.log(error)
+        })
     }
   }
 })

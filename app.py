@@ -99,10 +99,10 @@ def playfirstround():
     if request.method == "POST":
 
         context = request.get_json(force=True)
-        csId = context['clientSessionId']
+        csId = int(context['clientSessionId'])
         cs = client_sessions[csId]
+        print(csId)
         game = cs.g.play_first_round(cs.p1, cs.p2).returnJSON()
-        #game = game.returnJSON()
         return jsonify({
             "game_state": game,
             "id": cs.id

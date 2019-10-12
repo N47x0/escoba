@@ -22,20 +22,19 @@ export default {
     ])
   },
   methods: {
-    log: function(input) {
+    log: function (input) {
       var comp = this
-      if(input) {
+      if (input) {
         console.log(input)
-      }
-      else {
+      } else {
         console.log(comp)
       }
     }
   },
-  mounted: function() {
-    //this.log(this.getDeck)
-    if(this.getGameDataLoaded) {
-      //console.log(this.getDeck)
+  mounted: function () {
+    // this.log(this.getDeck)
+    if (this.getGameDataLoaded) {
+      // console.log(this.getDeck)
     }
   }
 }

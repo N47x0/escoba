@@ -2,7 +2,7 @@
   <div class="table-cards-comp">
     <div v-if="getGameDataLoaded">
       <b-card
-        class="table-cards" 
+        class="table-cards"
         id="table-cards"
         style="width: 20rem; height: 25rem"
       >
@@ -25,7 +25,7 @@
         <hr />
         <b-row>
           <b-col
-            v-for="(c, i) in cards" 
+            v-for="(c, i) in cards"
             :key="i"
           >
             <CardComp
@@ -47,7 +47,7 @@ import CardComp from '@/components/CardComp'
 export default {
   name: 'TableCards',
   props: {
-    tableCards: Array,
+    tableCards: Array
   },
   components: {
     CardComp
@@ -63,24 +63,22 @@ export default {
     }
   },
   methods: {
-    log: function(input) {
+    log: function (input) {
       var comp = this
-      if(input) {
+      if (input) {
         console.log(input)
-      }
-      else {
+      } else {
         console.log(comp)
       }
     }
   },
-  mounted: function() {
+  mounted: function () {
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
 
 /* set all cards to center of div and position: relative for absolute positioning of child icons */
 
@@ -512,8 +510,6 @@ export default {
   left: 72%;
   transform: translate(-50%, -50%)
 } */
-
-
 
 h3 {
   margin: 40px 0 0;

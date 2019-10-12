@@ -4,11 +4,12 @@
       {{ getValidPlays }}
     </div>
     <div v-if="getGameDataLoaded">
-      <CardComp
+      <SwipeCard
         v-for="(card, i) in getDeck"
         :key="i"
         :card="card"
         :isDeck="true"
+        :is-current="i === 0"
       />
     </div>
   </div>
@@ -16,13 +17,12 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import CardComp from '@/components/CardComp'
-import axios from 'axios'
+import SwipeCard from '@/components/SwipeCard'
 
 export default {
-  name: 'DeckComp',
+  name: 'SwipeStack',
   components: {
-    CardComp
+    SwipeCard
   },
   props: {
     msg: String
@@ -38,18 +38,17 @@ export default {
     ])
   },
   methods: {
-    log: function(input) {
+    log: function (input) {
       var comp = this
-      if(input) {
+      if (input) {
         console.log(input)
-      }
-      else {
+      } else {
         console.log(comp)
       }
-    },
+    }
   },
-  mounted: function() {
-    if(this.getGameDataLoaded) {
+  mounted: function () {
+    if (this.getGameDataLoaded) {
     }
   }
 }
