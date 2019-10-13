@@ -12,7 +12,10 @@ import {
   CHANGE_VALID_PLAYS,
   CHANGE_PLAYER_1_DATA,
   CHANGE_PLAYER_2_DATA,
-  CHANGE_TABLE_CARD_DATA
+  CHANGE_TABLE_CARD_DATA,
+  LOAD_RULE_DATA,
+  CHANGE_RULE_DATA_ERRORED,
+  CHANGE_RULE_DATA_LOADED
 } from './mutation-types'
 
 import {
@@ -20,7 +23,8 @@ import {
   INIT_GAME,
   PLAY_FIRST_ROUND,
   GET_VALID_PLAYS,
-  GET_BEST_PLAYS
+  GET_BEST_PLAYS,
+  RULES
 } from './api-endpoints'
 
 Vue.use(Vuex)
@@ -37,6 +41,9 @@ export default new Vuex.Store({
     validPlaysLoaded: false,
     validPlaysErrored: false,
     validPlays: [],
+    rulesLoaded: false,
+    rulesErrored: false,
+    rulesPlays: [],
     // baseUrl: process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:5000' : 'TODO prod URL'
     baseUrl: process.env.NODE_ENV === 'development' ? 'https://localhost:5001' : 'TODO prod URL'
   },
@@ -91,6 +98,12 @@ export default new Vuex.Store({
     getTableCards: (state) => {
       // console.log(state.gameData)
       return state.tableCards
+    },
+    getRules(state) {
+      return state.rules
+    },
+    getRulesLoaded(state) {
+      return state.rulesLoaded
     }
   },
   mutations: {
@@ -110,6 +123,15 @@ export default new Vuex.Store({
       // console.log(payload)
       state.gameData.game = payload.game
       // console.log(state.gameData)
+    },
+    [CHANGE_RULE_DATA_ERRORED]: function (state, errored) {
+      state.rulesErrored = errored
+    },
+    [CHANGE_RULE_DATA_LOADED]: function (state, loaded) {
+      state.rulesLoaded = loaded
+    },
+    [LOAD_RULE_DATA]: function (state, data) {
+      state.rules = data
     },
     [CHANGE_VALID_PLAYS_ERRORED]: function (state, errored) {
       state.validPlaysErrored = errored
@@ -142,7 +164,32 @@ export default new Vuex.Store({
       console.log(payload)
       commit(CHANGE_GAME_DATA, payload)
     },
-    loadGameData: function ({ commit, state, getters }) {
+    loadRuleData: function ({ commit, state, getters }) {
+      var url = getters.getBaseUrl + RULES
+      var config = {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+          }
+      }
+      // var url = getters.getBaseUrl + MAKE_DECK
+      console.log(config)
+      axios.get(url, config)
+        .then(function (response) {
+          console.log(response)
+          commit(LOAD_RULE_DATA, response.data)
+        })
+        .catch(function (error) {
+          console.log(error)
+          commit(CHANGE_RULE_DATA_ERRORED, true)
+        })
+        .finally(function () {
+          console.log('#### deck finally ####')
+          commit(CHANGE_RULE_DATA_LOADED, true)
+        })
+    },
+    loadGameData: function ({ commit, state, getters, dispatch }) {
       var url = getters.getBaseUrl + INIT_GAME
       var config = {
         headers: {
@@ -161,6 +208,7 @@ export default new Vuex.Store({
           commit(CHANGE_PLAYER_1_DATA, response.data._GameState.player1)
           commit(CHANGE_PLAYER_2_DATA, response.data._GameState.player2)
           commit(CHANGE_TABLE_CARD_DATA, response.data._GameState.tableCards)
+          dispatch('loadRuleData')
         })
         .catch(function (error) {
           console.log(error)

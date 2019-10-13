@@ -2,8 +2,13 @@
   <div class="board">
     <div v-if="getGameDataLoaded">
       <GameControls />
-      <hr />
       <b-container>
+        <b-row>
+          <b-col md="12">
+            <RuleCarousel />
+            <hr />
+          </b-col>
+        </b-row>
         <b-row>
           <b-col md="4">
             <PlayerComp player=1 />
@@ -40,6 +45,7 @@
 import DeckComp from '@/components/DeckComp.vue'
 import PlayerComp from '@/components/PlayerComp.vue'
 import GameControls from '@/components/GameControls'
+import RuleCarousel from '@/components/RuleCarousel'
 import TableCards from '@/components/TableCards'
 import HandComp from '@/components/HandComp'
 import PlayArea from '@/components/PlayArea'
@@ -51,6 +57,7 @@ export default {
     DeckComp,
     PlayerComp,
     GameControls,
+    RuleCarousel,
     TableCards,
     HandComp,
     PlayArea
