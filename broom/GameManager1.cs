@@ -6,6 +6,5 @@ namespace broom {
         public GameManager(int WinningScore) {
             TargetScore = WinningScore;
         }
-        public 
     }
 }

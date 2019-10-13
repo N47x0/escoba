@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authentication.Certificate;
 using GameManager;
 
 namespace broom
@@ -32,6 +33,7 @@ namespace broom
 
         public static void Main(string[] args)
         {
+            AutoGame();
             CreateHostBuilder(args).Build().Run();
         }
 
