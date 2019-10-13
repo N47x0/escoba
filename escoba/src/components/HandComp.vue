@@ -94,7 +94,7 @@ export default {
   },
   mounted: function() {
     console.log('#### hand comp ####')
-    console.log(this)
+    //console.log(this)
   }
 }
 </script>

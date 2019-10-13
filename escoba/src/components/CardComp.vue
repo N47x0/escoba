@@ -90,7 +90,7 @@ export default {
   },
   mounted: function() {
     console.log('#### card comp ####')
-    console.log(this)  
+    //console.log(this)  
     // this.log(this.getDeck)
     // if(this.getGameDataLoaded) {
     //   console.log(this.getDeck)

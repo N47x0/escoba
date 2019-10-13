@@ -142,28 +142,6 @@ export default new Vuex.Store({
       console.log(payload)
       commit(CHANGE_GAME_DATA, payload)
     },
-    async fetchData({ rootState, commit }, payload) {
-      try {
-          let body = { language: rootState.authStore.currentLocale.locale };
-          if (payload) {
-              body = Object.assign({}, payload.body, body);
-          }
-          let response = await axios.post(
-              `api.factory.com/${payload.url}`,
-              body,
-              rootState.config.serviceHeaders
-          );
-          if (payload.commit) {
-              commit('mutate', {
-                  property: payload.stateProperty,
-                  with: response.data[payload.stateProperty]
-              });
-          }
-          return response.data;
-      } catch (error) {
-          throw error;
-      }
-    },
     loadGameData: function ({ commit, state, getters }) {
       var url = getters.getBaseUrl + INIT_GAME
       var config = {
@@ -192,57 +170,6 @@ export default new Vuex.Store({
           console.log('#### deck finally ####')
           commit(CHANGE_GAME_DATA_LOADED, true)
         })
-    },
-    makeDeck: function ({ commit, dispatch, getters }) {
-      var payload = {
-        clientSessionId: getters.getClientSessionId
-      }
-      var url = getters.getBaseUrl + INIT_GAME
-      // var url = getters.getBaseUrl + MAKE_DECK
-      var config = {
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Access-Control-Allow-Origin': '*'
-          }
-      }
-      console.log(payload)
-      console.log(config)
-      var component = this
-      axios
-        .post(url, payload , config)
-        .then(function (response) {
-          console.log(response)
-          //dispatch('updateGameData', response.data.game_state)
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    },
-    playFirstRound: function ({ commit, dispatch, getters }) {
-      var payload = {
-        clientSessionId: getters.getClientSessionId
-      }
-      console.log(payload)
-      var url = getters.getBaseUrl + PLAY_FIRST_ROUND
-      var config = {
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
-          }
-      }
-      var component = this
-      axios
-        .post(url, payload , config)
-        .then(function (response) {
-          console.log(response)
-          commit(CHANGE_PLAYER_1_DATA, response.data.game_state.game.pl1)
-          commit(CHANGE_PLAYER_2_DATA, response.data.game_state.game.pl2)
-          commit(CHANGE_TABLE_CARD_DATA, response.data.game_state.game.table_cards)
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
     },
     loadValidPlays: function ({ commit, getters }) {
       var payload = {
