@@ -8,6 +8,27 @@ namespace GameManager
     public class GameClasses
     {
     }
+
+  public class ClientSession {
+    private static int m_Counter = 0;
+    public int Id { get; set; }
+    public Player Player1 { get; set; }
+    public Player Player2 { get; set; }
+    public Game _Game { get; set; }
+    public int NewId() 
+    {
+      return this.Id = System.Threading.Interlocked.Increment(ref m_Counter);
+    }
+  }
+
+  public class ClientSessionDict {
+    public Dictionary<int, ClientSession> _ClientSession { get; set; }
+  }
+
+  public class ClientSessionPayload {
+    public int Id { get; set; }
+    public GameState _GameState { get; set; }
+  }
     public class Card {
     public string suit {get;}
     public uint val {get;}
@@ -45,7 +66,7 @@ namespace GameManager
     }
 
   }
-    class Deck {
+    public class Deck {
     public Dictionary<string, Card> cards {get; } = new Dictionary<string, Card> {};
     public List<string> deck_order {get; private set;} = new List<string> {};
     string [] suits = new string[] {"B", "O", "E", "C"};
@@ -93,6 +114,7 @@ namespace GameManager
       public Player Player1 { get; set; }
       public Player Player2 { get; set; }
       public List<Card> TableCards { get; set; }
+      public Deck Deck { get; set; }
     }
 
 
@@ -249,7 +271,8 @@ namespace GameManager
         GameState gs = new GameState {
           Player1 = this.pl1,
           Player2 = this.pl2,
-          TableCards = this.table_cards
+          TableCards = this.table_cards,
+          Deck = this.deck
         };
 
         // var result = new Dictionary<string, dynamic>();

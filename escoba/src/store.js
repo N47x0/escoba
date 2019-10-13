@@ -156,11 +156,11 @@ export default new Vuex.Store({
       axios.get(url, config)
         .then(function (response) {
           console.log(response)
-          commit(INIT_GAME_DATA, response.data)
-          //commit(SET_CLIENT_SESSION_ID, response.data.id)
-          commit(CHANGE_PLAYER_1_DATA, response.data.player1)
-          commit(CHANGE_PLAYER_2_DATA, response.data.player2)
-          commit(CHANGE_TABLE_CARD_DATA, response.data.tableCards)
+          commit(INIT_GAME_DATA, response.data._GameState)
+          commit(SET_CLIENT_SESSION_ID, response.data.id)
+          commit(CHANGE_PLAYER_1_DATA, response.data._GameState.player1)
+          commit(CHANGE_PLAYER_2_DATA, response.data._GameState.player2)
+          commit(CHANGE_TABLE_CARD_DATA, response.data._GameState.tableCards)
         })
         .catch(function (error) {
           console.log(error)

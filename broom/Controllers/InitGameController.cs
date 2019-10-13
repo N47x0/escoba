@@ -25,13 +25,27 @@ namespace broom.Controllers
             _logger = logger;
         }
 
+        Dictionary<int, ClientSession> ClientSessionDict = new Dictionary<int, ClientSession>();
+
         [EnableCors]
         [HttpGet]
         // public string[] Get()
-        public GameState Get()
+        public ClientSessionPayload Get()
         {
             Game g = new Game();
-            return g.InitGame(g, g.pl1, g.pl2, g.table_cards); 
+            ClientSession cs = new ClientSession {
+                _Game = g,
+                Player1 = g.pl1,
+                Player2 = g.pl2
+            };
+
+            ClientSessionPayload payload = new ClientSessionPayload {
+                Id = cs.NewId(),
+                _GameState = g.InitGame(g, g.pl1, g.pl2, g.table_cards)
+            };
+            ClientSessionDict.Add(cs.Id, cs);
+            Console.WriteLine("Client Session Id: {0}", cs.Id);
+            return payload; 
             // return Summaries; 
 
         }
@@ -39,11 +53,21 @@ namespace broom.Controllers
         [EnableCors]
         [HttpPost]
         // public string[] Get()
-        public GameState Post()
+        public ClientSessionPayload Post()
         {
             Game g = new Game();
-            return g.InitGame(g, g.pl1, g.pl2, g.table_cards); 
-            // return Summaries; 
+            ClientSession cs = new ClientSession {
+                _Game = g,
+                Player1 = g.pl1,
+                Player2 = g.pl2
+            };
+
+            ClientSessionPayload payload = new ClientSessionPayload {
+                Id = cs.Id,
+                _GameState = g.InitGame(g, g.pl1, g.pl2, g.table_cards)
+            };
+
+            return payload; 
 
         }
     }
