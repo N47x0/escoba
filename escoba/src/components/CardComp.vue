@@ -3,17 +3,17 @@
     <div v-if="getGameDataLoaded">
       <div class="card-container">
         <b-card
-          :class="'play-card-'+card.value" 
+          :class="'play-card-'+card.val" 
           :id="'card-'+card.suit"
           :style="cardStyle"
         >
           <!-- TODO suit and value in top left and bottom right mirrored -->
           <div v-show="isDeck">
             {{ card.suit }}
-            {{ card.value }}
+            {{ card.val }}
           </div>
           <v-icon
-            v-for="(value, i) in card.value"
+            v-for="(value, i) in card.val"
             :id="'icon-'+(i+1)"
             :key="i" 
             :name="iconName"
@@ -89,6 +89,8 @@ export default {
     }
   },
   mounted: function() {
+    console.log('#### card comp ####')
+    console.log(this)  
     // this.log(this.getDeck)
     // if(this.getGameDataLoaded) {
     //   console.log(this.getDeck)

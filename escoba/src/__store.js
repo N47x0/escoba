@@ -59,8 +59,10 @@ export default new Vuex.Store({
       var deck = []
       // console.log(state.gameData)
       // console.log(Object.entries(state.gameData.cards))
-      Object.entries(state.gameData.deck.cards).forEach((value, index, array) => {
-        deck.push({ 'suit': value[1].suit, 'value': value[1].val, 'owner': value[1].owner, 'card': value[1].id })
+      Object.entries(state.gameData.game.deck.card_store).forEach((value, index, array) => {
+        var [a, b, c] = value[1]
+        var d = b.toString() + a
+        deck.push({ 'suit': a, 'value': b, 'owner': c, 'card': d })
       })
       // console.log(deck)
       // console.log(getters.getDeckOrder)
@@ -80,7 +82,7 @@ export default new Vuex.Store({
       return state.gameDataLoaded
     },
     getDeckOrder: (state) => {
-      return state.gameData.deck.deck_order
+      return state.gameData.game.deck.deck_order
     },
     getValidPlaysLoaded: (state) => {
       return state.validPlaysLoaded
@@ -182,7 +184,7 @@ export default new Vuex.Store({
           //commit(SET_CLIENT_SESSION_ID, response.data.id)
           commit(CHANGE_PLAYER_1_DATA, response.data.player1)
           commit(CHANGE_PLAYER_2_DATA, response.data.player2)
-          commit(CHANGE_TABLE_CARD_DATA, response.data.tableCards)
+          commit(CHANGE_TABLE_CARD_DATA, response.data.game_state.game.tableCards)
         })
         .catch(function (error) {
           console.log(error)

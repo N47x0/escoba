@@ -30,7 +30,7 @@
         <hr />
         <b-row>
           <b-col
-            v-for="(c, i) in cards" 
+            v-for="(c, i) in getHand" 
             :key="i"
           >
             <CardComp
@@ -74,6 +74,7 @@ export default {
       return this.getPlayer.hand
     },
     cards: function () {
+      console.log(this.getHand)
       return this.getDeck.filter(x => this.getHand.includes(x.card))
     }
   },
@@ -92,6 +93,8 @@ export default {
     },
   },
   mounted: function() {
+    console.log('#### hand comp ####')
+    console.log(this)
   }
 }
 </script>

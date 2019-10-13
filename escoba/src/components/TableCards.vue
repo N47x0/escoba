@@ -25,7 +25,7 @@
         <hr />
         <b-row>
           <b-col
-            v-for="(c, i) in cards" 
+            v-for="(c, i) in getTableCards" 
             :key="i"
           >
             <CardComp
