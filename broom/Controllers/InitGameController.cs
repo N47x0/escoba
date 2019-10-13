@@ -46,7 +46,6 @@ namespace broom.Controllers
             ClientSessionDict.Add(cs.Id, cs);
             Console.WriteLine("Client Session Id: {0}", cs.Id);
             return payload; 
-            // return Summaries; 
 
         }
 

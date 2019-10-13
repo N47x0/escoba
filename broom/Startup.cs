@@ -11,6 +11,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 namespace broom
 {
@@ -28,6 +30,20 @@ namespace broom
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var connString = "Host=localhost;Username=postgres;Password=password;Database=test";
+            // var connString = "Host=localhost;Username=root;Password=password;Database=test";
+            Console.WriteLine(Configuration.GetConnectionString("DefaultConnection"));
+            Console.WriteLine(Configuration["ConnectionStrings:DefaultConnection"]);
+            Console.WriteLine(connString);
+             services.AddDbContextPool<BroomDbContext>(options =>
+            {
+                options.UseMySql(connString,
+                mySqlOptions => mySqlOptions.ServerVersion(new Version(8,0,15), ServerType.MySql));
+            });
+            //  services.AddDbContextPool<BroomDbContext>(options =>
+            // {
+            //     options.UseNpgsql(connString);
+            // });
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(
