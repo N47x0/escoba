@@ -8,7 +8,7 @@
         :interval="0"
         controls
         indicators
-        background="#ababab"
+        background="#6d31a8"
         img-width="256"
         img-height="30"
         style="text-shadow: 1px 1px 2px #333;"
