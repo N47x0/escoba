@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <!-- <OutputType>Exe</OutputType> -->
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <!-- <NoStdLib>true</NoStdLib> -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="GameManager\GameManager.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Certificate" Version="3.0.0-preview8.19405.7" />
+  </ItemGroup>
+
+</Project>
