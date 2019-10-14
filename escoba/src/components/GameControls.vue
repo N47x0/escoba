@@ -11,17 +11,11 @@
       </b-button>
         |
       <b-button
-        @click="makeDeck()"
+        @click="loadGameData()"
       >
         Get New Deck
       </b-button>
-        |        |
-      <b-button
-        @click="playFirstRound()"
-      >
-        Play First Round
-      </b-button>
-      |      |
+        |  
       <b-button
         @click="log"
       >
@@ -61,6 +55,7 @@ export default {
     ...mapActions([
       'loadValidPlays',
       'makeDeck',
+      'loadGameData',
       'playFirstRound'
     ]),
     log: function(input) {

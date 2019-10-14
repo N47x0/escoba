@@ -8,7 +8,28 @@ namespace GameManager
     public class GameClasses
     {
     }
-    class Card {
+
+  public class ClientSession {
+    private static int m_Counter = 0;
+    public int Id { get; set; }
+    public Player Player1 { get; set; }
+    public Player Player2 { get; set; }
+    public Game _Game { get; set; }
+    public int NewId() 
+    {
+      return this.Id = System.Threading.Interlocked.Increment(ref m_Counter);
+    }
+  }
+
+  public class ClientSessionDict {
+    public Dictionary<int, ClientSession> _ClientSession { get; set; }
+  }
+
+  public class ClientSessionPayload {
+    public int Id { get; set; }
+    public GameState _GameState { get; set; }
+  }
+    public class Card {
     public string suit {get;}
     public uint val {get;}
     public string owner {get; set;} 
@@ -20,7 +41,7 @@ namespace GameManager
       this.id = suit + val.ToString();
     }
   }
-    class Player {
+    public class Player {
     public uint score {get; set;} = 0;
     public List<Card> hand {get; set;} = new List<Card> {};
     public string name {get; } = "unnamed";
@@ -45,7 +66,7 @@ namespace GameManager
     }
 
   }
-    class Deck {
+    public class Deck {
     public Dictionary<string, Card> cards {get; } = new Dictionary<string, Card> {};
     public List<string> deck_order {get; private set;} = new List<string> {};
     string [] suits = new string[] {"B", "O", "E", "C"};
@@ -89,11 +110,20 @@ namespace GameManager
 
   }
 
-    class Game {
+    public class GameState {
+      public Player Player1 { get; set; }
+      public Player Player2 { get; set; }
+      public List<Card> TableCards { get; set; }
+      public Deck Deck { get; set; }
+    }
+
+
+    public class Game {
     Deck deck = new Deck {};
     public Player pl1 {get;} = new Player("p1");
     public Player pl2 {get;} = new Player("p2");
-    List<Card> table_cards = new List<Card> {};
+    public List<Card> table_cards = new List<Card> {};
+
 
     public void Reset() {
       // reset/clear scorep
@@ -228,6 +258,29 @@ namespace GameManager
       Console.WriteLine($"PL1 Oros {pl1_oros}\tPL1 Sietes {pl1_sietes}\tPL1 Cartas {pl1_cartas}\nPL2 Oros {pl2_oros}\tPL2 Sietes {pl2_sietes}\tPL2 Cartas {pl2_cartas}");
       
     }
+
+      public GameState InitGame(Game game, Player adv_player, Player flw_player, List<Card> table_cards) {
+        deck = new Deck();
+        // Start, alternate 3 cards each player, 
+        foreach (var i in Enumerable.Range(1,3)) {
+          adv_player.hand.AddRange(deck.Deal());
+          flw_player.hand.AddRange(deck.Deal());
+        }
+        table_cards.AddRange(deck.Deal(4));
+
+        GameState gs = new GameState {
+          Player1 = this.pl1,
+          Player2 = this.pl2,
+          TableCards = this.table_cards,
+          Deck = this.deck
+        };
+
+        // var result = new Dictionary<string, dynamic>();
+        // result = {
+        //   "game": this
+        // }
+        return gs;
+      }
 
     public void PlayRound(Player adv_player, Player flw_player) {
       deck = new Deck();
