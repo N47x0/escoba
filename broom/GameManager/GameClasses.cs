@@ -2,9 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace broom
+
+namespace GameManager
 {
-  class Card {
+    public class GameClasses
+    {
+    }
+    class Card {
     public string suit {get;}
     public uint val {get;}
     public string owner {get; set;} 
@@ -16,7 +20,7 @@ namespace broom
       this.id = suit + val.ToString();
     }
   }
-  class Player {
+    class Player {
     public uint score {get; set;} = 0;
     public List<Card> hand {get; set;} = new List<Card> {};
     public string name {get; } = "unnamed";
@@ -41,7 +45,7 @@ namespace broom
     }
 
   }
-  class Deck {
+    class Deck {
     public Dictionary<string, Card> cards {get; } = new Dictionary<string, Card> {};
     public List<string> deck_order {get; private set;} = new List<string> {};
     string [] suits = new string[] {"B", "O", "E", "C"};
@@ -85,7 +89,7 @@ namespace broom
 
   }
 
-  class Game {
+    class Game {
     Deck deck = new Deck {};
     public Player pl1 {get;} = new Player("p1");
     public Player pl2 {get;} = new Player("p2");
@@ -264,24 +268,4 @@ namespace broom
     }
   }
 
-  class Program
-  {
-
-    static void Main(string[] args)
-    {
-      Game g = new Game();
-      Console.WriteLine("Starting a game of ESCOBA!");
-
-      int rounds = 0;
-      while (g.pl1.score < 15 && g.pl2.score < 15) {
-        rounds++;
-        if (rounds % 2 == 1) {
-          g.PlayRound(g.pl1, g.pl2);
-        } else {
-          g.PlayRound(g.pl2, g.pl1);
-        }
-        Console.WriteLine($"Round {rounds}\t PL1: {g.pl1.score}\tPL2: {g.pl2.score}");
-      }
-    }
-  }
 }

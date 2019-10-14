@@ -1,0 +1,51 @@
+{
+  "name": "escoba",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
+    "servelocal": "vue-cli-service serve --host localhost",
+    "test:e2e": "vue-cli-service test:e2e",
+    "test:unit": "vue-cli-service test:unit"
+  },
+  "dependencies": {
+    "axios": "^0.19.0",
+    "bootstrap-vue": "^2.0.0-rc.19",
+    "core-js": "^2.6.5",
+    "register-service-worker": "^1.6.2",
+    "svg-cards": "^4.0.0",
+    "swing": "^3.1.4",
+    "vue": "^2.6.10",
+    "vue-awesome": "^3.5.4",
+    "vue-axios": "^2.1.4",
+    "vue-router": "^3.0.3",
+    "vue-swing": "0.0.10",
+    "vuex": "^3.0.1"
+  },
+  "devDependencies": {
+    "@babel/polyfill": "^7.4.4",
+    "@vue/cli-plugin-babel": "^3.11.0",
+    "@vue/cli-plugin-e2e-nightwatch": "^3.11.0",
+    "@vue/cli-plugin-eslint": "^3.11.0",
+    "@vue/cli-plugin-pwa": "^3.11.0",
+    "@vue/cli-plugin-unit-mocha": "^3.11.0",
+    "@vue/cli-service": "^3.11.0",
+    "@vue/eslint-config-standard": "^4.0.0",
+    "@vue/test-utils": "1.0.0-beta.29",
+    "babel-eslint": "^10.0.1",
+    "bootstrap": "^4.3.1",
+    "chai": "^4.1.2",
+    "eslint": "^5.16.0",
+    "eslint-plugin-vue": "^5.0.0",
+    "mutationobserver-shim": "^0.3.3",
+    "node-sass": "^4.12.0",
+    "popper.js": "^1.15.0",
+    "portal-vue": "^2.1.4",
+    "sass-loader": "^7.1.0",
+    "vue-cli-plugin-bootstrap": "^1.0.0-alpha.1",
+    "vue-cli-plugin-bootstrap-vue": "^0.4.0",
+    "vue-template-compiler": "^2.6.10"
+  }
+}
