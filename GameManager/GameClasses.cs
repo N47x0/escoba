@@ -115,14 +115,15 @@ namespace GameManager
       public Player Player2 { get; set; }
       public List<Card> TableCards { get; set; }
       public Deck Deck { get; set; }
+      public bool isEscoba { get; set; }
     }
 
 
     public class Game {
     Deck deck = new Deck {};
-    public Player pl1 {get;} = new Player("p1");
-    public Player pl2 {get;} = new Player("p2");
-    public List<Card> table_cards = new List<Card> {};
+    public Player m_pl1 {get;} = new Player("p1");
+    public Player m_pl2 {get;} = new Player("p2");
+    public List<Card> m_table_cards = new List<Card> {};
 
 
     public void Reset() {
@@ -154,10 +155,10 @@ namespace GameManager
       return Runner(data, k);
     }
 
-    public List<List<Card>> ValidPlays( Player player ) {
+    public static List<List<Card>> ValidPlays( List<Card> hand, List<Card> table_cards ) {
       List<List<Card>> acc = new List<List<Card>> {};
       // At least one play per card in player hand
-      foreach (Card c in player.hand) {
+      foreach (Card c in hand) {
         if (table_cards.Count > 0) {
           // add player card to all possible table card combos
           for (int i = 1; i <= table_cards.Count; i++) {
@@ -175,12 +176,12 @@ namespace GameManager
           acc.Add(new List<Card> {c});
         } 
       }
-
       return acc;
     }
 
     public bool ApplyPlay( List<Card> play, Player player ) {
       bool scored = false;
+      bool isEscoba = false;
       // todo verify play 
       
       // Determine if cards stay on table
@@ -191,22 +192,24 @@ namespace GameManager
           if (player.hand.Contains(c)) { 
             player.hand.Remove(c); 
           } else {
-            table_cards.Remove(c);
+            m_table_cards.Remove(c);
           }
         } else {
           if (player.hand.Contains(c)) {
-            table_cards.Add(c);
+            m_table_cards.Add(c);
             player.hand.Remove(c);
           }
         }
       }
 
-      if (table_cards.Count == 0) {
+      if (m_table_cards.Count == 0) {
+        isEscoba = true;
         Console.WriteLine($"{player.name} ESCOBA!!");
         player.AwardPoint();
       }
 
-      return scored;
+      
+      return isEscoba;
 
     }
     public void TallyScore() {
@@ -221,7 +224,7 @@ namespace GameManager
       int pl2_cartas = 0;
 
       foreach (var c in deck.cards) {
-        if ( c.Value.owner == pl1.name) {
+        if ( c.Value.owner == m_pl1.name) {
           if (c.Value.suit == "O") {
             pl1_oros++;
           }
@@ -229,12 +232,12 @@ namespace GameManager
             pl1_sietes++;
           }
           if (c.Value.id == "O7") {
-            pl1.AwardPoint();
-            Console.WriteLine($"O7 {pl1.name}");
+            m_pl1.AwardPoint();
+            Console.WriteLine($"O7 {m_pl1.name}");
           }
           pl1_cartas++;
         }
-        if (c.Value.owner == pl2.name) {
+        if (c.Value.owner == m_pl2.name) {
           if (c.Value.suit == "O") {
             pl2_oros++;
           }
@@ -242,19 +245,19 @@ namespace GameManager
             pl2_sietes++;
           }
           if (c.Value.id == "O7") {
-            pl2.AwardPoint();
-            Console.WriteLine($"O7 {pl2.name}");
+            m_pl2.AwardPoint();
+            Console.WriteLine($"O7 {m_pl2.name}");
           }
           pl2_cartas++;
         }
       }
 
-      if (pl1_oros > pl2_oros) pl1.AwardPoint();
-      if (pl2_oros > pl1_oros) pl2.AwardPoint();
-      if (pl1_sietes > pl2_sietes) pl1.AwardPoint();
-      if (pl2_sietes > pl1_sietes) pl2.AwardPoint();
-      if (pl1_cartas > pl2_cartas) pl1.AwardPoint();
-      if (pl2_cartas > pl1_cartas) pl2.AwardPoint();
+      if (pl1_oros > pl2_oros) m_pl1.AwardPoint();
+      if (pl2_oros > pl1_oros) m_pl2.AwardPoint();
+      if (pl1_sietes > pl2_sietes) m_pl1.AwardPoint();
+      if (pl2_sietes > pl1_sietes) m_pl2.AwardPoint();
+      if (pl1_cartas > pl2_cartas) m_pl1.AwardPoint();
+      if (pl2_cartas > pl1_cartas) m_pl2.AwardPoint();
       Console.WriteLine($"PL1 Oros {pl1_oros}\tPL1 Sietes {pl1_sietes}\tPL1 Cartas {pl1_cartas}\nPL2 Oros {pl2_oros}\tPL2 Sietes {pl2_sietes}\tPL2 Cartas {pl2_cartas}");
       
     }
@@ -269,10 +272,11 @@ namespace GameManager
         table_cards.AddRange(deck.Deal(4));
 
         GameState gs = new GameState {
-          Player1 = this.pl1,
-          Player2 = this.pl2,
-          TableCards = this.table_cards,
-          Deck = this.deck
+          Player1 = this.m_pl1,
+          Player2 = this.m_pl2,
+          TableCards = this.m_table_cards,
+          Deck = this.deck,
+          isEscoba = false
         };
 
         // var result = new Dictionary<string, dynamic>();
@@ -281,6 +285,12 @@ namespace GameManager
         // }
         return gs;
       }
+    public void EndGame(Player lastToScore) {
+      foreach (var c in m_table_cards) {
+        c.owner = lastToScore.name;
+      }
+      TallyScore();
+    }
 
     public void PlayRound(Player adv_player, Player flw_player) {
       deck = new Deck();
@@ -289,7 +299,7 @@ namespace GameManager
         adv_player.hand.AddRange(deck.Deal());
         flw_player.hand.AddRange(deck.Deal());
       }
-      table_cards.AddRange(deck.Deal(4));
+      m_table_cards.AddRange(deck.Deal(4));
       Player last_scored = null;
       while (deck.deck_order.Count > 0) {
         if (adv_player.hand.Count == 0 && flw_player.hand.Count == 0) {
@@ -301,20 +311,20 @@ namespace GameManager
 
         while ((adv_player.hand.Count + flw_player.hand.Count) > 0) {
           if (adv_player.hand.Count > 0) {
-            if (ApplyPlay(adv_player.GetPlay(ValidPlays(adv_player)), adv_player)) {
+            if (ApplyPlay(adv_player.GetPlay(ValidPlays(adv_player.hand, m_table_cards)), adv_player)) {
               last_scored = adv_player;
             }
           }
 
           if (flw_player.hand.Count > 0) {
-            if (ApplyPlay(flw_player.GetPlay(ValidPlays(flw_player)), flw_player)) {
+            if (ApplyPlay(flw_player.GetPlay(ValidPlays(flw_player.hand, m_table_cards)), flw_player)) {
               last_scored = flw_player;
             }
           }
         }
       }
 
-      foreach (var c in table_cards) {
+      foreach (var c in m_table_cards) {
         c.owner = last_scored.name;
       }
       TallyScore();
