@@ -42,7 +42,6 @@ namespace broom.Controllers
                 var rules = db.Rules
                     .ToList();
                 return rules;
-
             }
 
             // using (var connection = new NpgsqlConnection(connString))

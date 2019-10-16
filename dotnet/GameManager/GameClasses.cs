@@ -116,8 +116,8 @@ namespace GameManager
       public List<Card> TableCards { get; set; }
       public Deck Deck { get; set; }
       public bool isEscoba { get; set; }
+      public bool isDone { get; set; }
     }
-
 
     public class Game {
     Deck deck = new Deck {};
@@ -207,11 +207,10 @@ namespace GameManager
         Console.WriteLine($"{player.name} ESCOBA!!");
         player.AwardPoint();
       }
-
       
       return isEscoba;
-
     }
+
     public void TallyScore() {
       // Oros
       int pl1_oros = 0;
@@ -259,32 +258,32 @@ namespace GameManager
       if (pl1_cartas > pl2_cartas) m_pl1.AwardPoint();
       if (pl2_cartas > pl1_cartas) m_pl2.AwardPoint();
       Console.WriteLine($"PL1 Oros {pl1_oros}\tPL1 Sietes {pl1_sietes}\tPL1 Cartas {pl1_cartas}\nPL2 Oros {pl2_oros}\tPL2 Sietes {pl2_sietes}\tPL2 Cartas {pl2_cartas}");
-      
     }
 
-      public GameState InitGame(Game game, Player adv_player, Player flw_player, List<Card> table_cards) {
-        deck = new Deck();
-        // Start, alternate 3 cards each player, 
-        foreach (var i in Enumerable.Range(1,3)) {
-          adv_player.hand.AddRange(deck.Deal());
-          flw_player.hand.AddRange(deck.Deal());
-        }
-        table_cards.AddRange(deck.Deal(4));
-
-        GameState gs = new GameState {
-          Player1 = this.m_pl1,
-          Player2 = this.m_pl2,
-          TableCards = this.m_table_cards,
-          Deck = this.deck,
-          isEscoba = false
-        };
-
-        // var result = new Dictionary<string, dynamic>();
-        // result = {
-        //   "game": this
-        // }
-        return gs;
+    public GameState InitGame(Game game, Player adv_player, Player flw_player, List<Card> table_cards) {
+      deck = new Deck();
+      // Start, alternate 3 cards each player, 
+      foreach (var i in Enumerable.Range(1,3)) {
+        adv_player.hand.AddRange(deck.Deal());
+        flw_player.hand.AddRange(deck.Deal());
       }
+      table_cards.AddRange(deck.Deal(4));
+
+      GameState gs = new GameState {
+        Player1 = this.m_pl1,
+        Player2 = this.m_pl2,
+        TableCards = this.m_table_cards,
+        Deck = this.deck,
+        isEscoba = false
+      };
+
+      // var result = new Dictionary<string, dynamic>();
+      // result = {
+      //   "game": this
+      // }
+      return gs;
+    }
+
     public void EndGame(Player lastToScore) {
       foreach (var c in m_table_cards) {
         c.owner = lastToScore.name;
@@ -330,5 +329,4 @@ namespace GameManager
       TallyScore();
     }
   }
-
 }

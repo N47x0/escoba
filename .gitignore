@@ -60,3 +60,4 @@ artifacts/
 *.sln.ide
 
 .vs
+.vscode

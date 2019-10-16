@@ -19,14 +19,14 @@ namespace broom
         Console.WriteLine("Starting a game of ESCOBA!");
 
         int rounds = 0;
-        while (g.pl1.score < 15 && g.pl2.score < 15) {
+        while (g.m_pl1.score < 15 && g.m_pl2.score < 15) {
             rounds++;
             if (rounds % 2 == 1) {
-            g.PlayRound(g.pl1, g.pl2);
+            g.PlayRound(g.m_pl1, g.m_pl2);
             } else {
-            g.PlayRound(g.pl2, g.pl1);
+            g.PlayRound(g.m_pl2, g.m_pl1);
             }
-            Console.WriteLine($"Round {rounds}\t PL1: {g.pl1.score}\tPL2: {g.pl2.score}");
+            Console.WriteLine($"Round {rounds}\t PL1: {g.m_pl1.score}\tPL2: {g.m_pl2.score}");
         }
 
     }
