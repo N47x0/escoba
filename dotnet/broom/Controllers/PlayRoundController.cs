@@ -11,21 +11,16 @@ namespace broom.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class InitGameController : ControllerBase
+    public class PlayRoundController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
+        private readonly ILogger<PlayRoundController> _logger;
 
-        private readonly ILogger<InitGameController> _logger;
-
-        public InitGameController(ILogger<InitGameController> logger)
+        public PlayRoundController(ILogger<PlayRoundController> logger)
         {
             _logger = logger;
         }
 
-        public Dictionary<int, ClientSession> ClientSessionDict = new Dictionary<int, ClientSession>();
+        Dictionary<int, ClientSession> ClientSessionDict = new Dictionary<int, ClientSession>();
 
         [EnableCors]
         [HttpGet]

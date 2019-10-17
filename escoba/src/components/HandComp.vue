@@ -11,7 +11,13 @@
           <b-col></b-col>
         </b-row>
         <b-row>
-          <b-col></b-col>
+          <b-col>
+            <b-button
+              @click="loadValidPlays(validPayload)"
+            >
+              Get Valid Plays
+            </b-button>
+          </b-col>
           <b-col>
             <v-icon
               id="hand-icon"
@@ -60,11 +66,15 @@ export default {
     CardComp
   },
   computed: {
+    ...mapActions([
+      'loadValidPlays'
+    ]),
     ...mapGetters([
       'getGameDataLoaded',
       'getPlayer1',
       'getPlayer2',
-      'getDeck'
+      'getDeck',
+      'getTableCards'
     ]),
     getPlayer: function () {
       return this[`getPlayer${this.player}`]
@@ -76,6 +86,12 @@ export default {
     cards: function () {
       console.log(this.getHand)
       return this.getDeck.filter(x => this.getHand.includes(x.card))
+    },
+    validPayload() {
+      return {
+        tableCards: getTableCards,
+        hand: getHand
+      }
     }
   },
   methods: {

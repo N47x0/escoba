@@ -24,7 +24,8 @@ import {
   PLAY_FIRST_ROUND,
   GET_VALID_PLAYS,
   GET_BEST_PLAYS,
-  RULES
+  RULES,
+  PLAY_ROUND
 } from './api-endpoints'
 
 Vue.use(Vuex)
@@ -219,10 +220,7 @@ export default new Vuex.Store({
           commit(CHANGE_GAME_DATA_LOADED, true)
         })
     },
-    loadValidPlays: function ({ commit, getters }) {
-      var payload = {
-        clientSessionId: getters.getClientSessionId
-      }
+    loadValidPlays: function ({ commit, getters }, payload) {
       console.log(payload)
       var url = getters.getBaseUrl + GET_VALID_PLAYS
       var config = {
@@ -246,6 +244,28 @@ export default new Vuex.Store({
       }
       console.log(payload)
       var url = getters.getBaseUrl + GET_BEST_PLAYS
+      var config = {
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+          }
+      }
+      console.log(payload)
+      axios
+        .post(url, payload , config)
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+    playRound: function ({ commit, getters}) {
+      var payload = {
+        clientSessionId: getters.getClientSessionId
+      }
+      console.log(payload)
+      var url = getters.getBaseUrl + PLAY_ROUND
       var config = {
         headers: {
           'Content-Type': 'application/json',

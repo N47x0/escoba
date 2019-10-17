@@ -5,12 +5,6 @@
     </div>
     <div v-if="getGameDataLoaded">
       <b-button
-        @click="loadValidPlays()"
-      >
-        Get Valid Plays
-      </b-button>
-        |
-      <b-button
         @click="loadGameData()"
       >
         Get New Deck
