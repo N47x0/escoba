@@ -6,13 +6,21 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using GameManager;
+using Business.Services;
+using Business.Models;
 
 namespace broom.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class InitGameController : ControllerBase
+    public class InitGameController : Controller
     {
+        private readonly ISessionsService _sessionsService;
+
+        public InitGameController(ISessionsService sessionsService)
+        {
+            _sessionsService = sessionsService;
+        }
         private static readonly string[] Summaries = new[]
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
@@ -39,11 +47,14 @@ namespace broom.Controllers
                 Player2 = g.m_pl2
             };
 
+            // _sessionsService.Add(cs);
+
             ClientSessionPayload payload = new ClientSessionPayload {
                 Id = cs.NewId(),
+                // ServiceId = cs.ServiceId,
                 _GameState = g.InitGame(g, g.m_pl1, g.m_pl2, g.m_table_cards)
             };
-            ClientSessionDict.Add(cs.Id, cs);
+            // ClientSessionDict.Add(cs.Id, cs);
             Console.WriteLine("Client Session Id: {0}", cs.Id);
             return payload; 
 

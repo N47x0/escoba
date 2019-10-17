@@ -66,9 +66,6 @@ export default {
     CardComp
   },
   computed: {
-    ...mapActions([
-      'loadValidPlays'
-    ]),
     ...mapGetters([
       'getGameDataLoaded',
       'getPlayer1',
@@ -89,14 +86,15 @@ export default {
     },
     validPayload() {
       return {
-        tableCards: getTableCards,
-        hand: getHand
+        tableCards: this.getTableCards,
+        hand: this.getHand
       }
     }
   },
   methods: {
     ...mapActions([
-      'getBestPlay'
+      'getBestPlay',
+      'loadValidPlays'
     ]),
     log: function(input) {
       var comp = this

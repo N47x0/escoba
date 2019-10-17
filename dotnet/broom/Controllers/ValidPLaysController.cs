@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using GameManager;
+using Newtonsoft.Json;
 
 namespace broom.Controllers
 {
@@ -26,18 +27,33 @@ namespace broom.Controllers
             _logger = logger;
         }
 
+        
+        
+        // [EnableCors]
+        // [HttpPost ("FromBody")]
+        // // public string[] Get()
+        // public List<List<Card>> Post(ValidPlaysPayload input)
+        // {
+        //     Console.WriteLine(input);
+        //     Game g = new Game();
+        //     List<List<Card>> output = new List<List<Card>>();
+        //     output = Game.ValidPlays(input.Hand, input.TableCards);
 
+        //     return output; 
+
+        // }
         [EnableCors]
         [HttpPost ("FromBody")]
         // public string[] Get()
+        // public IActionResult Post(ValidPlaysPayload input)
         public List<List<Card>> Post(ValidPlaysPayload input)
         {
             Console.WriteLine(input);
             Game g = new Game();
             List<List<Card>> output = new List<List<Card>>();
             output = Game.ValidPlays(input.Hand, input.TableCards);
-
-            return output; 
+            return output;
+            //return Json(output); 
 
         }
     }

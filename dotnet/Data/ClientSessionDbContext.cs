@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using GameManager;
 
+
 public class ClientSessionDbContext : DbContext {
     
     public ClientSessionDbContext(DbContextOptions<ClientSessionDbContext> options) 
@@ -9,5 +10,5 @@ public class ClientSessionDbContext : DbContext {
 
         }
 
-        public DbSet<ClientSession> ClientSessions { get; set; }
+        // public DbSet<ClientSession> ClientSessions { get; set; }
 }

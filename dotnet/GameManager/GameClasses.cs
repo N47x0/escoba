@@ -8,22 +8,23 @@ namespace GameManager
     public class GameClasses
     {
     }
-    public class ClientSession {
-      private static int m_Counter = 0;
-      public int Id { get; set; }
-      public Player Player1 { get; set; }
-      public Player Player2 { get; set; }
-      public Game _Game { get; set; }
-      public int NewId() 
-      {
-      return this.Id = System.Threading.Interlocked.Increment(ref m_Counter);
-      }
-    }
+    // public class ClientSession {
+    //   private static int m_Counter = 0;
+    //   public int Id { get; set; }
+    //   public Player Player1 { get; set; }
+    //   public Player Player2 { get; set; }
+    //   public Game _Game { get; set; }
+    //   public int NewId() 
+    //   {
+    //   // return this.Id = System.Threading.Interlocked.Increment(ref m_Counter);
+    //   return this.Id = System.Threading.Interlocked.Increment(ref m_Counter);
+    //   }
+    // }
 
-    public class ClientSessionPayload {
-        public int Id { get; set; }
-        public GameState _GameState { get; set; }
-    }
+    // public class ClientSessionPayload {
+    //     public int Id { get; set; }
+    //     public GameState _GameState { get; set; }
+    // }
 
     public class Card {
     public string suit {get;}

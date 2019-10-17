@@ -13,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using Microsoft.EntityFrameworkCore.InMemory;
 
 namespace broom
 {
@@ -35,11 +36,12 @@ namespace broom
             Console.WriteLine(Configuration.GetConnectionString("DefaultConnection"));
             Console.WriteLine(Configuration["ConnectionStrings:DefaultConnection"]);
             Console.WriteLine(connString);
-             services.AddDbContextPool<BroomDbContext>(options =>
+            services.AddDbContextPool<BroomDbContext>(options =>
             {
                 options.UseMySql(connString,
                 mySqlOptions => mySqlOptions.ServerVersion(new Version(8,0,15), ServerType.MySql));
             });
+            //services.AddDbContext<ClientSessionDbContext>(options => options.UseInMemoryDatabase(databaseName: "ClientSessions"))
             //  services.AddDbContextPool<BroomDbContext>(options =>
             // {
             //     options.UseNpgsql(connString);

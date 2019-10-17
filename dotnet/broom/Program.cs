@@ -33,6 +33,9 @@ namespace broom
 
         public static void Main(string[] args)
         {
+
+            //IServiceCollection
+
             //AutoGame();
             var host = CreateHostBuilder(args).Build(); 
             host.Run();
