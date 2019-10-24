@@ -1,0 +1,148 @@
+﻿<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProjectGuid>{5C373F8C-02A5-4DBE-BEF8-C9038EA06DE7}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <NoStandardLibraries>false</NoStandardLibraries>
+    <AssemblyName>ConsoleApplication</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RootNamespace>walis</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".vs\broom\v16\.suo" />
+    <None Include="broom\appsettings.Development.json" />
+    <None Include="broom\appsettings.json" />
+    <None Include="broom\obj\broom.csproj.nuget.cache" />
+    <None Include="broom\obj\broom.csproj.nuget.dgspec.json" />
+    <None Include="broom\obj\broom.csproj.nuget.g.props" />
+    <None Include="broom\obj\broom.csproj.nuget.g.targets" />
+    <None Include="broom\obj\Debug\netcoreapp3.0\broom.assets.cache" />
+    <None Include="broom\obj\Debug\netcoreapp3.0\project.razor.json" />
+    <None Include="broom\obj\project.assets.json" />
+    <None Include="broom\obj\Release\netcoreapp3.0\broom.AssemblyInfoInputs.cache" />
+    <None Include="broom\obj\Release\netcoreapp3.0\broom.assets.cache" />
+    <None Include="broom\Properties\launchSettings.json" />
+    <None Include="Business\obj\Business.csproj.nuget.cache" />
+    <None Include="Business\obj\Business.csproj.nuget.dgspec.json" />
+    <None Include="Business\obj\Business.csproj.nuget.g.props" />
+    <None Include="Business\obj\Business.csproj.nuget.g.targets" />
+    <None Include="Business\obj\Debug\netstandard2.0\Business.assets.cache" />
+    <None Include="Business\obj\project.assets.json" />
+    <None Include="Business\obj\Release\netstandard2.0\Business.assets.cache" />
+    <None Include="Data\obj\Data.csproj.nuget.cache" />
+    <None Include="Data\obj\Data.csproj.nuget.dgspec.json" />
+    <None Include="Data\obj\Data.csproj.nuget.g.props" />
+    <None Include="Data\obj\Data.csproj.nuget.g.targets" />
+    <None Include="Data\obj\Debug\netcoreapp3.0\Data.assets.cache" />
+    <None Include="Data\obj\project.assets.json" />
+    <None Include="Data\obj\Release\netcoreapp3.0\Data.AssemblyInfoInputs.cache" />
+    <None Include="Data\obj\Release\netcoreapp3.0\Data.assets.cache" />
+    <None Include="GameManager\obj\Debug\netstandard2.0\GameManager.assets.cache" />
+    <None Include="GameManager\obj\GameManager.csproj.nuget.cache" />
+    <None Include="GameManager\obj\GameManager.csproj.nuget.dgspec.json" />
+    <None Include="GameManager\obj\GameManager.csproj.nuget.g.props" />
+    <None Include="GameManager\obj\GameManager.csproj.nuget.g.targets" />
+    <None Include="GameManager\obj\project.assets.json" />
+    <None Include="GameManager\obj\Release\netstandard2.0\GameManager.AssemblyInfoInputs.cache" />
+    <None Include="GameManager\obj\Release\netstandard2.0\GameManager.assets.cache" />
+    <None Include="Implementation\obj\Debug\netstandard2.0\Implementation.assets.cache" />
+    <None Include="Implementation\obj\Implementation.csproj.nuget.cache" />
+    <None Include="Implementation\obj\Implementation.csproj.nuget.dgspec.json" />
+    <None Include="Implementation\obj\Implementation.csproj.nuget.g.props" />
+    <None Include="Implementation\obj\Implementation.csproj.nuget.g.targets" />
+    <None Include="Implementation\obj\project.assets.json" />
+    <None Include="Implementation\obj\Release\netstandard2.0\Implementation.assets.cache" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="broom\broom.csproj" />
+    <Content Include="broom\obj\Debug\netcoreapp3.0\broom.csproj.FileListAbsolute.txt" />
+    <Content Include="broom\obj\Debug\netcoreapp3.0\broom.exe" />
+    <Content Include="Business\Business.csproj" />
+    <Content Include="Business\obj\Debug\netstandard2.0\Business.csproj.FileListAbsolute.txt" />
+    <Content Include="Data\Data.csproj" />
+    <Content Include="Data\obj\Debug\netcoreapp3.0\Data.csproj.FileListAbsolute.txt" />
+    <Content Include="GameManager\GameManager.csproj" />
+    <Content Include="GameManager\obj\Debug\netstandard2.0\GameManager.csproj.FileListAbsolute.txt" />
+    <Content Include="Implementation\Implementation.csproj" />
+    <Content Include="Implementation\obj\Debug\netstandard2.0\Implementation.csproj.FileListAbsolute.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="broom\Controllers\InitGameController.cs" />
+    <Compile Include="broom\Controllers\PlayRoundController.cs" />
+    <Compile Include="broom\Controllers\RulesController.cs" />
+    <Compile Include="broom\Controllers\ValidPlaysController.cs" />
+    <Compile Include="broom\Controllers\WeatherForecastController.cs" />
+    <Compile Include="broom\GameManager1.cs" />
+    <Compile Include="broom\Models\SessionViewModel.cs" />
+    <Compile Include="broom\obj\Release\netcoreapp3.0\broom.AssemblyInfo.cs" />
+    <Compile Include="broom\Program.cs" />
+    <Compile Include="broom\Startup.cs" />
+    <Compile Include="broom\WeatherForecast.cs" />
+    <Compile Include="Business\Class1.cs" />
+    <Compile Include="Business\Models\ClientSession.cs" />
+    <Compile Include="Business\Models\ClientSessionPayload.cs" />
+    <Compile Include="Business\Services\ISessionsService.cs" />
+    <Compile Include="Data\BroomDbContext.cs" />
+    <Compile Include="Data\ClientSessionDbContext.cs" />
+    <Compile Include="Data\Configurations\EntityConfiguration.cs" />
+    <Compile Include="Data\Entities\RulesEntity.cs" />
+    <Compile Include="Data\obj\Release\netcoreapp3.0\Data.AssemblyInfo.cs" />
+    <Compile Include="GameManager\GameClasses.cs" />
+    <Compile Include="GameManager\ISessionIdGenerator.cs" />
+    <Compile Include="GameManager\obj\Release\netstandard2.0\GameManager.AssemblyInfo.cs" />
+    <Compile Include="GameManager\SessionIdGenerator.cs" />
+    <Compile Include="Implementation\Services\InMemorySessionService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include=".vs\walis\v16\" />
+    <Folder Include="broom\bin\Debug\netcoreapp3.0\Properties\" />
+    <Folder Include="broom\bin\Release\netcoreapp3.0\" />
+    <Folder Include="broom\obj\Debug\netcoreapp3.0\staticwebassets\" />
+    <Folder Include="Business\bin\Debug\netstandard2.0\" />
+    <Folder Include="Business\bin\Release\netstandard2.0\" />
+    <Folder Include="Data\bin\Debug\netcoreapp3.0\" />
+    <Folder Include="Data\bin\Release\netcoreapp3.0\" />
+    <Folder Include="GameManager\bin\Debug\netstandard2.0\" />
+    <Folder Include="GameManager\bin\Release\netstandard2.0\" />
+    <Folder Include="GameManager\Models\" />
+    <Folder Include="Implementation\bin\Debug\netstandard2.0\" />
+    <Folder Include="Implementation\bin\Release\netstandard2.0\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
+  <ProjectExtensions>
+    <VisualStudio AllowExistingFolder="true" />
+  </ProjectExtensions>
+</Project>

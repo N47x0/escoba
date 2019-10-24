@@ -22,7 +22,7 @@ namespace broom.Controllers
             _logger = logger;
         }
 
-        Dictionary<int, ClientSession> ClientSessionDict = new Dictionary<int, ClientSession>();
+        Dictionary<int, SimpleClientSession> clientSessionDict = new Dictionary<int, SimpleClientSession>();
 
         [EnableCors]
         [HttpGet]
@@ -30,7 +30,7 @@ namespace broom.Controllers
         public ClientSessionPayload Get()
         {
             Game g = new Game();
-            ClientSession cs = new ClientSession {
+            SimpleClientSession cs = new SimpleClientSession {
                 _Game = g,
                 Player1 = g.m_pl1,
                 Player2 = g.m_pl2
@@ -40,7 +40,7 @@ namespace broom.Controllers
                 Id = cs.NewId(),
                 _GameState = g.InitGame(g, g.m_pl1, g.m_pl2, g.m_table_cards)
             };
-            ClientSessionDict.Add(cs.Id, cs);
+            clientSessionDict.Add(cs.Id, cs);
             Console.WriteLine("Client Session Id: {0}", cs.Id);
             return payload; 
 

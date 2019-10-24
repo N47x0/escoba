@@ -2,9 +2,11 @@
 
   <PropertyGroup>
     <!-- <OutputType>Exe</OutputType> -->
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <!-- <GenerateAssemblyInfo>false</GenerateAssemblyInfo> -->
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <!-- <NoStdLib>true</NoStdLib> -->
+    <!-- <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols> -->
   </PropertyGroup>
 
   <ItemGroup>

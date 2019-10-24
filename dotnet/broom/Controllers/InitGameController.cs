@@ -15,12 +15,12 @@ namespace broom.Controllers
     [Route("[controller]")]
     public class InitGameController : Controller
     {
-        private readonly ISessionsService _sessionsService;
+        // private readonly ISessionsService _sessionsService;
 
-        public InitGameController(ISessionsService sessionsService)
-        {
-            _sessionsService = sessionsService;
-        }
+        // public InitGameController(ISessionsService sessionsService)
+        // {
+        //     _sessionsService = sessionsService;
+        // }
         private static readonly string[] Summaries = new[]
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
@@ -33,7 +33,7 @@ namespace broom.Controllers
             _logger = logger;
         }
 
-        public Dictionary<int, ClientSession> ClientSessionDict = new Dictionary<int, ClientSession>();
+        public Dictionary<int, SimpleClientSession> ClientSessionDict = new Dictionary<int, SimpleClientSession>();
 
         [EnableCors]
         [HttpGet]
@@ -41,7 +41,7 @@ namespace broom.Controllers
         public ClientSessionPayload Get()
         {
             Game g = new Game();
-            ClientSession cs = new ClientSession {
+            SimpleClientSession cs = new SimpleClientSession {
                 _Game = g,
                 Player1 = g.m_pl1,
                 Player2 = g.m_pl2
@@ -54,7 +54,7 @@ namespace broom.Controllers
                 // ServiceId = cs.ServiceId,
                 _GameState = g.InitGame(g, g.m_pl1, g.m_pl2, g.m_table_cards)
             };
-            // ClientSessionDict.Add(cs.Id, cs);
+            ClientSessionDict.Add(cs.Id, cs);
             Console.WriteLine("Client Session Id: {0}", cs.Id);
             return payload; 
 

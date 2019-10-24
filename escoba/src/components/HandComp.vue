@@ -85,10 +85,11 @@ export default {
       return this.getDeck.filter(x => this.getHand.includes(x.card))
     },
     validPayload() {
-      return {
+      // return "test-payload"
+      return JSON.stringify({
         tableCards: this.getTableCards,
         hand: this.getHand
-      }
+      })
     }
   },
   methods: {
