@@ -13,49 +13,49 @@ namespace game_server
     public static void Initialize(GameSessionModelDBContext context, string approotpath)
     {
         
-        if (!context.Games.Any()) {
-          context.Games.Add(new Models.GameInfo {
-            GameInfoId = 1,
-            GameName = "escoba",
-            Rules = "The rules are TBD"
-          });
-        }
+      if (!context.Games.Any()) {
+        context.Games.Add(new Models.GameInfo {
+          GameInfoId = 1,
+          GameName = "escoba",
+          Rules = "The rules are TBD"
+        });
+      }
 
-        if (!context.GameSessions.Any()) {
-          context.GameSessions.Add( new Models.GameSession {
-            GameSessionId = 1,
-            GameSessionState = "done",
-            SelectedGameInfoId = 1,
+      if (!context.GameSessions.Any()) {
+        context.GameSessions.Add( new Models.GameSession {
+          GameSessionId = 1,
+          GameSessionState = "done",
+          SelectedGameInfoId = 1,
 
-          });
-        }
-      
-        // Look for any board games already in database.
-        if (!context.Users.Any())
-        {
-          // TODO
-          context.Users.Add(new Models.User {
-            UserId = 321,
-            FirstName = "John",
-            LastName = "Doe",
-            EmailAddress = "jdoe@acme.com",
-            Stats = new List<Models.UserStats> {
-              new Models.UserStats {
-                Draws = 44,
-                NumberOfPlays = 100,
-                Losses = 23,
-                Wins = 33,
-                SelectedGameInfoId = 1 
-            }}
-            
-          });
-          return;   // Database has been seeded
-        }
-      
-        context.SaveChanges();
+        });
       }
     
+      // Look for any board games already in database.
+      if (!context.Users.Any())
+      {
+        // TODO
+        context.Users.Add(new Models.User {
+          UserId = 321,
+          FirstName = "John",
+          LastName = "Doe",
+          EmailAddress = "jdoe@acme.com",
+          Stats = new List<Models.UserStats> {
+            new Models.UserStats {
+              Draws = 44,
+              NumberOfPlays = 100,
+              Losses = 23,
+              Wins = 33,
+              SelectedGameInfoId = 1 
+          }}
+          
+        });
+      }
+
+      context.SaveChanges();
+      return;   // Database has been seeded
+    }
   }
+
   public class GameSessionModelDBContext : DbContext {
     public GameSessionModelDBContext(DbContextOptions<GameSessionModelDBContext> options)
         : base(options)
