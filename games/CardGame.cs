@@ -5,10 +5,10 @@ namespace games {
   // Generic card stucture
   // TODO - seed with a "deck type" ? Naipes/French-Deck/UNO-cards
   public class Card {
-    public string suit {get;}
-    public uint val {get;}
+    public string suit {get; set;}
+    public uint val {get; set;}
     public string owner {get; set;} 
-    public string id {get;} 
+    public string id {get; set;} 
     public Card (string suit, uint val, string owner = "") {
       this.suit = suit;
       this.val = val;
@@ -23,7 +23,7 @@ namespace games {
   public class Player {
     public uint score {get; set;} = 0;
     public List<Card> hand {get; set;} = new List<Card> {};
-    public string name {get; } = "unnamed";
+    public string name {get; set;} = "unnamed";
     public Player(string name) {
       this.name = name;
     }
@@ -48,7 +48,7 @@ namespace games {
   // Generic stucture for manipulating "Cards" as definied above
   // TODO - seed with a "deck type" ? Naipes/French-Deck/UNO-cards
   public class CardDeck {
-    public Dictionary<string, Card> cards {get; } = new Dictionary<string, Card> {};
+    public Dictionary<string, Card> cards {get; set; } = new Dictionary<string, Card> {};
     public List<string> deck_order {get; private set;} = new List<string> {};
     
     // TODO - This could be 'seeded' with a 'deck specialization'
@@ -104,11 +104,12 @@ namespace games {
   // PODO to hold generic game-state data
   // Notice that Players, TableCards, Deck are "read-only"
   public class GameState {
-    public List<Player> Players { get; }
+    public List<Player> Players { get; set;}
     public List<Card> TableCards { 
       get { return Deck.GetTableCards(); } 
+      set {}
     }
-    public CardDeck Deck { get; }
+    public CardDeck Deck { get; set;}
     public Player CurrentPlayer {get; set;}
     public int TurnCount {get; set; }
 
@@ -116,12 +117,12 @@ namespace games {
     //public int current  { get; set; }
     public bool IsDone { get; set;}
 
-    public GameState( CardDeck deck, List<Player> players, int turnCount, bool isDone ) {
-      Deck = deck;
-      Players = players;
-      TurnCount = turnCount;
-      IsDone = isDone;
-    }
+    // public GameState( CardDeck deck, List<Player> players, int turnCount, bool isDone ) {
+    //   Deck = deck;
+    //   Players = players;
+    //   TurnCount = turnCount;
+    //   IsDone = isDone;
+    // }
   }
 
   // Generic Card Game interface

@@ -18,7 +18,14 @@ namespace games.escoba
       player1 = players.First();
       player2 = players.Last();
 
-      CurrentState = new GameState (deck, players, 0, false);
+      CurrentState = new GameState {
+        Deck = deck,
+        Players = players,
+        TurnCount = 0,
+        IsDone = false,
+        CurrentPlayer = player1,
+        TableCards = new List<Card>()
+      };
     }
 
     public GameState InitGame() {
