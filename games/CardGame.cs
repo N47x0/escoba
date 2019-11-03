@@ -127,10 +127,8 @@ namespace games {
 
   // Generic Card Game interface
   public interface ICardGame {
-    GameState GetCurrentState();
     GameState InitGame();
-    GameState PlayTurn(List<Card> cardsPlayed, Player player);
-    GameState EndGame();
+    GameState PlayTurn(List<Card> cardsPlayed, Player player, GameState currentState);
   }
 
   public class InvalidGameParametersException : System.Exception {

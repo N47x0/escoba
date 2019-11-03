@@ -47,6 +47,8 @@ namespace game_server
         });
       });
 
+      services.AddScoped<games.ICardGame, games.escoba.EscobaCardGameImpl>();
+
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

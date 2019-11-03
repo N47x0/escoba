@@ -5,32 +5,24 @@ namespace games.escoba
 {
   public class EscobaCardGameImpl : games.ICardGame
   {
-    private GameState CurrentState;
-    private Player player1 {get;}
-    private Player player2 {get;}
-
-    public EscobaCardGameImpl(CardDeck deck, List<Player> players ) {
-      if (players.Count != 2) {
-        throw new InvalidGameParametersException(
-          $"The game of Escoba Requires exactly two players, while {players.Count} were provided");
-      }
-
-      player1 = players.First();
-      player2 = players.Last();
-
-      CurrentState = new GameState {
-        Deck = deck,
-        Players = players,
-        TurnCount = 0,
-        IsDone = false,
-        CurrentPlayer = player1,
-        TableCards = new List<Card>()
-      };
+    public EscobaCardGameImpl() {
+      
     }
 
     public GameState InitGame() {
-      var deck = CurrentState.Deck;
-      deck.Reset(); // shuffle
+      var deck = new games.CardDeck();
+      deck.Reset();
+      var state = new GameState {
+        Deck = deck,
+        IsDone = false,
+        Players = new List<Player> {
+          new Player ("Player 1"),
+          new Player ("Player 2"),
+        },
+      };
+
+      var player1 = state.Players.First();
+      var player2 = state.Players.Last();
 
       // Start, alternate 3 cards each player, 
       foreach (var i in Enumerable.Range(1,3)) {
@@ -41,10 +33,11 @@ namespace games.escoba
       deck.GetTableCards().AddRange(deck.Deal(4));
       
       // Advance state
-      CurrentState.TurnCount++;
-      CurrentState.CurrentPlayer = player1;
+      state.TurnCount++;
+      state.TableCards = deck.GetTableCards();
+      state.CurrentPlayer = player1;
       
-      return CurrentState;
+      return state;
     }
 
     // This is where "escoba' specific (read: "business") logic belongs
@@ -55,53 +48,53 @@ namespace games.escoba
     // - Cards are dealt simultaneously in groups of three to each player when either runs out.
     // - When no cards are left to be played(after 36 turns) the game is over and score should be tallied.
     // - Any cards remaining on the table are awarded to the last player to score.
-    public GameState PlayTurn(List<Card> cardsPlayed, Player player) {
+    public GameState PlayTurn(List<Card> cardsPlayed, Player player, GameState currentState) {
+
+      var player1 = currentState.Players.First();
+      var player2 = currentState.Players.Last();
 
       // possibly unnecessary check for player/turn out of sync
-      if ((CurrentState.TurnCount % 2 == 0 && CurrentState.CurrentPlayer == player1)
-       || (CurrentState.TurnCount % 2 != 0 && CurrentState.CurrentPlayer == player2) ) {
+      if ((currentState.TurnCount % 2 == 0 && currentState.CurrentPlayer == player1)
+       || (currentState.TurnCount % 2 != 0 && currentState.CurrentPlayer == player2) ) {
         throw new System.Exception("The turn and player dont match");
       }
 
-      if (CurrentState.TurnCount > 36) {
+      if (currentState.TurnCount > 36) {
         throw new System.Exception("Too many turns");
       }
       // possibly unnecessary check for validity of the play.
-      if (!ValidPlays(CurrentState.CurrentPlayer.hand, CurrentState.Deck.GetTableCards()).Any(x => x.SequenceEqual(cardsPlayed))) {
+      if (!ValidPlays(currentState.CurrentPlayer.hand, currentState.Deck.GetTableCards()).Any(x => x.SequenceEqual(cardsPlayed))) {
         throw new System.Exception($"The cardsPlayed: {cardsPlayed} are not currently a valid move");
       }
       
       Player last_scored = null;
-      if (ApplyPlay(cardsPlayed, player, CurrentState.Deck)) {
+      if (ApplyPlay(cardsPlayed, player, currentState.Deck)) {
         last_scored = player;
       }
 
-      if ( CurrentState.Deck.deck_order.Count > 0 ) {
+      if ( currentState.Deck.deck_order.Count > 0 ) {
         if ( (player1.hand.Count + player2.hand.Count) == 0 ) {
           foreach (var i in Enumerable.Range(1,3)) {
-            player1.hand.AddRange(CurrentState.Deck.Deal());
-            player2.hand.AddRange(CurrentState.Deck.Deal());
+            player1.hand.AddRange(currentState.Deck.Deal());
+            player2.hand.AddRange(currentState.Deck.Deal());
           }
         }
       } else {
-        foreach (var c in CurrentState.Deck.GetTableCards()) {
+        foreach (var c in currentState.Deck.GetTableCards()) {
           c.owner = last_scored.name;
         }
       }
 
       // Advance State
-      CurrentState.CurrentPlayer = CurrentState.Players.Where(p => p.name != CurrentState.CurrentPlayer.name).Single();
-      CurrentState.TurnCount++;
-      return CurrentState;
-      
+      currentState.CurrentPlayer = currentState.Players.Where(p => p.name != currentState.CurrentPlayer.name).Single();
+      currentState.TurnCount++;
+      if (currentState.TurnCount == 36) {
+        TallyScore(currentState);
+        currentState.IsDone = true;
+      }
+      return currentState;
     }
-    public GameState EndGame() {
-      TallyScore();
-      return CurrentState;
-    }
-    public GameState GetCurrentState() {
-      return CurrentState;
-    }
+
     static IEnumerable<IEnumerable<T>> CombinationsOfK<T>(T[] data, int k) {
       int size = data.Length;
       IEnumerable<IEnumerable<T>> Runner(IEnumerable<T> list, int n)
@@ -179,7 +172,7 @@ namespace games.escoba
       
       return scored;
     }
-    public void TallyScore() {
+    static void TallyScore(GameState currentState) {
       // Oros
       int pl1_oros = 0;
       int pl2_oros = 0;
@@ -190,7 +183,10 @@ namespace games.escoba
       int pl1_cartas = 0;
       int pl2_cartas = 0;
 
-      foreach (var c in CurrentState.Deck.cards) {
+      var player1 = currentState.Players.First();
+      var player2 = currentState.Players.Last();
+
+      foreach (var c in currentState.Deck.cards) {
         if ( c.Value.owner == player1.name) {
           if (c.Value.suit == "O") {
             pl1_oros++;
@@ -227,7 +223,5 @@ namespace games.escoba
       if (pl2_cartas > pl1_cartas) player2.AwardPoint();
       System.Console.WriteLine($"PL1 Oros {pl1_oros}\tPL1 Sietes {pl1_sietes}\tPL1 Cartas {pl1_cartas}\nPL2 Oros {pl2_oros}\tPL2 Sietes {pl2_sietes}\tPL2 Cartas {pl2_cartas}");
     }
-
   }
-  
 }

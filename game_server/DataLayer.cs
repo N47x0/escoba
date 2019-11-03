@@ -15,17 +15,18 @@ namespace game_server
         
       if (!context.Games.Any()) {
         context.Games.Add(new Models.GameInfo {
-          GameInfoId = 1,
+          GameInfoId = System.Guid.NewGuid(),
           GameName = "escoba",
           Rules = "The rules are TBD"
         });
+        context.SaveChanges();
       }
 
       if (!context.GameSessions.Any()) {
         context.GameSessions.Add( new Models.GameSession {
-          GameSessionId = 1,
+          //GameSessionId = 1,
           GameSessionState = "done",
-          SelectedGameInfoId = 1,
+          SelectedGameInfoId = context.Games.Where(x => x.GameName == "escoba").Single().GameInfoId,
 
         });
       }
@@ -35,7 +36,7 @@ namespace game_server
       {
         // TODO
         context.Users.Add(new Models.User {
-          UserId = 321,
+          UserId = System.Guid.NewGuid(),
           FirstName = "John",
           LastName = "Doe",
           EmailAddress = "jdoe@acme.com",
@@ -45,9 +46,23 @@ namespace game_server
               NumberOfPlays = 100,
               Losses = 23,
               Wins = 33,
-              SelectedGameInfoId = 1 
+              SelectedGameInfoId = context.Games.Where(x => x.GameName == "escoba").Single().GameInfoId,
           }}
-          
+        });
+
+        context.Users.Add(new Models.User {
+          UserId = System.Guid.NewGuid(),
+          FirstName = "Hal",
+          LastName = "9000",
+          EmailAddress = "ai@escoba.com",
+          Stats = new List<Models.UserStats> {
+            new Models.UserStats {
+              Draws = 44,
+              NumberOfPlays = 100,
+              Losses = 33,
+              Wins = 23,
+              SelectedGameInfoId = context.Games.Where(x => x.GameName == "escoba").Single().GameInfoId,
+          }}
         });
       }
 
@@ -80,8 +95,6 @@ namespace game_server
       .HasConversion(
         v => JsonSerializer.Serialize<ICollection<games.GameState>>(v, new JsonSerializerOptions{AllowTrailingCommas = true, IgnoreNullValues = true}),
         v => JsonSerializer.Deserialize<ICollection<games.GameState>>(v, new JsonSerializerOptions {AllowTrailingCommas =true, IgnoreNullValues = true})
-        //v => JsonSerializer.Serialize(v, typeof(games.GameState)),
-        //v => JsonSerializer.Deserialize<System.Collections.Generic.IList< games.GameState>>(v)
       );
     }
 
