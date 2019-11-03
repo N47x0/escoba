@@ -64,6 +64,8 @@ namespace game_server.Controllers
           User = user_player,
           UserId = user_player.UserId,
         };
+        gameSession.GameStates.Add(initial_game_state);
+  
         // TODO - Is all this needed or some auto?
         gameSession.UserPlayers.Add(ugs);
         user_player.GameSessions.Add(ugs);
@@ -71,12 +73,11 @@ namespace game_server.Controllers
       // Lookup game session
       else {
         gameSession = _context.GameSessions.Find(sessionid);
+        initial_game_state = gameSession.GameStates.OrderBy(x => x.TurnCount).LastOrDefault();
         // Find current/logged-in user (url param)
         ugs = gameSession.UserPlayers.Where(x => x.User.EmailAddress == userEmail).SingleOrDefault();
       }
 
-      gameSession.GameStates.Add(initial_game_state);
-      
       await _context.SaveChangesAsync();
       var payload = new Models.InitGamePayload {
         SessionId = gameSession.GameSessionId,
