@@ -12,30 +12,38 @@ namespace game_server
   {
     public static void Initialize(GameSessionModelDBContext context, string approotpath)
     {
-        
-      if (!context.Games.Any()) {
-        context.Games.Add(new Models.GameInfo {
+      var escoba_info = new Models.GameInfo {
           GameInfoId = System.Guid.NewGuid(),
           GameName = "escoba",
-          Rules = "The rules are TBD"
-        });
-        context.SaveChanges();
+          Rules = "The rules are TBD",
+        };
+      // Look for any board games already in database.
+      if (!context.Games.Any()) {
+        context.Games.Add(escoba_info);
       }
 
+      Models.GameSession gameSession;
       if (!context.GameSessions.Any()) {
-        context.GameSessions.Add( new Models.GameSession {
-          //GameSessionId = 1,
+        gameSession = new Models.GameSession {
+          //GameSessionId = 1, auto gen? conf
+          GameSessionId = System.Guid.Empty,
           GameSessionState = "done",
-          SelectedGameInfoId = context.Games.Where(x => x.GameName == "escoba").Single().GameInfoId,
-
-        });
+          SelectedGameInfoId = escoba_info.GameInfoId,
+          GameStates = new List<games.GameState>{},
+          UserPlayers = new List<Models.UserGameSession>{},
+          // selected game info - auto linked?
+        };
+        context.GameSessions.Add( gameSession );
+      } else {
+        gameSession = context.GameSessions.First();
       }
     
-      // Look for any board games already in database.
+      Models.User johnD;
+      Models.User hal;
       if (!context.Users.Any())
       {
         // TODO
-        context.Users.Add(new Models.User {
+        johnD = new Models.User {
           UserId = System.Guid.NewGuid(),
           FirstName = "John",
           LastName = "Doe",
@@ -46,11 +54,13 @@ namespace game_server
               NumberOfPlays = 100,
               Losses = 23,
               Wins = 33,
-              SelectedGameInfoId = context.Games.Where(x => x.GameName == "escoba").Single().GameInfoId,
-          }}
-        });
+              SelectedGameInfoId = escoba_info.GameInfoId,
+          }},
+          GameSessions = new List<Models.UserGameSession>{},
+        };
+        context.Users.Add(johnD);
 
-        context.Users.Add(new Models.User {
+        hal = new Models.User {
           UserId = System.Guid.NewGuid(),
           FirstName = "Hal",
           LastName = "9000",
@@ -61,9 +71,26 @@ namespace game_server
               NumberOfPlays = 100,
               Losses = 33,
               Wins = 23,
-              SelectedGameInfoId = context.Games.Where(x => x.GameName == "escoba").Single().GameInfoId,
-          }}
-        });
+              SelectedGameInfoId = escoba_info.GameInfoId,
+          }},
+          GameSessions = new List<Models.UserGameSession>{},
+        };
+        context.Users.Add(hal);
+      } else {
+        johnD = context.Users.Where(x => x.EmailAddress == "jdoe@acme.com").Single();
+        hal = context.Users.Where(x => x.EmailAddress == "ai@escoba.com").Single();
+      }
+
+      // Seed user-gamesession join/association      
+      Models.UserGameSession ugs;
+      if (!context.GameSessions.Any()) {
+        ugs = new Models.UserGameSession {
+          GameSessionId = gameSession.GameSessionId,
+          UserId = johnD.UserId,
+        };
+        gameSession.UserPlayers.Add(ugs);
+        johnD.GameSessions.Add(ugs);
+        context.GameSessions.Add(gameSession);
       }
 
       context.SaveChanges();
@@ -79,6 +106,7 @@ namespace game_server
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+      // TODO - Move to separate EntityConfiguration Class
       modelBuilder.Entity<Models.UserGameSession>()
         .HasKey(ugs => new { ugs.UserId, ugs.GameSessionId });  
       modelBuilder.Entity<Models.UserGameSession>()
@@ -90,12 +118,19 @@ namespace game_server
         .WithMany(gs => gs.UserPlayers)
         .HasForeignKey(ugs => ugs.UserId);
 
+      // Shouldn't be needed - by convention links
+      // modelBuilder.Entity<Models.User>()
+      //   .HasMany(u => u.Stats)
+      //   .WithOne(us => us.User);
 
+      // TODO - Move to separate EntityConfiguration Class
       modelBuilder.Entity<Models.GameSession>().Property(e => e.GameStates)
       .HasConversion(
         v => JsonSerializer.Serialize<ICollection<games.GameState>>(v, new JsonSerializerOptions{AllowTrailingCommas = true, IgnoreNullValues = true}),
-        v => JsonSerializer.Deserialize<ICollection<games.GameState>>(v, new JsonSerializerOptions {AllowTrailingCommas =true, IgnoreNullValues = true})
-      );
+        v => JsonSerializer.Deserialize<ICollection<games.GameState>>(v, new JsonSerializerOptions {AllowTrailingCommas =true, IgnoreNullValues = true}));
+
+      modelBuilder.Entity<Models.GameSession>().Property(e => e.GameSessionId)
+      .ValueGeneratedOnAdd();
     }
 
     public DbSet<Models.GameSession> GameSessions { get; set; }

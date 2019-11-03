@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 using game_server.Models;
 
 namespace game_server.Controllers
@@ -30,36 +31,55 @@ namespace game_server.Controllers
     }
 
     [EnableCors]
-    [HttpGet("{userEmail}/{gameName}")]
-    public InitGamePayload Get(string userEmail, string gameName){
+    [HttpGet("{userEmail}/{gameName}/{sessionid?}")]
+    async public Task<InitGamePayload> Get(string userEmail, string gameName, Guid sessionid){
       // TODO - User reg
-      var user_player = _context.Users.Where(x => x.EmailAddress == userEmail).Single();
-      var ai_player = _context.Users.Where(x => x.EmailAddress == "ai@escoba.com").Single();
+      var user_player = _context.Users
+        .Include(e => e.Stats)
+        .Include(e => e.GameSessions)        
+        .Where(x => x.EmailAddress == userEmail)
+        .SingleOrDefault();
+      var ai_player = _context.Users.Where(x => x.EmailAddress == "ai@escoba.com").SingleOrDefault();
 
       // TODO - Specific gamename resolution
-      var escoba_info = _context.Games.Where(x => x.GameName == "escoba").Single();
+      var escoba_info = _context.Games.Where(x => x.GameName == "escoba").SingleOrDefault();
       var initial_game_state = _cardGameService.InitGame();
 
-      var gs = new GameSession {
-        GameSessionId = System.Guid.NewGuid(),
-        SelectedGameInfo = escoba_info,
-        SelectedGameInfoId = escoba_info.GameInfoId, 
-        GameSessionState = "running",
-        UserPlayers = new List<UserGameSession>(),
-        GameStates = new List<games.GameState>(),
-      };
+      GameSession gameSession;
+      UserGameSession ugs;
+      // Make New GameSession
+      if (sessionid == System.Guid.Empty) {
+        gameSession = new GameSession {
+          GameSessionId = System.Guid.NewGuid(),
+          SelectedGameInfo = escoba_info,
+          SelectedGameInfoId = escoba_info.GameInfoId, 
+          GameSessionState = "running",
+          UserPlayers = new List<UserGameSession>(),
+          GameStates = new List<games.GameState>(),
+        };
+        _context.GameSessions.Add(gameSession);
+        ugs = new UserGameSession {
+          GameSession = gameSession,
+          GameSessionId = gameSession.GameSessionId,
+          User = user_player,
+          UserId = user_player.UserId,
+        };
+        // TODO - Is all this needed or some auto?
+        gameSession.UserPlayers.Add(ugs);
+        user_player.GameSessions.Add(ugs);
+      } 
+      // Lookup game session
+      else {
+        gameSession = _context.GameSessions.Find(sessionid);
+        // Find current/logged-in user (url param)
+        ugs = gameSession.UserPlayers.Where(x => x.User.EmailAddress == userEmail).SingleOrDefault();
+      }
 
-      gs.UserPlayers.Add(new UserGameSession {
-        GameSession = gs,
-        GameSessionId = gs.GameSessionId,
-        User = user_player,
-        UserId = user_player.UserId,
-      });
-
-      gs.GameStates.Add(initial_game_state);
+      gameSession.GameStates.Add(initial_game_state);
       
+      await _context.SaveChangesAsync();
       var payload = new Models.InitGamePayload {
-        SessionId = System.Guid.NewGuid(),
+        SessionId = gameSession.GameSessionId,
         GameState = initial_game_state,
       };
       return payload;

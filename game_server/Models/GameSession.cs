@@ -8,10 +8,6 @@ namespace game_server.Models
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string EmailAddress { get; set; }
-    
-    // The key of type string is to identify the game implementation. Defer for now as only escoba
-    // This did not work with EF Core - Dictionaries are not supported
-    // public Dictionary<string,UserStats> Stats { get; set; }
     public ICollection<UserGameSession> GameSessions { get; set; }
     public ICollection<UserStats> Stats {get; set; }
   }
