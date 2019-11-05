@@ -40,7 +40,11 @@ export default {
   props: {
     card: Object,
     isDeck: Boolean,
-    isHand: Boolean
+    isHand: Boolean,
+    isSelected: {
+      type: Boolean,
+      default: true
+    }
   },
   computed: {
     ...mapGetters([
@@ -97,8 +101,9 @@ export default {
       }
     },
     onclick: function () {
-      console.log('The card ' + this.card.id + '\nselected: ' + this.selected)
-      this.selected = !this.selected
+      // this.selected = !this.selected
+      this.$emit('card-selected', this.card)
+      this.selected = this.isSelected
     }
   },
   mounted: function () {

@@ -1,6 +1,12 @@
 <template>
   <div class="hand-comp">
     <div v-if="getGameDataLoaded">
+      <!-- <b-alert
+        :show="tooManySelections"
+        dismissible
+        variant="warning"
+        @dismissed="clearSelections"
+      ></b-alert> -->
       <b-card
         :class="'hand-' +getPlayer.name"
         :id="'hand-' +getPlayer.name"
@@ -43,6 +49,8 @@
               class="player-card"
               :card="c"
               :isHand="true"
+              v-on:card-selected="cardSelected($event)"
+              v-bind:isSelected="cardsSelected[c.id]"
             />
           </b-col>
         </b-row>
@@ -57,8 +65,13 @@ import CardComp from '@/components/CardComp'
 
 export default {
   name: 'HandComp',
+  data: function () {
+    return {
+      cardsSelected: Object
+    }
+  },
   props: {
-    card: Object,
+    // cards: Object,
     player: String
   },
   components: {
@@ -76,7 +89,6 @@ export default {
       return this[`getPlayer${this.player}`]
     },
     getHand: function () {
-      // console.log(this.getPlayer)
       return this.getPlayer.hand
     },
     cards: function () {
@@ -102,6 +114,15 @@ export default {
         console.log(input)
       } else {
         console.log(comp)
+      }
+    },
+    cardSelected (card) {
+      if (card.id in this.cardsSelected) {
+        var s = this.cardsSelected[card.id]
+        this.cardsSelected = Object.assign({}, this.cardsSelected, { [card.id]: s })
+        this.$set(this.cardsSelected, card.id, !(s))
+      } else {
+        this.cardsSelected = Object.assign({}, this.cardsSelected, { [card.id]: true })
       }
     }
   },
