@@ -1,7 +1,9 @@
 <template>
-  <div class="card-comp">
-    <div v-if="getGameDataLoaded">
-      <div class="card-container">
+  <div class="card-comp"
+   v-on:click="onclick"
+   ><div v-if="getGameDataLoaded"
+    v-bind:class="{selected: selected}"
+    ><div class="card-container">
         <b-card
           :class="'play-card-'+card.val"
           :id="'card-'+card.suit"
@@ -30,6 +32,11 @@ import { mapGetters } from 'vuex'
 
 export default {
   name: 'CardComp',
+  data: function () {
+    return {
+      selected: false
+    }
+  },
   props: {
     card: Object,
     isDeck: Boolean,
@@ -88,6 +95,10 @@ export default {
       } else {
         console.log(comp)
       }
+    },
+    onclick: function () {
+      console.log('The card ' + this.card.id + '\nselected: ' + this.selected)
+      this.selected = !this.selected
     }
   },
   mounted: function () {
@@ -111,6 +122,10 @@ export default {
 } */
 
 /* set all cards to center of div and position: relative for absolute positioning of child icons */
+
+.selected {
+  background-color: #42b983
+}
 
 [class*=play-card-] {
   transform: translate(500,0);
