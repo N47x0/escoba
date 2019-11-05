@@ -27,8 +27,7 @@
           <b-col
             v-for="(c, i) in getTableCards"
             :key="i"
-          >
-            <CardComp
+          ><CardComp
               class="player-card"
               :card="c"
               :isHand="true"

@@ -46,14 +46,10 @@ export default new Vuex.Store({
     },
     getDeck: function (state, getters) {
       var deck = []
-      console.log('state.gameData')
-      console.log(state.gameData)
       // console.log(Object.entries(state.gameData.cards))
       Object.entries(state.gameData.deck.cards).forEach((value, index, array) => {
         deck.push({ 'suit': value[1].suit, 'value': value[1].val, 'owner': value[1].owner, 'card': value[1].id })
       })
-      console.log(deck)
-      console.log(getters.getDeckOrder)
       deck.sort(function (a, b) {
         return getters.getDeckOrder.indexOf(a.card) - getters.getDeckOrder.indexOf(b.card)
       })
@@ -79,7 +75,6 @@ export default new Vuex.Store({
       return state.validPlays
     },
     getTableCards: (state) => {
-      // console.log(state.gameData)
       return state.tableCards
     },
     getRules (state) {
@@ -144,7 +139,6 @@ export default new Vuex.Store({
   },
   actions: {
     updateGameData: function ({ commit }, payload) {
-      console.log(payload)
       commit(types.CHANGE_GAME_DATA, payload)
     },
     loadRuleData: function ({ commit, state, getters }) {
@@ -191,10 +185,8 @@ export default new Vuex.Store({
             player1: response.data.gameState.players.filter(player => player.name === 'Player 1'),
             player2: response.data.gameState.players.filter(player => player.name === 'Player 2'),
             sessionId: response.data.sessionId,
-            tableCards: response.data.tableCards
-
+            tableCards: response.data.gameState.tableCards
           }
-          console.log(response)
           commit(types.INIT_GAME_DATA, parsedResponse.gameState)
           commit(types.SET_CLIENT_SESSION_ID, parsedResponse.sessionId)
           commit(types.CHANGE_PLAYER_1_DATA, parsedResponse.player1)
@@ -233,7 +225,6 @@ export default new Vuex.Store({
       var payload = {
         clientSessionId: getters.getClientSessionId
       }
-      console.log(payload)
       var url = getters.getBaseUrl + endpoints.GET_BEST_PLAYS
       var config = {
         headers: {
@@ -241,7 +232,6 @@ export default new Vuex.Store({
           'Access-Control-Allow-Origin': '*'
         }
       }
-      console.log(payload)
       axios
         .post(url, payload, config)
         .then(function (response) {
@@ -255,7 +245,6 @@ export default new Vuex.Store({
       var payload = {
         clientSessionId: getters.getClientSessionId
       }
-      console.log(payload)
       var url = getters.getBaseUrl + endpoints.PLAY_ROUND
       var config = {
         headers: {
@@ -263,7 +252,6 @@ export default new Vuex.Store({
           'Access-Control-Allow-Origin': '*'
         }
       }
-      console.log(payload)
       axios
         .post(url, payload, config)
         .then(function (response) {
