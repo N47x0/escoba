@@ -65,8 +65,9 @@ export default new Vuex.Store({
     },
     getDeck: function (state, getters) {
       var deck = []
-      // console.log(state.gameData)
-      // console.log(Object.entries(state.gameData.cards))
+      console.log("state.gameData")
+      console.log(state.gameData)
+      //console.log(Object.entries(state.gameData.cards))
       Object.entries(state.gameData.deck.cards).forEach((value, index, array) => {
         deck.push({ 'suit': value[1].suit, 'value': value[1].val, 'owner': value[1].owner, 'card': value[1].id })
       })
@@ -191,7 +192,7 @@ export default new Vuex.Store({
         })
     },
     loadGameData: function ({ commit, state, getters, dispatch }) {
-      var url = getters.getBaseUrl + INIT_GAME
+      var url = getters.getBaseUrl + INIT_GAME + "/jdoe@acme.com/escoba"  
       var config = {
         headers: {
           'Accept': 'application/json',
@@ -199,16 +200,25 @@ export default new Vuex.Store({
           'Access-Control-Allow-Origin': '*'
           }
       }
+      
       // var url = getters.getBaseUrl + MAKE_DECK
       console.log(config)
       axios.get(url, config)
         .then(function (response) {
+          const parsedResponse = {
+            gameState: response.data.gameState,
+            player1: response.data.gameState.players.filter( player => player.name  == "Player 1" ),
+            player2: response.data.gameState.players.filter( player => player.name  == "Player 2" ),
+            sessionId: response.data.sessionId,
+            tableCards: response.data.tableCards,
+    
+          }
           console.log(response)
-          commit(INIT_GAME_DATA, response.data._GameState)
-          commit(SET_CLIENT_SESSION_ID, response.data.id)
-          commit(CHANGE_PLAYER_1_DATA, response.data._GameState.player1)
-          commit(CHANGE_PLAYER_2_DATA, response.data._GameState.player2)
-          commit(CHANGE_TABLE_CARD_DATA, response.data._GameState.tableCards)
+          commit(INIT_GAME_DATA, parsedResponse.gameState)
+          commit(SET_CLIENT_SESSION_ID, parsedResponse.sessionId)
+          commit(CHANGE_PLAYER_1_DATA, parsedResponse.player1)
+          commit(CHANGE_PLAYER_2_DATA, parsedResponse.player2)
+          commit(CHANGE_TABLE_CARD_DATA, parsedResponse.tableCards)
           dispatch('loadRuleData')
         })
         .catch(function (error) {

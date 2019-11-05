@@ -30,7 +30,7 @@ namespace games.escoba
         player2.hand.AddRange(deck.Deal());
       }
       // Deal 4 to the table
-      deck.GetTableCards().AddRange(deck.Deal(4));
+      deck.AddCardsToTable(deck.Deal(4));
       
       // Advance state
       state.TurnCount++;
