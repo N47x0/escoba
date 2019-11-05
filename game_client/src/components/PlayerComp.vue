@@ -8,12 +8,12 @@
       >
         <b-row class="player-info">
           <b-col>{{ getPlayer.name }}</b-col>
-          <b-col>Score: {{ getPlayer.score }}</b-col> 
+          <b-col>Score: {{ getPlayer.score }}</b-col>
           <b-col></b-col>
         </b-row>
         <hr />
         <b-row>
-          <b-col>              
+          <b-col>
             <v-icon
               :id="'-player-icon' + getPlayer.name"
               :class="'-player-icon' + getPlayer.name"
@@ -23,7 +23,7 @@
           </b-col>
           <b-col>
             <span
-              v-for="(c, i) in cards" 
+              v-for="(c, i) in cards"
               :key="i"
             >{{ c.card }} | </span>
           </b-col>
@@ -37,7 +37,6 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import HandComp from '@/components/HandComp'
 
 export default {
   name: 'PlayerComp',
@@ -45,7 +44,6 @@ export default {
     player: String
   },
   components: {
-    HandComp
   },
   computed: {
     ...mapGetters([
@@ -62,21 +60,23 @@ export default {
       return this.getPlayer.hand
     },
     cards: function () {
+      console.log('The player hand')
+      console.log(this.getPlayer)
+      console.log(this.getHand)
       return this.getDeck.filter(x => this.getHand.includes(x.card))
     }
   },
   methods: {
-    log: function(input) {
+    log: function (input) {
       var comp = this
-      if(input) {
+      if (input) {
         console.log(input)
-      }
-      else {
+      } else {
         console.log(comp)
       }
     }
   },
-  mounted: function() {
+  mounted: function () {
   }
 }
 </script>
@@ -522,8 +522,6 @@ export default {
   left: 72%;
   transform: translate(-50%, -50%)
 } */
-
-
 
 h3 {
   margin: 40px 0 0;

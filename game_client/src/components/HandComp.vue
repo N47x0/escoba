@@ -2,8 +2,8 @@
   <div class="hand-comp">
     <div v-if="getGameDataLoaded">
       <b-card
-        :class="'hand-' +getPlayer.name" 
-        :id="'hand-' +getPlayer.name" 
+        :class="'hand-' +getPlayer.name"
+        :id="'hand-' +getPlayer.name"
       >
         <b-row>
           <b-col></b-col>
@@ -36,7 +36,7 @@
         <hr />
         <b-row>
           <b-col
-            v-for="(c, i) in getHand" 
+            v-for="(c, i) in getHand"
             :key="i"
           >
             <CardComp
@@ -53,7 +53,6 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import axios from 'axios'
 import CardComp from '@/components/CardComp'
 
 export default {
@@ -84,7 +83,7 @@ export default {
       console.log(this.getHand)
       return this.getDeck.filter(x => this.getHand.includes(x.card))
     },
-    validPayload() {
+    validPayload () {
       // return "test-payload"
       return JSON.stringify({
         tableCards: this.getTableCards,
@@ -97,19 +96,18 @@ export default {
       'getBestPlay',
       'loadValidPlays'
     ]),
-    log: function(input) {
+    log: function (input) {
       var comp = this
-      if(input) {
+      if (input) {
         console.log(input)
-      }
-      else {
+      } else {
         console.log(comp)
       }
-    },
+    }
   },
-  mounted: function() {
+  mounted: function () {
     console.log('#### hand comp ####')
-    //console.log(this)
+    // console.log(this)
   }
 }
 </script>
@@ -549,8 +547,6 @@ export default {
   left: 72%;
   transform: translate(-50%, -50%)
 } */
-
-
 
 h3 {
   margin: 40px 0 0;

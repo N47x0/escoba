@@ -2,30 +2,11 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 import {
-  SET_CLIENT_SESSION_ID,
-  CHANGE_GAME_DATA_ERRORED,
-  CHANGE_GAME_DATA_LOADED,
-  INIT_GAME_DATA,
-  CHANGE_GAME_DATA,
-  CHANGE_VALID_PLAYS_ERRORED,
-  CHANGE_VALID_PLAYS_LOADED, 
-  CHANGE_VALID_PLAYS,
-  CHANGE_PLAYER_1_DATA,
-  CHANGE_PLAYER_2_DATA,
-  CHANGE_TABLE_CARD_DATA,
-  LOAD_RULE_DATA,
-  CHANGE_RULE_DATA_ERRORED,
-  CHANGE_RULE_DATA_LOADED
+  types
 } from './mutation-types'
 
 import {
-  MAKE_DECK,
-  INIT_GAME,
-  PLAY_FIRST_ROUND,
-  GET_VALID_PLAYS,
-  GET_BEST_PLAYS,
-  RULES,
-  PLAY_ROUND
+  endpoints
 } from './api-endpoints'
 
 Vue.use(Vuex)
@@ -65,14 +46,14 @@ export default new Vuex.Store({
     },
     getDeck: function (state, getters) {
       var deck = []
-      console.log("state.gameData")
+      console.log('state.gameData')
       console.log(state.gameData)
-      //console.log(Object.entries(state.gameData.cards))
+      // console.log(Object.entries(state.gameData.cards))
       Object.entries(state.gameData.deck.cards).forEach((value, index, array) => {
         deck.push({ 'suit': value[1].suit, 'value': value[1].val, 'owner': value[1].owner, 'card': value[1].id })
       })
-      // console.log(deck)
-      // console.log(getters.getDeckOrder)
+      console.log(deck)
+      console.log(getters.getDeckOrder)
       deck.sort(function (a, b) {
         return getters.getDeckOrder.indexOf(a.card) - getters.getDeckOrder.indexOf(b.card)
       })
@@ -80,10 +61,10 @@ export default new Vuex.Store({
       return deck
     },
     getPlayer1: (state) => {
-      return state.player1
+      return state.player1[0]
     },
     getPlayer2: (state) => {
-      return state.player2
+      return state.player2[0]
     },
     getGameDataLoaded: (state) => {
       return state.gameDataLoaded
@@ -101,196 +82,196 @@ export default new Vuex.Store({
       // console.log(state.gameData)
       return state.tableCards
     },
-    getRules(state) {
+    getRules (state) {
       return state.rules
     },
-    getRulesLoaded(state) {
+    getRulesLoaded (state) {
       return state.rulesLoaded
     }
   },
   mutations: {
-    [SET_CLIENT_SESSION_ID]: function (state, payload) {
+    [types.SET_CLIENT_SESSION_ID]: function (state, payload) {
       state.clientSessionId = payload
     },
-    [CHANGE_GAME_DATA_ERRORED]: function (state, errored) {
+    [types.CHANGE_GAME_DATA_ERRORED]: function (state, errored) {
       state.gameDataErrored = errored
     },
-    [CHANGE_GAME_DATA_LOADED]: function (state, loaded) {
+    [types.CHANGE_GAME_DATA_LOADED]: function (state, loaded) {
       state.gameDataLoaded = loaded
     },
-    [INIT_GAME_DATA]: function (state, data) {
+    [types.INIT_GAME_DATA]: function (state, data) {
       state.gameData = data
     },
-    [CHANGE_GAME_DATA]: function (state, payload) {
+    [types.CHANGE_GAME_DATA]: function (state, payload) {
       // console.log(payload)
       state.gameData.game = payload.game
       // console.log(state.gameData)
     },
-    [CHANGE_RULE_DATA_ERRORED]: function (state, errored) {
+    [types.CHANGE_RULE_DATA_ERRORED]: function (state, errored) {
       state.rulesErrored = errored
     },
-    [CHANGE_RULE_DATA_LOADED]: function (state, loaded) {
+    [types.CHANGE_RULE_DATA_LOADED]: function (state, loaded) {
       state.rulesLoaded = loaded
     },
-    [LOAD_RULE_DATA]: function (state, data) {
+    [types.LOAD_RULE_DATA]: function (state, data) {
       state.rules = data
     },
-    [CHANGE_VALID_PLAYS_ERRORED]: function (state, errored) {
+    [types.CHANGE_VALID_PLAYS_ERRORED]: function (state, errored) {
       state.validPlaysErrored = errored
     },
-    [CHANGE_VALID_PLAYS_LOADED]: function (state, loaded) {
+    [types.CHANGE_VALID_PLAYS_LOADED]: function (state, loaded) {
       state.validPlaysLoaded = loaded
     },
-    [CHANGE_VALID_PLAYS]: function (state, data) {
+    [types.CHANGE_VALID_PLAYS]: function (state, data) {
       state.validPlays = data
     },
-    [CHANGE_PLAYER_1_DATA]: function (state, payload) {
+    [types.CHANGE_PLAYER_1_DATA]: function (state, payload) {
       // console.log(state.player1)
       state.player1 = payload
       // console.log(state.player1)
     },
-    [CHANGE_PLAYER_2_DATA]: function (state, payload) {
+    [types.CHANGE_PLAYER_2_DATA]: function (state, payload) {
       // console.log(state.player2)
       state.player2 = payload
       // console.log(state.player2)
     },
-    [CHANGE_TABLE_CARD_DATA]: function (state, payload) {
+    [types.CHANGE_TABLE_CARD_DATA]: function (state, payload) {
       // console.log(state.player2)
       state.tableCards = payload
       // console.log(state.player2)
     }
-    
+
   },
   actions: {
     updateGameData: function ({ commit }, payload) {
       console.log(payload)
-      commit(CHANGE_GAME_DATA, payload)
+      commit(types.CHANGE_GAME_DATA, payload)
     },
     loadRuleData: function ({ commit, state, getters }) {
-      var url = getters.getBaseUrl + RULES
+      var url = getters.getBaseUrl + endpoints.RULES
       var config = {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*'
-          }
+        }
       }
       // var url = getters.getBaseUrl + MAKE_DECK
       console.log(config)
       axios.get(url, config)
         .then(function (response) {
           console.log(response)
-          commit(LOAD_RULE_DATA, response.data)
+          commit(types.LOAD_RULE_DATA, response.data)
         })
         .catch(function (error) {
           console.log(error)
-          commit(CHANGE_RULE_DATA_ERRORED, true)
+          commit(types.CHANGE_RULE_DATA_ERRORED, true)
         })
         .finally(function () {
           console.log('#### deck finally ####')
-          commit(CHANGE_RULE_DATA_LOADED, true)
+          commit(types.CHANGE_RULE_DATA_LOADED, true)
         })
     },
     loadGameData: function ({ commit, state, getters, dispatch }) {
-      var url = getters.getBaseUrl + INIT_GAME + "/jdoe@acme.com/escoba"  
+      var url = getters.getBaseUrl + endpoints.INIT_GAME + '/jdoe@acme.com/escoba'
       var config = {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*'
-          }
+        }
       }
-      
+
       // var url = getters.getBaseUrl + MAKE_DECK
       console.log(config)
       axios.get(url, config)
         .then(function (response) {
           const parsedResponse = {
             gameState: response.data.gameState,
-            player1: response.data.gameState.players.filter( player => player.name  == "Player 1" ),
-            player2: response.data.gameState.players.filter( player => player.name  == "Player 2" ),
+            player1: response.data.gameState.players.filter(player => player.name === 'Player 1'),
+            player2: response.data.gameState.players.filter(player => player.name === 'Player 2'),
             sessionId: response.data.sessionId,
-            tableCards: response.data.tableCards,
-    
+            tableCards: response.data.tableCards
+
           }
           console.log(response)
-          commit(INIT_GAME_DATA, parsedResponse.gameState)
-          commit(SET_CLIENT_SESSION_ID, parsedResponse.sessionId)
-          commit(CHANGE_PLAYER_1_DATA, parsedResponse.player1)
-          commit(CHANGE_PLAYER_2_DATA, parsedResponse.player2)
-          commit(CHANGE_TABLE_CARD_DATA, parsedResponse.tableCards)
+          commit(types.INIT_GAME_DATA, parsedResponse.gameState)
+          commit(types.SET_CLIENT_SESSION_ID, parsedResponse.sessionId)
+          commit(types.CHANGE_PLAYER_1_DATA, parsedResponse.player1)
+          commit(types.CHANGE_PLAYER_2_DATA, parsedResponse.player2)
+          commit(types.CHANGE_TABLE_CARD_DATA, parsedResponse.tableCards)
           dispatch('loadRuleData')
         })
         .catch(function (error) {
           console.log(error)
-          commit(CHANGE_GAME_DATA_ERRORED, true)
+          commit(types.CHANGE_GAME_DATA_ERRORED, true)
         })
         .finally(function () {
           console.log('#### deck finally ####')
-          commit(CHANGE_GAME_DATA_LOADED, true)
+          commit(types.CHANGE_GAME_DATA_LOADED, true)
         })
     },
     loadValidPlays: function ({ commit, getters }, payload) {
       console.log(payload)
-      var url = getters.getBaseUrl + GET_VALID_PLAYS
+      var url = getters.getBaseUrl + endpoints.GET_VALID_PLAYS
       var config = {
         headers: {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*'
-          }
+        }
       }
       axios
-        .post(url, payload , config)
+        .post(url, payload, config)
         .then(function (response) {
-          console.log(response);
+          console.log(response)
         })
         .catch(function (error) {
-          console.log(error);
-        });
+          console.log(error)
+        })
     },
-    getBestPlay: function ({ commit, getters}) {
+    getBestPlay: function ({ commit, getters }) {
       var payload = {
         clientSessionId: getters.getClientSessionId
       }
       console.log(payload)
-      var url = getters.getBaseUrl + GET_BEST_PLAYS
+      var url = getters.getBaseUrl + endpoints.GET_BEST_PLAYS
       var config = {
         headers: {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*'
-          }
+        }
       }
       console.log(payload)
       axios
-        .post(url, payload , config)
+        .post(url, payload, config)
         .then(function (response) {
-          console.log(response);
+          console.log(response)
         })
         .catch(function (error) {
-          console.log(error);
-        });
+          console.log(error)
+        })
     },
-    playRound: function ({ commit, getters}) {
+    playRound: function ({ commit, getters }) {
       var payload = {
         clientSessionId: getters.getClientSessionId
       }
       console.log(payload)
-      var url = getters.getBaseUrl + PLAY_ROUND
+      var url = getters.getBaseUrl + endpoints.PLAY_ROUND
       var config = {
         headers: {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*'
-          }
+        }
       }
       console.log(payload)
       axios
-        .post(url, payload , config)
+        .post(url, payload, config)
         .then(function (response) {
-          console.log(response);
+          console.log(response)
         })
         .catch(function (error) {
-          console.log(error);
-        });
+          console.log(error)
+        })
     }
   }
 })

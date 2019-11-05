@@ -9,7 +9,7 @@
       >
         Get New Deck
       </b-button>
-        |  
+        |
       <b-button
         @click="log"
       >
@@ -22,7 +22,6 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import axios from 'axios'
 
 export default {
   name: 'GameControls',
@@ -52,19 +51,18 @@ export default {
       'loadGameData',
       'playFirstRound'
     ]),
-    log: function(input) {
+    log: function (input) {
       var comp = this
-      if(input) {
+      if (input) {
         console.log(input)
-      }
-      else {
+      } else {
         console.log(comp)
       }
-    },
+    }
   },
-  mounted: function() {
+  mounted: function () {
     // this.log(this.getDeckOrder)
-    if(this.getGameDataLoaded) {
+    if (this.getGameDataLoaded) {
       // console.log(this.getCards)
       // console.log(this.getDeck)
     }

@@ -3,7 +3,7 @@
     <div v-if="getGameDataLoaded">
       <div class="card-container">
         <b-card
-          :class="'play-card-'+card.val" 
+          :class="'play-card-'+card.val"
           :id="'card-'+card.suit"
           :style="cardStyle"
         >
@@ -15,7 +15,7 @@
           <v-icon
             v-for="(value, i) in card.val"
             :id="'icon-'+(i+1)"
-            :key="i" 
+            :key="i"
             :name="iconName"
             :scale="iconSize"
           ></v-icon>
@@ -48,19 +48,21 @@ export default {
         return 1.5
       }
       if (this.isPlays === true) {
-        return .75
+        return 0.75
       }
+      return 0
     },
     cardStyle: function () {
       if (this.isDeck === true) {
-        return "width: 20em; height: 25em"
+        return 'width: 20em; height: 25em'
       }
       if (this.isHand === true) {
-        return "width: 6em; height: 7.5em"
+        return 'width: 6em; height: 7.5em'
       }
       if (this.isPlays === true) {
-        return "width: 3em; height: 3.75em"
+        return 'width: 3em; height: 3.75em'
       }
+      return 'none'
     },
     iconName: function () {
       if (this.card.suit === 'O') {
@@ -75,22 +77,22 @@ export default {
       if (this.card.suit === 'E') {
         return 'screwdriver'
       }
+      return 'none'
     }
   },
   methods: {
-    log: function(input) {
+    log: function (input) {
       var comp = this
-      if(input) {
+      if (input) {
         console.log(input)
-      }
-      else {
+      } else {
         console.log(comp)
       }
     }
   },
-  mounted: function() {
+  mounted: function () {
     console.log('#### card comp ####')
-    //console.log(this)  
+    // console.log(this)
     // this.log(this.getDeck)
     // if(this.getGameDataLoaded) {
     //   console.log(this.getDeck)
@@ -538,8 +540,6 @@ export default {
   left: 72%;
   transform: translate(-50%, -50%)
 } */
-
-
 
 h3 {
   margin: 40px 0 0;

@@ -1,6 +1,7 @@
 <template>
   <div class="rule-carousel">
-    <div v-if="getRulesLoaded">
+    <div v-if="false">
+    <!-- getRulesLoaded"> -->
       <h5>Rules</h5>
       <b-carousel
         id="carousel-1"
@@ -19,8 +20,8 @@
         <!-- Slide with blank fluid image to maintain slide aspect ratio -->
         <b-carousel-slide
           v-for="(rule, i) in getRules"
-          :key="i" 
-          :caption="rule.title" 
+          :key="i"
+          :caption="rule.title"
           img-blank img-alt="Blank image"
         >
           <p>
@@ -33,7 +34,7 @@
         Slide #: {{ slide }}<br>
         Sliding: {{ sliding }}
       </p> -->
-    </div>    
+    </div>
   </div>
 </template>
 
@@ -47,7 +48,7 @@ export default {
     isDeck: Boolean,
     isHand: Boolean
   },
-  data() {
+  data () {
     return {
       slide: 0,
       sliding: null
@@ -57,28 +58,27 @@ export default {
     ...mapGetters([
       'getRulesLoaded',
       'getRules'
-    ]),
+    ])
   },
   methods: {
-    log: function(input) {
+    log: function (input) {
       var comp = this
-      if(input) {
+      if (input) {
         console.log(input)
-      }
-      else {
+      } else {
         console.log(comp)
       }
     },
-    onSlideStart(slide) {
+    onSlideStart (slide) {
       this.sliding = true
     },
-    onSlideEnd(slide) {
+    onSlideEnd (slide) {
       this.sliding = false
     }
   },
-  mounted: function() {
+  mounted: function () {
     console.log('#### card comp ####')
-    //console.log(this)  
+    // console.log(this)
     // this.log(this.getDeck)
     // if(this.getGameDataLoaded) {
     //   console.log(this.getDeck)
@@ -530,8 +530,6 @@ export default {
   left: 72%;
   transform: translate(-50%, -50%)
 } */
-
-
 
 h3 {
   margin: 40px 0 0;

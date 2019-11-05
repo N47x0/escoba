@@ -2,7 +2,7 @@
   <div class="play-area-comp">
     <div v-if="getGameDataLoaded">
       <b-card
-        class="play-area" 
+        class="play-area"
         id="play-area"
         style="width: 20rem; height: 25rem"
       >
@@ -50,24 +50,22 @@ export default {
     }
   },
   methods: {
-    log: function(input) {
+    log: function (input) {
       var comp = this
-      if(input) {
+      if (input) {
         console.log(input)
-      }
-      else {
+      } else {
         console.log(comp)
       }
     }
   },
-  mounted: function() {
+  mounted: function () {
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
 
 /* set all cards to center of div and position: relative for absolute positioning of child icons */
 
@@ -499,8 +497,6 @@ export default {
   left: 72%;
   transform: translate(-50%, -50%)
 } */
-
-
 
 h3 {
   margin: 40px 0 0;

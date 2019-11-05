@@ -14,7 +14,7 @@
             <PlayerComp player=1 />
           </b-col>
           <b-col md="4">
-            <TableCards 
+            <TableCards
               :table-cards="getTableCards"
             />
           </b-col>
@@ -42,7 +42,7 @@
 
 <script>
 // @ is an alias to /src
-import DeckComp from '@/components/DeckComp.vue'
+// import DeckComp from '@/components/DeckComp.vue'
 import PlayerComp from '@/components/PlayerComp.vue'
 import GameControls from '@/components/GameControls'
 import RuleCarousel from '@/components/RuleCarousel'
@@ -54,7 +54,7 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'Board',
   components: {
-    DeckComp,
+    //    DeckComp,
     PlayerComp,
     GameControls,
     RuleCarousel,
