@@ -32,18 +32,13 @@ import { mapGetters } from 'vuex'
 
 export default {
   name: 'CardComp',
-  data: function () {
-    return {
-      selected: false
-    }
-  },
   props: {
     card: Object,
     isDeck: Boolean,
     isHand: Boolean,
-    isSelected: {
+    selected: {
       type: Boolean,
-      default: true
+      default: false
     }
   },
   computed: {
@@ -101,9 +96,7 @@ export default {
       }
     },
     onclick: function () {
-      // this.selected = !this.selected
       this.$emit('card-selected', this.card)
-      this.selected = this.isSelected
     }
   },
   mounted: function () {

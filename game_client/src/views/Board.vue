@@ -24,13 +24,13 @@
         </b-row>
         <b-row>
           <b-col>
-            <HandComp player=1 />
+            <HandComp player=1 v-bind:selectable="1" />
           </b-col>
           <b-col>
             <PlayArea />
           </b-col>
           <b-col>
-            <HandComp player=2 />
+            <HandComp player=2 v-bind:selectable="1" />
           </b-col>
         </b-row>
       </b-container>

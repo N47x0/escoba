@@ -47,10 +47,10 @@
           >
             <CardComp
               class="player-card"
+              @card-selected="handleCardSelected($event)"
               :card="c"
               :isHand="true"
-              v-on:card-selected="cardSelected($event)"
-              v-bind:isSelected="cardsSelected[c.id]"
+              :selected="cardsSelected[c.id]"
             />
           </b-col>
         </b-row>
@@ -71,6 +71,7 @@ export default {
     }
   },
   props: {
+    selectable: Number,
     // cards: Object,
     player: String
   },
@@ -116,14 +117,12 @@ export default {
         console.log(comp)
       }
     },
-    cardSelected (card) {
-      if (card.id in this.cardsSelected) {
-        var s = this.cardsSelected[card.id]
-        this.cardsSelected = Object.assign({}, this.cardsSelected, { [card.id]: s })
-        this.$set(this.cardsSelected, card.id, !(s))
-      } else {
-        this.cardsSelected = Object.assign({}, this.cardsSelected, { [card.id]: true })
-      }
+    handleCardSelected (card) {
+      const prevSelectState = (card.id in this.cardsSelected) ? this.cardsSelected[card.id] : false
+      const numberSelected = Object.values(this.cardsSelected).filter(x => x === true).length
+      const selectionsAvailable = (numberSelected < this.selectable && !prevSelectState)
+      this.cardsSelected = Object.assign({}, this.cardsSelected, { [card.id]: selectionsAvailable })
+      this.$set(this.cardsSelected, card.id, selectionsAvailable)
     }
   },
   mounted: function () {
