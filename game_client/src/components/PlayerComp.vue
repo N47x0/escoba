@@ -4,7 +4,7 @@
       <b-card
         class="player"
         :id="'player-' + getPlayer.name"
-        style="width: 20rem; height: 25rem"
+        style="width: 20rem; height: 10rem"
       >
         <b-row class="player-info">
           <b-col>{{ getPlayer.name }}</b-col>

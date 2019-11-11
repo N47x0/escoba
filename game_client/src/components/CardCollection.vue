@@ -13,7 +13,7 @@
             :key="i"
           >
             <CardComp
-              :class="owner + '-card'"
+              :class="[owner + '-card']"
               :card="c"
               :isHand="true"
               v-on:card-selected="cardSelected($event)"

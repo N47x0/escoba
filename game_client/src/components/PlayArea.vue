@@ -1,36 +1,43 @@
 <template>
   <div class="play-area-comp">
     <div v-if="getGameDataLoaded">
-      <b-card
+      <b-container
         class="play-area"
         id="play-area"
-        style="width: 20rem; height: 25rem"
       >
-        <b-row>
-          <b-col></b-col>
-          <b-col>Play Area</b-col>
-          <b-col></b-col>
-        </b-row>
-        <b-row>
-          <b-col></b-col>
-          <b-col>
-            <v-icon
-              id="play-area-icon"
-              name="child"
-              scale=3.5
-            ></v-icon>
-          </b-col>
-          <b-col></b-col>
-        </b-row>
+        <v-icon
+          id="play-area-icon"
+          name="child"
+          scale=3.5
+        />
+        <h5>Play Area</h5>
         <hr />
         <b-row>
+          <b-col md=4>
+            <HandComp 
+              player=1 
+            />
+          </b-col>
+          <b-col md=4>
+            <TableCards
+              :table-cards="getTableCards"
+            />
+          </b-col>
+          <b-col md=4>
+            <HandComp 
+              player=2 
+            />
+          </b-col>
         </b-row>
-      </b-card>
+      </b-container>
     </div>
   </div>
 </template>
 
 <script>
+import TableCards from '@/components/TableCards'
+import HandComp from '@/components/HandComp'
+
 import { mapGetters } from 'vuex'
 
 export default {
@@ -38,11 +45,14 @@ export default {
   props: {
   },
   components: {
+    TableCards,
+    HandComp
   },
   computed: {
     ...mapGetters([
       'getGameDataLoaded',
-      'getDeck'
+      'getDeck',
+      'getTableCards'
     ]),
     cards: function () {
       console.log(this.getHand)

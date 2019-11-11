@@ -12,26 +12,26 @@
         :id="'hand-' +getPlayer.name"
       >
         <b-row>
-          <b-col></b-col>
-          <b-col>{{getPlayer.name}}'s Hand</b-col>
-          <b-col></b-col>
+          <b-col md=4></b-col>
+          <b-col md=4>{{getPlayer.name}}'s Hand</b-col>
+          <b-col md=4></b-col>
         </b-row>
         <b-row>
-          <b-col>
+          <b-col md=4>
             <b-button
               @click="loadValidPlays(validPayload)"
             >
               Get Valid Plays
             </b-button>
           </b-col>
-          <b-col>
+          <b-col md=4>
             <v-icon
               id="hand-icon"
               name="hand-spock"
               scale=3.5
             ></v-icon>
           </b-col>
-          <b-col>
+          <b-col md=4>
             <b-button
               @click="getBestPlay()"
             >
