@@ -1,11 +1,10 @@
 <template>
   <div class="card-comp"
-   v-on:click="onclick"
    ><div v-if="getGameDataLoaded"
-    v-bind:class="{selected: selected}"
     ><div class="card-container">
         <b-card
-          :class="'play-card-'+card.val"
+          :class="[{selected: this.isSelected}, 'play-card-' + this.card.val]"
+          @click="toggleSelect"
           :id="'card-'+card.suit"
           :style="cardStyle"
         >
@@ -43,7 +42,7 @@ export default {
     isHand: Boolean,
     isSelected: {
       type: Boolean,
-      default: true
+      default: false
     }
   },
   computed: {
@@ -68,7 +67,7 @@ export default {
         return 'width: 20em; height: 25em'
       }
       if (this.isHand === true) {
-        return 'width: 6em; height: 7.5em'
+        return 'width: 7em; height: 9.5em'
       }
       if (this.isPlays === true) {
         return 'width: 3em; height: 3.75em'
@@ -100,10 +99,9 @@ export default {
         console.log(comp)
       }
     },
-    onclick: function () {
+    toggleSelect: function () {
       // this.selected = !this.selected
       this.$emit('card-selected', this.card)
-      this.selected = this.isSelected
     }
   },
   mounted: function () {
@@ -129,7 +127,7 @@ export default {
 /* set all cards to center of div and position: relative for absolute positioning of child icons */
 
 .selected {
-  background-color: #42b983
+  border: 2px solid #42b983;
 }
 
 [class*=play-card-] {

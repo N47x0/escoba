@@ -41,18 +41,10 @@
         </b-row>
         <hr />
         <b-row>
-          <b-col
-            v-for="(c, i) in getHand"
-            :key="i"
-          >
-            <CardComp
-              class="player-card"
-              :card="c"
-              :isHand="true"
-              v-on:card-selected="cardSelected($event)"
-              v-bind:isSelected="cardsSelected[c.id]"
-            />
-          </b-col>
+          <CardCollection 
+            :collection="getHand"
+            owner="player"
+          />
         </b-row>
       </b-card>
     </div>
@@ -61,7 +53,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import CardComp from '@/components/CardComp'
+import CardCollection from '@/components/CardCollection'
 
 export default {
   name: 'HandComp',
@@ -75,7 +67,7 @@ export default {
     player: String
   },
   components: {
-    CardComp
+    CardCollection
   },
   computed: {
     ...mapGetters([
@@ -114,15 +106,6 @@ export default {
         console.log(input)
       } else {
         console.log(comp)
-      }
-    },
-    cardSelected (card) {
-      if (card.id in this.cardsSelected) {
-        var s = this.cardsSelected[card.id]
-        this.cardsSelected = Object.assign({}, this.cardsSelected, { [card.id]: s })
-        this.$set(this.cardsSelected, card.id, !(s))
-      } else {
-        this.cardsSelected = Object.assign({}, this.cardsSelected, { [card.id]: true })
       }
     }
   },

@@ -33,6 +33,7 @@ namespace game_server.Controllers
     [EnableCors]
     [HttpGet("{userEmail}/{gameName}/{sessionid?}")]
     async public Task<InitGamePayload> Get(string userEmail, string gameName, Guid sessionid){
+      Console.WriteLine();
       // TODO - User reg
       var user_player = _context.Users
         .Include(e => e.Stats)
