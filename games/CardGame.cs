@@ -130,9 +130,12 @@ namespace games {
   public interface ICardGame {
     GameState InitGame();
     GameState PlayTurn(List<Card> cardsPlayed, Player player, GameState currentState);
+
+    List<List<Card>> GetValidPlays( List<Card> hand, List<Card> table_cards );
   }
 
   public class InvalidGameParametersException : System.Exception {
+    // why are there three things with the same name here;  seems like it has something to do with the recursive/nested nature of exceptions
     public InvalidGameParametersException(){}
     public InvalidGameParametersException(string message) : base(message) {}
     public InvalidGameParametersException(string message, System.Exception innerException): base(message, innerException) {}

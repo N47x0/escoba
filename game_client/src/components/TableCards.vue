@@ -6,20 +6,20 @@
         id="table-cards"
       >
         <b-row>
-          <b-col></b-col>
-          <b-col>Table Cards</b-col>
-          <b-col></b-col>
+          <b-col md=4></b-col>
+          <b-col md=4>Table Cards</b-col>
+          <b-col md=4></b-col>
         </b-row>
         <b-row>
-          <b-col></b-col>
-          <b-col>
+          <b-col md=4></b-col>
+          <b-col md=4>
             <v-icon
               id="table-cards-icon"
               name="brands/stack-overflow"
               scale=3.5
             ></v-icon>
           </b-col>
-          <b-col></b-col>
+          <b-col md=4></b-col>
         </b-row>
         <hr />
           <CardCollection 

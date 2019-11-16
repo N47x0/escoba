@@ -40,6 +40,11 @@ namespace games.escoba
       return state;
     }
 
+    public List<List<Card>> GetValidPlays( List<Card> hand, List<Card> table_cards ) {
+      List<List<Card>> valid_plays = ValidPlays(hand, table_cards);
+      return valid_plays;
+    }
+
     // This is where "escoba' specific (read: "business") logic belongs
     // After InitGame (deck starts with 40 cards):
     // - there are 30 cards in the deck (3 to each player and 4 to the table).

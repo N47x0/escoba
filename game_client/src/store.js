@@ -205,7 +205,7 @@ export default new Vuex.Store({
     },
     loadValidPlays: function ({ commit, getters }, payload) {
       console.log(payload)
-      var url = getters.getBaseUrl + endpoints.GET_VALID_PLAYS
+      var url = getters.getBaseUrl + endpoints.GET_VALID_PLAYS + getters.getClientSessionId
       var config = {
         headers: {
           'Content-Type': 'application/json',
