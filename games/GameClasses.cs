@@ -262,8 +262,8 @@ namespace GameManager
       Player _p1 = players.First();
       Player _p2 = players.Last();
       List<Card> _table_cards = table_cards;
-      List<List<Card>> _p1_valid_plays = ValidPlays(_p1.hand, _table_cards);
-      List<List<Card>> _p2_valid_plays = ValidPlays(_p2.hand, _table_cards);
+      List<List<Card>> _p1_valid_plays = ValidPlays(_p1.hand, _table_cards).Select(x => x).Distinct().ToList();
+      List<List<Card>> _p2_valid_plays = ValidPlays(_p2.hand, _table_cards).Select(x => x).Distinct().ToList();
       var _valid_plays = new Dictionary<string, List<List<Card>>>();
       _valid_plays.Add(_p1.name, _p1_valid_plays);
       _valid_plays.Add(_p2.name, _p2_valid_plays);
@@ -274,8 +274,12 @@ namespace GameManager
       deck = new Deck();
       // Start, alternate 3 cards each player, 
       foreach (var i in Enumerable.Range(1,3)) {
-        adv_player.hand.AddRange(deck.Deal());
-        flw_player.hand.AddRange(deck.Deal());
+        var adv_card = deck.Deal();
+        var flw_card = deck.Deal();
+        adv_player.hand.AddRange(adv_card);
+        deck.SetCardOwner(adv_card.First(), adv_player);
+        flw_player.hand.AddRange(flw_card);
+        deck.SetCardOwner(flw_card.First(), flw_player);
       }
       table_cards.AddRange(deck.Deal(4));
 

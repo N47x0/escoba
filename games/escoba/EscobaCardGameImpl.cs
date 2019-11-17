@@ -26,8 +26,13 @@ namespace games.escoba
 
       // Start, alternate 3 cards each player, 
       foreach (var i in Enumerable.Range(1,3)) {
-        player1.hand.AddRange(deck.Deal());
-        player2.hand.AddRange(deck.Deal());
+        var player1_card = deck.Deal();
+        var player2_card = deck.Deal();
+        player1.hand.AddRange(player1_card);
+        deck.SetCardOwner(player1_card.First(), player1);
+        player2.hand.AddRange(player2_card);
+        deck.SetCardOwner(player2_card.First(), player2);
+
       }
       // Deal 4 to the table
       deck.AddCardsToTable(deck.Deal(4));

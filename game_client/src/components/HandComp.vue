@@ -136,6 +136,7 @@ export default {
     },
     playerValidPlay() {
       console.log(this.validPlays[this.currentValidPlayIndex][0])
+      this.validPlays.filter(x => x.owner === 'player')
       return this.validPlays[this.currentValidPlayIndex][0]
     },
     tableValidPlay() {
@@ -167,9 +168,11 @@ export default {
       this.currentValidPlayIndex = 0
     },
     previousValidPlay() {
+      console.log(this.currentValidPlayIndex)
       this.currentValidPlayIndex -= 1
     },
     nextValidPlay() {
+      console.log(this.currentValidPlayIndex)
       this.currentValidPlayIndex += 1
     },
   },
