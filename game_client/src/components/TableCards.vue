@@ -25,6 +25,7 @@
           <CardCollection 
             :collection="getTableCards"
             owner="table"
+            :highlighted="highlighted"
           />
       </b-card>
     </div>
@@ -39,7 +40,8 @@ import CardComp from '@/components/CardComp'
 export default {
   name: 'TableCards',
   props: {
-    tableCards: Array
+    tableCards: Array,
+    highlighted: Object
   },
   components: {
     CardComp,

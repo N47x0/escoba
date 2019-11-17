@@ -14,17 +14,20 @@
         <hr />
         <b-row>
           <b-col md=4>
-            <HandComp 
+            <HandComp
+              @new-highlighted="newTableCardsHighlighted" 
               player=1 
             />
           </b-col>
           <b-col md=4>
             <TableCards
               :table-cards="getTableCards"
+              :highlighted="tableCardsHighlighted"
             />
           </b-col>
           <b-col md=4>
-            <HandComp 
+            <HandComp
+              @new-highlighted="newTableCardsHighlighted" 
               player=2 
             />
           </b-col>
@@ -48,6 +51,11 @@ export default {
     TableCards,
     HandComp
   },
+  data () {
+    return {
+      tableCardsHighlighted: Object
+    }
+  },
   computed: {
     ...mapGetters([
       'getGameDataLoaded',
@@ -67,6 +75,10 @@ export default {
       } else {
         console.log(comp)
       }
+    },
+    newTableCardsHighlighted(payload) {
+      this.tableCardsHighlighted = payload
+      console.log(payload)
     }
   },
   mounted: function () {

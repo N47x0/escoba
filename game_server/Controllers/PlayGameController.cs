@@ -32,7 +32,7 @@ namespace game_server.Controllers
 
     [EnableCors]
     [HttpPost("GetValidPlays/{sessionid}")]
-    async public Task<ValidPlaysPayload> GetValidPlays( ValidPlaysIncomingPayload incomingPayload){
+    async public Task<ValidPlaysPayload> GetValidPlays([FromBody]ValidPlaysIncomingPayload incomingPayload){
       Console.WriteLine(incomingPayload);
       // TODO - Specific gamename resolution
       var escoba_info = _context.Games.Where(x => x.GameName == "escoba").SingleOrDefault();
@@ -49,8 +49,7 @@ namespace game_server.Controllers
       await _context.SaveChangesAsync();
       var payload = new Models.ValidPlaysPayload {
         SessionId = gameSession.GameSessionId,
-        GameState = current_game_state,
-        ValidPlays = valid_plays
+        GameState = current_game_state
       };
       return payload;
     }

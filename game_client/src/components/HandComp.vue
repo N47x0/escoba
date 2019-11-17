@@ -18,8 +18,11 @@
         </b-row>
         <b-row>
           <b-col md=4>
-            <b-button
+            <!-- <b-button
               @click="loadValidPlays(validPayload)"
+            > -->
+            <b-button
+              @click="onGetValidPlays"
             >
               Get Valid Plays
             </b-button>
@@ -40,10 +43,47 @@
           </b-col>
         </b-row>
         <hr />
+        <b-row 
+          v-if="showValidPlays"
+          align-h="center"
+        >
+          <b-col cols=6>
+            <b-button-toolbar 
+              aria-label="Toolbar with buttons to control which valid play is displayed and selected"
+              justify
+              class="valid-plays-toolbar"
+            >
+              <b-button-group 
+                class="mx-1"
+                
+              >
+                <b-button
+                  @click="previousValidPlay"
+                >            
+                  <v-icon
+                    id="backward-icon"
+                    name="backward"
+                  ></v-icon>
+                </b-button>
+                <b-button>{{ playerValidPlay.id}} | {{ tableValidPlay.id}}</b-button>
+                <b-button
+                  @click="nextValidPlay"
+                >            
+                  <v-icon
+                    id="forward-icon"
+                    name="forward"
+                  ></v-icon>
+                </b-button>
+              </b-button-group>
+            </b-button-toolbar>
+          </b-col>
+        </b-row>
+        <hr />
         <b-row>
           <CardCollection 
             :collection="getHand"
             owner="player"
+            :highlighted="playerValidPlay"
           />
         </b-row>
       </b-card>
@@ -59,7 +99,9 @@ export default {
   name: 'HandComp',
   data: function () {
     return {
-      cardsSelected: Object
+      cardsSelected: Object,
+      showValidPlays: false,
+      currentValidPlayIndex: 0
     }
   },
   props: {
@@ -75,7 +117,9 @@ export default {
       'getPlayer1',
       'getPlayer2',
       'getDeck',
-      'getTableCards'
+      'getTableCards',
+      'getClientSessionId',
+      'getValidPlays'
     ]),
     getPlayer: function () {
       return this[`getPlayer${this.player}`]
@@ -87,11 +131,21 @@ export default {
       console.log(this.getHand)
       return this.getDeck.filter(x => this.getHand.includes(x.card))
     },
+    validPlays() {
+      return this.getValidPlays[`Player ${this.player}`]     
+    },
+    playerValidPlay() {
+      console.log(this.validPlays[this.currentValidPlayIndex][0])
+      return this.validPlays[this.currentValidPlayIndex][0]
+    },
+    tableValidPlay() {
+      console.log(this.validPlays[this.currentValidPlayIndex][1])
+      return this.validPlays[this.currentValidPlayIndex][1]
+    },
     validPayload () {
       // return "test-payload"
       return JSON.stringify({
-        tableCards: this.getTableCards,
-        hand: this.getHand
+        sessionId: this.getClientSessionId
       })
     }
   },
@@ -107,6 +161,23 @@ export default {
       } else {
         console.log(comp)
       }
+    },
+    onGetValidPlays() {
+      this.showValidPlays = !this.showValidPlays
+      this.currentValidPlayIndex = 0
+    },
+    previousValidPlay() {
+      this.currentValidPlayIndex -= 1
+    },
+    nextValidPlay() {
+      this.currentValidPlayIndex += 1
+    },
+  },
+  watch: {
+    currentValidPlayIndex: function(val, oldVal) {
+      if(val !== oldVal) {
+        this.$emit('new-highlighted', this.tableValidPlay)
+      }
     }
   },
   mounted: function () {
@@ -118,6 +189,10 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
+.valid-plays-toolbar {
+  /* width: 100%; */
+}
 
 /* set hand comp top padding smaller to separate from icon */
 

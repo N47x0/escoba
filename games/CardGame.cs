@@ -111,12 +111,16 @@ namespace games {
       set {}
     }
     public CardDeck Deck { get; set;}
+    // what sets current player
     public Player CurrentPlayer {get; set;}
     public int TurnCount {get; set; }
+
+    public Dictionary<string, List<List<Card>>> ValidPlays { get; set; }
 
     // This has been commented as "not generic enough"
     //public int current  { get; set; }
     public bool IsDone { get; set;}
+
 
     // public GameState( CardDeck deck, List<Player> players, int turnCount, bool isDone ) {
     //   Deck = deck;
@@ -131,7 +135,6 @@ namespace games {
     GameState InitGame();
     GameState PlayTurn(List<Card> cardsPlayed, Player player, GameState currentState);
 
-    List<List<Card>> GetValidPlays( List<Card> hand, List<Card> table_cards );
   }
 
   public class InvalidGameParametersException : System.Exception {

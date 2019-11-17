@@ -108,12 +108,14 @@ namespace GameManager
   }
 
     public class GameState {
+      // generalize number of players into n (factory/constructor ?)
       public Player Player1 { get; set; }
       public Player Player2 { get; set; }
       public List<Card> TableCards { get; set; }
       public Deck Deck { get; set; }
       public bool isEscoba { get; set; }
       public bool isDone { get; set; }
+      public Dictionary<string, List<List<Card>>> ValidPlays { get; set; }
     }
 
     public class Game {
@@ -256,6 +258,17 @@ namespace GameManager
       if (pl2_cartas > pl1_cartas) m_pl2.AwardPoint();
       Console.WriteLine($"PL1 Oros {pl1_oros}\tPL1 Sietes {pl1_sietes}\tPL1 Cartas {pl1_cartas}\nPL2 Oros {pl2_oros}\tPL2 Sietes {pl2_sietes}\tPL2 Cartas {pl2_cartas}");
     }
+    public Dictionary<string, List<List<Card>>> GetValidPlays (List<Player> players, List<Card> table_cards) {
+      Player _p1 = players.First();
+      Player _p2 = players.Last();
+      List<Card> _table_cards = table_cards;
+      List<List<Card>> _p1_valid_plays = ValidPlays(_p1.hand, _table_cards);
+      List<List<Card>> _p2_valid_plays = ValidPlays(_p2.hand, _table_cards);
+      var _valid_plays = new Dictionary<string, List<List<Card>>>();
+      _valid_plays.Add(_p1.name, _p1_valid_plays);
+      _valid_plays.Add(_p2.name, _p2_valid_plays);
+      return _valid_plays;
+    }
 
     public GameState InitGame(Game game, Player adv_player, Player flw_player, List<Card> table_cards) {
       deck = new Deck();
@@ -266,12 +279,17 @@ namespace GameManager
       }
       table_cards.AddRange(deck.Deal(4));
 
+      List<Player> _players = new List<Player>();
+      _players.Add(this.m_pl1);
+      _players.Add(this.m_pl2);
+
       GameState gs = new GameState {
         Player1 = this.m_pl1,
         Player2 = this.m_pl2,
         TableCards = this.m_table_cards,
         Deck = this.deck,
-        isEscoba = false
+        isEscoba = false,
+        ValidPlays = GetValidPlays(_players, this.m_table_cards)
       };
 
       // var result = new Dictionary<string, dynamic>();

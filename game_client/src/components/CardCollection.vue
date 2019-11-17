@@ -18,6 +18,7 @@
               :isHand="true"
               v-on:card-selected="cardSelected($event)"
               v-bind:isSelected="cardsSelected[c.id]"
+              :highlighted="highlighted"
             />
           </b-col>
         </b-row>
@@ -44,6 +45,10 @@ export default {
       type: Array,
       required: true,
       default: () => []
+    },
+    highlighted: {
+      type: Object,
+      required: false
     }
   },
   components: {
@@ -62,7 +67,7 @@ export default {
     cards: function () {
       console.log(this.getHand)
       return this.getDeck.filter(x => this.getHand.includes(x.card))
-    },
+    }
   },
   methods: {
     ...mapActions([
@@ -74,6 +79,10 @@ export default {
       } else {
         console.log(comp)
       }
+    },
+    cardHighlighted (card) {
+      console.log(card)
+      return this.highlighted.some(id => id === card.id) ? true : false
     },
     cardSelected (card) {
       console.log(card)
