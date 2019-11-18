@@ -148,6 +148,10 @@ export default {
   },
   mounted: function () {
     console.log('#### hand valid plays controls ####')
+    this.$emit('on-valid-plays-controls', {
+      table: this.tableValidPlays,
+      player: this.playerValidPlays
+    })
     // console.log(this)
   }
 }

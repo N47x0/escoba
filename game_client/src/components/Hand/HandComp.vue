@@ -13,9 +13,11 @@
         v-if="showValidPlays"
         :player="player"
         :show-valid-plays="showValidPlays"
+        @on-valid-plays-controls="onValidPlaysControls"
       />
       <HandCompCards
         :player="player"
+        :highlighted="highlighted"
       />
       </b-card>
     </div>
@@ -33,7 +35,8 @@ export default {
   data: function () {
     return {
       showValidPlays: false,
-      currentValidPlayIndex: 0
+      currentValidPlayIndex: 0,
+      highlighted: []
     }
   },
   props: {
@@ -83,15 +86,30 @@ export default {
       // console.log(this.showValidPlays)
       this.currentValidPlayIndex = 0
       this.$emit('toggle-valid', this.player)
+      if (this.highlighted.length > 0) {
+        this.highlighted = []
+      }
+      this.$emit('new-table-highlighted', [])
     },
+    onValidPlaysControls(payload) {
+      console.log('on valid plays controls')
+      console.log(payload)
+      console.log(this.highlighted)
+      this.highlighted = payload.player
+      console.log(this.highlighted)
+      this.$emit('new-table-highlighted', payload.table)
+    }
   },
   watch: {
     showValid: function(val, oldVal) {
-      console.log(this.showValidPlays)
       if(val !== oldVal) {
-        console.log(this.showValidPlays)
         this.showValidPlays = val
-        console.log(this.showValidPlays)
+      }
+    },
+    highlighted: function(val, oldVal) {
+      if(val !== oldVal) {
+        console.log(val)
+        console.log(oldVal)
       }
     }
   },

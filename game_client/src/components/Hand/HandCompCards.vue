@@ -4,7 +4,7 @@
       <CardCollection 
         :collection="getHand"
         owner="player"
-        :highlighted="playerValidPlays"
+        :highlighted="highlighted"
       />
     </b-row>
   </div>
@@ -15,20 +15,15 @@ import { mapGetters, mapActions } from 'vuex'
 import CardCollection from '@/components/CardCollection'
 
 export default {
-  name: 'HandComp',
+  name: 'HandCompCards',
   data: function () {
     return {
-      cardsSelected: Object,
-      showValidPlays: false,
-      currentValidPlayIndex: 0
     }
   },
   props: {
-    // cards: Object,
     player: String,
-    showValid: {
-      type: Boolean,
-      default: false
+    highlighted: {
+      type: Array
     }
   },
   components: {
@@ -36,60 +31,14 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'getGameDataLoaded',
       'getPlayer1',
-      'getPlayer2',
-      'getDeck',
-      'getTableCards',
-      'getClientSessionId',
-      'getValidPlays'
+      'getPlayer2'
     ]),
     getPlayer: function () {
       return this[`getPlayer${this.player}`]
     },
     getHand: function () {
       return this.getPlayer.hand
-    },
-    cards: function () {
-      console.log(this.getHand)
-      return this.getDeck.filter(x => this.getHand.includes(x.card))
-    },
-    validPlays() {
-      return this.getValidPlays[`Player ${this.player}`]     
-    },
-    playerValidPlays() {
-      var pvp = []
-      if (this.showValidPlays) {
-        pvp = this.validPlays[this.currentValidPlayIndex].filter(x => x.owner === this.getPlayer.name)
-      }
-      return pvp
-    },
-    tableValidPlays() {
-      var tvp = []
-      if (this.showValidPlays) {
-        tvp = this.validPlays[this.currentValidPlayIndex].filter(x => x.owner === 'table')
-      }
-      return tvp
-    },
-    playerValidPlaysIds() {
-      var text = ''
-      var ids = this.playerValidPlays.map(x => x.id)
-      if (ids.length > 1) {
-        text = ids.join(', ')
-      } else {
-        text = ids[0]
-      }
-      return text
-    },
-    tableValidPlaysIds() {
-      var text = ''
-      var ids = this.tableValidPlays.map(x => x.id)
-      if (ids.length > 1) {
-        text = ids.join(', ')
-      } else {
-        text = ids[0]
-      }
-      return text
     },
     validPayload () {
       // return "test-payload"
@@ -100,8 +49,6 @@ export default {
   },
   methods: {
     ...mapActions([
-      'getBestPlay',
-      'loadValidPlays'
     ]),
     log: function (input) {
       var comp = this
@@ -111,50 +58,16 @@ export default {
         console.log(comp)
       }
     },
-    onGetValidPlays() {
-      this.showValidPlays = !this.showValidPlays
-      this.currentValidPlayIndex = 0
-      this.$emit('toggle-valid')
-    },
-    previousValidPlay() {
-      console.log(this.currentValidPlayIndex)
-      console.log(this.validPlays.length)
-      if (this.currentValidPlayIndex === 0) {
-        this.currentValidPlayIndex = this.validPlays.length - 1
-      } else {
-        this.currentValidPlayIndex -= 1
-      }
-    },
-    nextValidPlay() {
-      console.log(this.currentValidPlayIndex)
-      if (this.currentValidPlayIndex === this.validPlays.length - 1) {
-        this.currentValidPlayIndex = 0
-      } else {
-      this.currentValidPlayIndex += 1
-      }
-    },
   },
   watch: {
-    tableValidPlays: function(val, oldVal) {
+    highlighted: function(val, oldVal) {
       if(val !== oldVal) {
-        this.$emit('new-highlighted', this.tableValidPlays)
-      }
-    },
-    showValid: function(val, oldVal) {
-      if(val !== oldVal) {
-        console.log(val)
-        console.log(oldVal)
-        if (!this.showValidPlays) {
-          this.showValidPlays = !this.showValidPlays
-        }
+        console.log('change in highlighted watch')
       }
     }
   },
   mounted: function () {
-    console.log('#### hand comp ####')
-    console.log(this.tableValidPlays)
-    this.$emit('new-highlighted', this.tableValidPlays)
-    // console.log(this)
+    console.log('#### hand comp cards ####')
   }
 }
 </script>

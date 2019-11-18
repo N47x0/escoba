@@ -16,7 +16,8 @@
           <b-col md=4>
             <HandComp
               @toggle-valid="onToggleValid"
-              :show-valid="showValidPlayer1" 
+              :show-valid="showValidPlayer1"
+              @new-table-highlighted="onNewTableHighlighted" 
               player=1 
             />
           </b-col>
@@ -30,11 +31,12 @@
             <HandComp
               @toggle-valid="onToggleValid"
               :show-valid="showValidPlayer2" 
+              @new-table-highlighted="onNewTableHighlighted" 
               player=2 
             />
           </b-col>
         </b-row>
-        <b-row>
+        <!-- <b-row>
           <b-col md=4>
             <HandCompSingle
               @new-highlighted="newTableCardsHighlighted"
@@ -57,7 +59,7 @@
               player=2 
             />
           </b-col>
-        </b-row>
+        </b-row> -->
       </b-container>
     </div>
   </div>
@@ -91,11 +93,7 @@ export default {
       'getGameDataLoaded',
       'getDeck',
       'getTableCards'
-    ]),
-    cards: function () {
-      console.log(this.getHand)
-      return this.getDeck.filter(x => this.tableCards.includes(x.card))
-    }
+    ])
   },
   methods: {
     log: function (input) {
@@ -126,6 +124,9 @@ export default {
       }
       // list of players in store for future games with more than 2 possible players
       // payload === '1' ? this.showValidPlayer2 = false : this.showValidPlayer1 = false
+    },
+    onNewTableHighlighted(payload) {
+      this.tableCardsHighlighted = payload
     }
   },
   mounted: function () {

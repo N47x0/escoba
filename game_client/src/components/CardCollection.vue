@@ -63,10 +63,6 @@ export default {
     },
     getHand: function () {
       return this.getPlayer.hand
-    },
-    cards: function () {
-      console.log(this.getHand)
-      return this.getDeck.filter(x => this.getHand.includes(x.card))
     }
   },
   methods: {
@@ -84,7 +80,6 @@ export default {
       return this.highlighted.some(x => x.id === card.id) ? true : false
     },
     cardSelected (card) {
-      console.log(card)
       if (card.id in this.cardsSelected) {
         var s = this.cardsSelected[card.id]
         this.cardsSelected = Object.assign({}, this.cardsSelected, { [card.id]: s })
