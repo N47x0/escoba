@@ -15,7 +15,8 @@
         <b-row>
           <b-col md=4>
             <HandComp
-              @new-highlighted="newTableCardsHighlighted" 
+              @new-highlighted="newTableCardsHighlighted"
+              @toggle-valid="!toggleValidPlayer2" 
               player=1 
             />
           </b-col>
@@ -27,7 +28,8 @@
           </b-col>
           <b-col md=4>
             <HandComp
-              @new-highlighted="newTableCardsHighlighted" 
+              @new-highlighted="newTableCardsHighlighted"
+              @toggle-valid="!toggleValidPlayer1" 
               player=2 
             />
           </b-col>
@@ -53,7 +55,9 @@ export default {
   },
   data () {
     return {
-      tableCardsHighlighted: []
+      tableCardsHighlighted: [],
+      toggleValidPlayer1: false,
+      toggleValidPlayer2: false
     }
   },
   computed: {

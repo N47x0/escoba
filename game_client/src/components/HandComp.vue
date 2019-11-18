@@ -106,7 +106,8 @@ export default {
   },
   props: {
     // cards: Object,
-    player: String
+    player: String,
+    toggleValid: Boolean
   },
   components: {
     CardCollection
@@ -194,17 +195,31 @@ export default {
     },
     previousValidPlay() {
       console.log(this.currentValidPlayIndex)
-      this.currentValidPlayIndex -= 1
+      console.log(this.validPlays.length)
+      if (this.currentValidPlayIndex === 0) {
+        this.currentValidPlayIndex = this.validPlays.length - 1
+      } else {
+        this.currentValidPlayIndex -= 1
+      }
     },
     nextValidPlay() {
       console.log(this.currentValidPlayIndex)
+      if (this.currentValidPlayIndex === this.validPlays.length - 1) {
+        this.currentValidPlayIndex = 0
+      } else {
       this.currentValidPlayIndex += 1
+      }
     },
   },
   watch: {
     tableValidPlays: function(val, oldVal) {
       if(val !== oldVal) {
         this.$emit('new-highlighted', this.tableValidPlays)
+      }
+    },
+    toggleValid: function(val, oldVal) {
+      if(val !== oldVal) {
+        
       }
     }
   },

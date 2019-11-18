@@ -105,6 +105,7 @@ export default {
     },
     toggleSelect: function () {
       // this.selected = !this.selected
+      console.log(this.card)
       this.$emit('card-selected', this.card)
     }
   },
@@ -130,13 +131,15 @@ export default {
 
 /* set all cards to center of div and position: relative for absolute positioning of child icons */
 
-.selected {
-  border: 2px solid #42b983;
-}
 
 .highlighted {
   border: 2px dashed #42b983;
 }
+
+.selected {
+  border: 2px solid #42b983;
+}
+
 
 [class*=play-card-] {
   transform: translate(500,0);
