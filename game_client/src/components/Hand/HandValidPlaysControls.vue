@@ -141,7 +141,7 @@ export default {
         })
       }
     },
-    tableplayerValidPlaysValidPlays: function(val, oldVal) {
+    playerValidPlays: function(val, oldVal) {
       if(val !== oldVal) {
         this.$emit('on-valid-plays-controls', {
           table: this.tableValidPlays,

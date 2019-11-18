@@ -36,7 +36,8 @@ export default {
     return {
       showValidPlays: false,
       currentValidPlayIndex: 0,
-      highlighted: []
+      highlighted: [],
+      showHighlighted: false
     }
   },
   props: {
@@ -88,6 +89,7 @@ export default {
       this.$emit('toggle-valid', this.player)
       if (this.highlighted.length > 0) {
         this.highlighted = []
+        this.showHighlighted = false
       }
       this.$emit('new-table-highlighted', [])
     },
@@ -104,6 +106,11 @@ export default {
     showValid: function(val, oldVal) {
       if(val !== oldVal) {
         this.showValidPlays = val
+      }
+    },
+    showHighlighted: function(val, oldVal) {
+      if(val !== oldVal) {
+        this.highlighted = val
       }
     },
     highlighted: function(val, oldVal) {
