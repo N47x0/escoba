@@ -36,7 +36,7 @@ export default new Vuex.Store({
     getClientSessionId: function (state) {
       return state.clientSessionId
     },
-    getCards: function (state) {
+    __getCards: function (state) {
       var cards = []
       // console.log(Object.entries(state.gameData.cards))
       Object.entries(state.gameData.game.deck.card_store).forEach((v, i, a) => {
@@ -99,7 +99,7 @@ export default new Vuex.Store({
     },
     [types.CHANGE_GAME_DATA]: function (state, payload) {
       // console.log(payload)
-      state.gameData.game = payload.game
+      state.gameData = payload
       // console.log(state.gameData)
     },
     [types.CHANGE_RULE_DATA_ERRORED]: function (state, errored) {
@@ -206,9 +206,11 @@ export default new Vuex.Store({
           commit(types.CHANGE_GAME_DATA_LOADED, true)
         })
     },
-    loadValidPlays: function ({ commit, getters }, payload) {
+    loadNextTurn: function ({ commit, getters }, payload) {
+      // not sure if i want to change the loaded state and force rerender of everything
+      // commit(types.CHANGE_RULE_DATA_LOADED, false)
       console.log(payload)
-      var url = getters.getBaseUrl + endpoints.GET_VALID_PLAYS + getters.getClientSessionId
+      var url = getters.getBaseUrl + endpoints.GET_NEXT_TURN + getters.getClientSessionId
       var config = {
         headers: {
           'Content-Type': 'application/json',
@@ -219,6 +221,19 @@ export default new Vuex.Store({
         .post(url, payload, config)
         .then(function (response) {
           console.log(response)
+          const parsedResponse = {
+            gameState: response.data.gameState,
+            player1: response.data.gameState.players.filter(player => player.name === 'Player 1'),
+            player2: response.data.gameState.players.filter(player => player.name === 'Player 2'),
+            sessionId: response.data.sessionId,
+            tableCards: response.data.gameState.tableCards,
+            validPlays: response.data.gameState.validPlays
+          }
+          commit(types.CHANGE_GAME_DATA, parsedResponse.gameState)
+          commit(types.CHANGE_PLAYER_1_DATA, parsedResponse.player1)
+          commit(types.CHANGE_PLAYER_2_DATA, parsedResponse.player2)
+          commit(types.CHANGE_TABLE_CARD_DATA, parsedResponse.tableCards)
+          commit(types.CHANGE_VALID_PLAYS, parsedResponse.validPlays)
         })
         .catch(function (error) {
           console.log(error)

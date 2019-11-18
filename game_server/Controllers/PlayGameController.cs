@@ -54,6 +54,29 @@ namespace game_server.Controllers
       return payload;
     }
 
+    [EnableCors]
+    [HttpPost("PlayNextTurn/{sessionid}")]
+    async public Task<ValidPlaysPayload> PlayNextTurn([FromBody]PlayTurnIncomingPayload incomingPayload){
+      Console.WriteLine(incomingPayload);
+      // TODO - Specific gamename resolution
+      var escoba_info = _context.Games.Where(x => x.GameName == "escoba").SingleOrDefault();
+      // List<List<Card>> valid_plays = _cardGameService.ValidPlays();
+
+      Guid sessionid = incomingPayload.SessionId;
+
+      GameSession gameSession;
+      // Look up GameSession
+      gameSession = _context.GameSessions.Find(sessionid);
+      var current_game_state = gameSession.GameStates.OrderBy(x => x.TurnCount).LastOrDefault();
+
+      await _context.SaveChangesAsync();
+      var payload = new Models.ValidPlaysPayload {
+        SessionId = gameSession.GameSessionId,
+        GameState = _cardGameService.PlayTurn(incomingPayload.CardsPlayed, current_game_state.CurrentPlayer, current_game_state)
+      };
+      return payload;
+    }
+
 //     [EnableCors]
 //     [HttpGet]
 //     public InitGamePayload Get(){

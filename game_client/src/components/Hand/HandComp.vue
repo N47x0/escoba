@@ -81,7 +81,7 @@ export default {
       }
     },
     onValidPlays() {
-      console.log('on valid plays')
+      // console.log('on valid plays')
       // console.log(this.showValidPlays)
       this.showValidPlays = !this.showValidPlays
       // console.log(this.showValidPlays)
@@ -94,11 +94,11 @@ export default {
       this.$emit('new-table-highlighted', [])
     },
     onValidPlaysControls(payload) {
-      console.log('on valid plays controls')
-      console.log(payload)
-      console.log(this.highlighted)
+      // console.log('on valid plays controls')
+      // console.log(payload)
+      // console.log(this.highlighted)
       this.highlighted = payload.player
-      console.log(this.highlighted)
+      // console.log(this.highlighted)
       this.$emit('new-table-highlighted', payload.table)
     }
   },
@@ -115,14 +115,14 @@ export default {
     },
     highlighted: function(val, oldVal) {
       if(val !== oldVal) {
-        console.log(val)
-        console.log(oldVal)
+        // console.log(val)
+        // console.log(oldVal)
       }
     }
   },
   mounted: function () {
     console.log('#### hand comp ####')
-    console.log(this.showValid)
+    // console.log(this.showValid)
     // console.log(this)
   }
 }

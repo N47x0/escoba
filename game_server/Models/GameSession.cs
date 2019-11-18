@@ -58,5 +58,14 @@ namespace game_server.Models
   public class ValidPlaysIncomingPayload {
     public Guid SessionId {get; set;}
   }
+  public class PlayTurnIncomingPayload {
+    public Guid SessionId {get; set;}
+    public List<games.Card> CardsPlayed { get; set; }
+  }
+    public class PlayTurnPayload {
+    public Guid SessionId {get; set;}
+    public games.GameState GameState {get; set;}
+  }
+
 
 }
