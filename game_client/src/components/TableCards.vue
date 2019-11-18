@@ -41,7 +41,7 @@ export default {
   name: 'TableCards',
   props: {
     tableCards: Array,
-    highlighted: Object
+    highlighted: Array
   },
   components: {
     CardComp,

@@ -65,7 +65,7 @@
                     name="backward"
                   ></v-icon>
                 </b-button>
-                <b-button>{{ playerValidPlay.id}} | {{ tableValidPlay.id}}</b-button>
+                <b-button>{{ playerValidPlaysIds }} | {{ tableValidPlaysIds }}</b-button>
                 <b-button
                   @click="nextValidPlay"
                 >            
@@ -83,7 +83,7 @@
           <CardCollection 
             :collection="getHand"
             owner="player"
-            :highlighted="playerValidPlay"
+            :highlighted="playerValidPlays"
           />
         </b-row>
       </b-card>
@@ -134,14 +134,39 @@ export default {
     validPlays() {
       return this.getValidPlays[`Player ${this.player}`]     
     },
-    playerValidPlay() {
-      console.log(this.validPlays[this.currentValidPlayIndex][0])
-      this.validPlays.filter(x => x.owner === 'player')
-      return this.validPlays[this.currentValidPlayIndex][0]
+    playerValidPlays() {
+      var pvp = []
+      if (this.showValidPlays) {
+        pvp = this.validPlays[this.currentValidPlayIndex].filter(x => x.owner === this.getPlayer.name)
+      }
+      return pvp
     },
-    tableValidPlay() {
-      console.log(this.validPlays[this.currentValidPlayIndex][1])
-      return this.validPlays[this.currentValidPlayIndex][1]
+    tableValidPlays() {
+      var tvp = []
+      if (this.showValidPlays) {
+        tvp = this.validPlays[this.currentValidPlayIndex].filter(x => x.owner === 'table')
+      }
+      return tvp
+    },
+    playerValidPlaysIds() {
+      var text = ''
+      var ids = this.playerValidPlays.map(x => x.id)
+      if (ids.length > 1) {
+        text = ids.join(', ')
+      } else {
+        text = ids[0]
+      }
+      return text
+    },
+    tableValidPlaysIds() {
+      var text = ''
+      var ids = this.tableValidPlays.map(x => x.id)
+      if (ids.length > 1) {
+        text = ids.join(', ')
+      } else {
+        text = ids[0]
+      }
+      return text
     },
     validPayload () {
       // return "test-payload"
@@ -177,14 +202,16 @@ export default {
     },
   },
   watch: {
-    currentValidPlayIndex: function(val, oldVal) {
+    tableValidPlays: function(val, oldVal) {
       if(val !== oldVal) {
-        this.$emit('new-highlighted', this.tableValidPlay)
+        this.$emit('new-highlighted', this.tableValidPlays)
       }
     }
   },
   mounted: function () {
     console.log('#### hand comp ####')
+    console.log(this.tableValidPlays)
+    this.$emit('new-highlighted', this.tableValidPlays)
     // console.log(this)
   }
 }

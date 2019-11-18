@@ -53,7 +53,7 @@ export default {
   },
   data () {
     return {
-      tableCardsHighlighted: Object
+      tableCardsHighlighted: []
     }
   },
   computed: {

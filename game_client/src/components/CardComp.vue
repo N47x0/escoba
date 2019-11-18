@@ -3,7 +3,7 @@
    ><div v-if="getGameDataLoaded"
     ><div class="card-container">
         <b-card
-          :class="[{highlighted: this.isHighlighted}, {selected: this.isSelected}, 'play-card-' + this.card.val]"
+          :class="[{highlighted: this.highlighted}, {selected: this.isSelected}, 'play-card-' + this.card.val]"
           @click="toggleSelect"
           :id="'card-'+card.suit"
           :style="cardStyle"
@@ -45,7 +45,7 @@ export default {
       default: false
     },
     highlighted: {
-      type: Object,
+      type: Boolean,
       default: false
     }
   },
@@ -92,9 +92,6 @@ export default {
         return 'screwdriver'
       }
       return 'none'
-    },
-    isHighlighted() {
-      return this.highlighted.id === this.card.id ? true : false
     }
   },
   methods: {

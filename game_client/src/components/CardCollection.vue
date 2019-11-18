@@ -18,7 +18,7 @@
               :isHand="true"
               v-on:card-selected="cardSelected($event)"
               v-bind:isSelected="cardsSelected[c.id]"
-              :highlighted="highlighted"
+              :highlighted="cardHighlighted(c)"
             />
           </b-col>
         </b-row>
@@ -47,7 +47,7 @@ export default {
       default: () => []
     },
     highlighted: {
-      type: Object,
+      type: Array,
       required: false
     }
   },
@@ -81,12 +81,9 @@ export default {
       }
     },
     cardHighlighted (card) {
-      console.log(card)
-      return this.highlighted.some(id => id === card.id) ? true : false
+      return this.highlighted.some(x => x.id === card.id) ? true : false
     },
     cardSelected (card) {
-      console.log(card)
-      console.log(this.cardsSelected)
       if (card.id in this.cardsSelected) {
         var s = this.cardsSelected[card.id]
         this.cardsSelected = Object.assign({}, this.cardsSelected, { [card.id]: s })
