@@ -96,7 +96,7 @@ import { mapGetters, mapActions } from 'vuex'
 import CardCollection from '@/components/CardCollection'
 
 export default {
-  name: 'HandComp',
+  name: 'HandCompSingle',
   data: function () {
     return {
       cardsSelected: Object,
@@ -107,7 +107,10 @@ export default {
   props: {
     // cards: Object,
     player: String,
-    toggleValid: Boolean
+    showValid: {
+      type: Boolean,
+      default: false
+    }
   },
   components: {
     CardCollection
@@ -192,6 +195,7 @@ export default {
     onGetValidPlays() {
       this.showValidPlays = !this.showValidPlays
       this.currentValidPlayIndex = 0
+      this.$emit('toggle-valid')
     },
     previousValidPlay() {
       console.log(this.currentValidPlayIndex)
@@ -217,15 +221,18 @@ export default {
         this.$emit('new-highlighted', this.tableValidPlays)
       }
     },
-    toggleValid: function(val, oldVal) {
+    showValid: function(val, oldVal) {
       if(val !== oldVal) {
-        
+        console.log(val)
+        console.log(oldVal)
+        if (!this.showValidPlays) {
+          this.showValidPlays = !this.showValidPlays
+        }
       }
     }
   },
   mounted: function () {
     console.log('#### hand comp ####')
-    console.log(this.tableValidPlays)
     this.$emit('new-highlighted', this.tableValidPlays)
     // console.log(this)
   }
