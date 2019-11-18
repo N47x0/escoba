@@ -135,14 +135,18 @@ export default {
   watch: {
     tableValidPlays: function(val, oldVal) {
       if(val !== oldVal) {
-        this.$emit('new-highlighted', this.tableValidPlays)
+        this.$emit('on-valid-plays-controls', {
+          table: this.tableValidPlays,
+          player: this.playerValidPlays
+        })
       }
     },
-    showValid: function(val, oldVal) {
+    tableplayerValidPlaysValidPlays: function(val, oldVal) {
       if(val !== oldVal) {
-        if (!this.showValidPlays) {
-          this.showValidPlays = !this.showValidPlays
-        }
+        this.$emit('on-valid-plays-controls', {
+          table: this.tableValidPlays,
+          player: this.playerValidPlays
+        })
       }
     }
   },
