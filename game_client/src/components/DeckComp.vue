@@ -30,7 +30,6 @@ export default {
     ...mapGetters([
       'getGameDataLoaded',
       'getDeck',
-      'getCards',
       'getDeckOrder',
       'getValidPlaysLoaded',
       'getValidPlays'

@@ -33,17 +33,13 @@ export default {
   name: 'CardComp',
   data: function () {
     return {
-      selected: false
+      isSelected: false
     }
   },
   props: {
     card: Object,
     isDeck: Boolean,
     isHand: Boolean,
-    isSelected: {
-      type: Boolean,
-      default: false
-    },
     highlighted: {
       type: Boolean,
       default: false
@@ -104,9 +100,13 @@ export default {
       }
     },
     toggleSelect: function () {
-      // this.selected = !this.selected
-      console.log(this.card)
-      this.$emit('card-selected', this.card)
+      this.isSelected = !this.isSelected
+      // console.log(this.card)
+      var payload = {
+        card: this.card,
+        isSelected: this.isSelected
+      }
+      this.$emit('toggle-select', payload)
     }
   },
   mounted: function () {

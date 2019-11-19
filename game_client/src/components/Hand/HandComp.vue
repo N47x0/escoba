@@ -18,6 +18,7 @@
       <HandCompCards
         :player="player"
         :highlighted="highlighted"
+        @new-selected="onNewSelected"
       />
       </b-card>
     </div>
@@ -37,7 +38,8 @@ export default {
       showValidPlays: false,
       currentValidPlayIndex: 0,
       highlighted: [],
-      showHighlighted: false
+      showHighlighted: false,
+      selected: []
     }
   },
   props: {
@@ -100,6 +102,11 @@ export default {
       this.highlighted = payload.player
       // console.log(this.highlighted)
       this.$emit('new-table-highlighted', payload.table)
+    },
+    onNewSelected (selection) {
+      this.selected = selection
+      console.log('on new selected from hand comp')
+      this.$emit('new-selected', this.selected)
     }
   },
   watch: {

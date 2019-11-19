@@ -16,8 +16,7 @@
               :class="[owner + '-card']"
               :card="c"
               :isHand="true"
-              v-on:card-selected="cardSelected($event)"
-              v-bind:isSelected="cardsSelected[c.id]"
+              @toggle-select="onToggleSelect"
               :highlighted="cardHighlighted(c)"
             />
           </b-col>
@@ -34,7 +33,8 @@ export default {
   name: 'CardCollection',
   data: function () {
     return {
-      cardsSelected: Object
+      cardsSelected: Object,
+      selected: []
     }
   },
   props: {
@@ -56,7 +56,8 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'getGameDataLoaded'
+      'getGameDataLoaded',
+      'validateSelection'
     ]),
     getPlayer: function () {
       return this[`getPlayer${this.player}`]
@@ -79,7 +80,18 @@ export default {
     cardHighlighted (card) {
       return this.highlighted.some(x => x.id === card.id) ? true : false
     },
+    onToggleSelect (payload) {
+      console.log(payload)
+      if(payload.isSelected === true) {
+        this.selected.push(payload.card)
+        this.$emit('new-selected', this.selected)
+      } else if (payload.isSelected === false && this.selected.includes(payload.card)) {
+        this.selected = this.selected.filter(x => x !== payload.card)
+        this.$emit('new-selected', this.selected)
+      }
+    },
     cardSelected (card) {
+      this.addToSelected(card)
       if (card.id in this.cardsSelected) {
         var s = this.cardsSelected[card.id]
         this.cardsSelected = Object.assign({}, this.cardsSelected, { [card.id]: s })
@@ -87,11 +99,31 @@ export default {
       } else {
         this.cardsSelected = Object.assign({}, this.cardsSelected, { [card.id]: true })
       }
+    },
+    addToSelected (card) {
+      // console.log(card)
+      if (!this.selected.includes(card)) {
+        console.log('does not include card')
+        // console.log(this.selected)
+        this.selected.push(card)
+        // console.log(this.selected)
+      }
+      // !this.selected.includes(card) ? this.selected.push(card) : console.log(this.selected)
     }
   },
   mounted: function () {
     console.log('#### card collection comp ####')
     // console.log(this)
+  },
+  watch: {
+    selected: function(val, oldVal) {
+      console.log(this.selected)
+      console.log(val)
+      if (val.length !== oldVal.length) {
+        console.log('new val from selected watch in card collection')
+        this.$emit('new-selected', val)
+      }
+    }
   }
 }
 </script>

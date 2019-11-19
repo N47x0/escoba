@@ -35,7 +35,6 @@ export default {
       'getGameDataLoaded',
       'getClientSessionId',
       'getDeck',
-      'getCards',
       'getDeckOrder',
       'getValidPlaysLoaded',
       'getValidPlays',
@@ -63,7 +62,6 @@ export default {
   mounted: function () {
     // this.log(this.getDeckOrder)
     if (this.getGameDataLoaded) {
-      // console.log(this.getCards)
       // console.log(this.getDeck)
     }
   }

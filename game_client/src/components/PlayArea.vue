@@ -19,12 +19,14 @@
               :show-valid="showValidPlayer1"
               @new-table-highlighted="onNewTableHighlighted" 
               player=1 
+              @new-selected="onNewSelected"
             />
           </b-col>
           <b-col md=4>
-            <TableCards
+            <TableCardsSingle
               :table-cards="getTableCards"
               :highlighted="tableCardsHighlighted"
+              @new-selected="onNewSelected"
             />
           </b-col>
           <b-col md=4>
@@ -33,6 +35,7 @@
               :show-valid="showValidPlayer2" 
               @new-table-highlighted="onNewTableHighlighted" 
               player=2 
+              @new-selected="onNewSelected"
             />
           </b-col>
         </b-row>
@@ -66,7 +69,7 @@
 </template>
 
 <script>
-import TableCards from '@/components/TableCards'
+import TableCardsSingle from '@/components/Table/TableCardsSingle'
 import HandCompSingle from '@/components/Hand/HandCompSingle'
 import HandComp from '@/components/Hand/HandComp'
 
@@ -77,7 +80,7 @@ export default {
   props: {
   },
   components: {
-    TableCards,
+    TableCardsSingle,
     HandComp,
     HandCompSingle
   },
@@ -85,14 +88,16 @@ export default {
     return {
       tableCardsHighlighted: [],
       showValidPlayer1: false,
-      showValidPlayer2: false
+      showValidPlayer2: false,
+      selected: []
     }
   },
   computed: {
     ...mapGetters([
       'getGameDataLoaded',
       'getDeck',
-      'getTableCards'
+      'getTableCards',
+      'validateSelection'
     ])
   },
   methods: {
@@ -127,9 +132,32 @@ export default {
     },
     onNewTableHighlighted(payload) {
       this.tableCardsHighlighted = payload
+    },
+    onNewSelected (selection) {
+      console.log('on new selected from play area')
+      if (!this.selected.includes(selection)) {
+        console.log('does not include card')
+        console.log(this.selected)
+        this.selected.push(selection)
+        console.log(this.selected)
+      }
     }
   },
   mounted: function () {
+  },
+  watch: {
+    selected: function (val, oldVal) {
+      console.log(this.selected)
+      console.log(val)
+      console.log(oldVal)
+      if (val.length !== oldVal.lenth) {
+        console.log("validating")
+        console.log(val)
+        if (this.validateSelection(val)) {
+          console.log("selection validated")
+        }
+      }
+    }
   }
 }
 </script>

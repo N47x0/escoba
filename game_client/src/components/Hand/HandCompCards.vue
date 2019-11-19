@@ -5,6 +5,7 @@
         :collection="getHand"
         owner="player"
         :highlighted="highlighted"
+        @new-selected="onNewSelected"
       />
     </b-row>
   </div>
@@ -18,6 +19,7 @@ export default {
   name: 'HandCompCards',
   data: function () {
     return {
+      selected: []
     }
   },
   props: {
@@ -58,6 +60,12 @@ export default {
         console.log(comp)
       }
     },
+    onNewSelected (selection) {
+      console.log(selection)
+      this.selected = selection
+      console.log('on new selected from hand comp cards')
+      this.$emit('new-selected', this.selected)
+    }
   },
   watch: {
     highlighted: function(val, oldVal) {

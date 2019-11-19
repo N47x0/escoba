@@ -6,7 +6,14 @@
         id="table-cards"
       >
         <b-row>
-          <b-col md=4></b-col>
+          <b-col md=4>
+            <b-button
+            @click="onPlayTurn"
+          >
+            Play Turn
+          </b-button>
+
+          </b-col>
           <b-col md=4>Table Cards</b-col>
           <b-col md=4></b-col>
         </b-row>
@@ -65,6 +72,10 @@ export default {
       } else {
         console.log(comp)
       }
+    },
+    onPlayTurn() {
+      var payload
+      this.$store.dispatch('loadNextTurn', payload)
     }
   },
   mounted: function () {
