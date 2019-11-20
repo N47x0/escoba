@@ -84,31 +84,13 @@ export default {
       console.log(payload)
       if(payload.isSelected === true) {
         this.selected.push(payload.card)
+        console.log('on true new selected from card collection')
         this.$emit('new-selected', this.selected)
-      } else if (payload.isSelected === false && this.selected.includes(payload.card)) {
+      } else if (payload.isSelected === false ) {
+        console.log('on false new selected from card collection')
         this.selected = this.selected.filter(x => x !== payload.card)
         this.$emit('new-selected', this.selected)
       }
-    },
-    cardSelected (card) {
-      this.addToSelected(card)
-      if (card.id in this.cardsSelected) {
-        var s = this.cardsSelected[card.id]
-        this.cardsSelected = Object.assign({}, this.cardsSelected, { [card.id]: s })
-        this.$set(this.cardsSelected, card.id, !(s))
-      } else {
-        this.cardsSelected = Object.assign({}, this.cardsSelected, { [card.id]: true })
-      }
-    },
-    addToSelected (card) {
-      // console.log(card)
-      if (!this.selected.includes(card)) {
-        console.log('does not include card')
-        // console.log(this.selected)
-        this.selected.push(card)
-        // console.log(this.selected)
-      }
-      // !this.selected.includes(card) ? this.selected.push(card) : console.log(this.selected)
     }
   },
   mounted: function () {
@@ -117,8 +99,8 @@ export default {
   },
   watch: {
     selected: function(val, oldVal) {
-      console.log(this.selected)
-      console.log(val)
+      // console.log(this.selected)
+      // console.log(val)
       if (val.length !== oldVal.length) {
         console.log('new val from selected watch in card collection')
         this.$emit('new-selected', val)

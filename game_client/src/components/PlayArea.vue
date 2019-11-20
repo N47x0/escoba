@@ -75,6 +75,41 @@ import HandComp from '@/components/Hand/HandComp'
 
 import { mapGetters } from 'vuex'
 
+function validate (query, selection) {
+  if (selection.length > 0) {
+    var keys = Object.keys(selection[0])
+    selection.forEach((set, is) => {
+      set.forEach((item, ii) => {
+        keys.forEach((key, ik) => {
+          if (set[ii][key] === query[ii][key]) {
+            return true
+          } else {
+            return false
+          }
+        })  
+      })
+    })  
+  } else {
+    return false
+  }
+}
+
+function compareArray (arr1, arr2) {
+  if (arr1.length === arr2.length) {
+    var keys = Object.keys(arr2[0])
+    arr1.forEach((item, i) => {
+      keys.forEach((key, ik) => {
+        if (arr1[i][key] === arr2[i][key]) {
+          return true
+        } else {
+          return false
+        }
+      })  
+    })      
+  } 
+}
+
+
 export default {
   name: 'PlayArea',
   props: {
@@ -135,11 +170,21 @@ export default {
     },
     onNewSelected (selection) {
       console.log('on new selected from play area')
-      if (!this.selected.includes(selection)) {
+      console.log(selection)
+      console.log(this.selected)
+      if (!compareArray(selection, this.selected)) {
         console.log('does not include card')
-        console.log(this.selected)
-        this.selected.push(selection)
-        console.log(this.selected)
+        // console.log(this.selected)
+        // this.selected.push(selection)
+        if (this.selected.length > 0) {
+          // console.log(this.selected)
+          // console.log(selection)
+          this.selected = [ ...this.selected, ...selection]
+        } else {
+          console.log('resetting selection')
+          this.selected = selection
+        }
+        // console.log(this.selected)
       }
     }
   },
@@ -147,12 +192,9 @@ export default {
   },
   watch: {
     selected: function (val, oldVal) {
-      console.log(this.selected)
-      console.log(val)
-      console.log(oldVal)
       if (val.length !== oldVal.lenth) {
         console.log("validating")
-        console.log(val)
+        // console.log(val)
         if (this.validateSelection(val)) {
           console.log("selection validated")
         }

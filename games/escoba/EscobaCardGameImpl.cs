@@ -172,7 +172,7 @@ namespace games.escoba
           acc.Add(new List<Card> {c});
         } 
       }
-      return acc;
+      return acc.Select(x => x).Distinct().ToList();
     }
     
     static bool ApplyPlay( List<Card> play, Player player, CardDeck deck ) {

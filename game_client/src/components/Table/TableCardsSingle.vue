@@ -86,13 +86,8 @@ export default {
     },
     onNewSelected (payload) {
       console.log(payload)
-      if(payload.isSelected === true) {
-        this.selected.push(payload.card)
-        this.$emit('new-selected', this.selected)
-      } else if (payload.isSelected === false && this.selected.includes(payload.card)) {
-        this.selected = this.selected.filter(x => x !== payload.card)
-        this.$emit('new-selected', this.selected)
-      }
+      console.log('on new selected from table cards single')
+      this.$emit('new-selected', payload)
     },
   },
   mounted: function () {

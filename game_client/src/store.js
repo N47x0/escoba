@@ -28,7 +28,8 @@ export default new Vuex.Store({
     rulesPlays: [],
     // baseUrl: process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:5000' : 'TODO prod URL'
     baseUrl: process.env.NODE_ENV === 'development' ? 'https://localhost:5001' : 'TODO prod URL',
-    currentPlayer: null
+    currentPlayer: null,
+    currentSelected: []
   },
   getters: {
     getBaseUrl: function (state) {
@@ -86,12 +87,28 @@ export default new Vuex.Store({
       return state.rulesLoaded
     },
     validateSelection: (state) => (selection) => {
-      console.log(selection)
-      console.log(state.validPlays[state.currentPlayer.name])
-      console.log(state.validPlays[state.currentPlayer.name].includes(selection))
-      if (selection !== null) {
-        return state.validPlays[state.currentPlayer.name].includes(selection)
+      var plays = [ ...state.validPlays[state.currentPlayer.name]]
+      plays = plays.map(x => x.sort())
+      var sel = [ ...selection]
+      sel = sel.sort()
+      var match = false
+      var keys = Object.keys(selection[0])
+      plays = plays.filter(play => play.length === sel.length)
+      if (plays.length > 0) {
+        while (match !== true) {
+          plays.forEach((play, ip) => {
+            play.forEach((card, ic) => {
+              keys.forEach((key, ik) => {
+                if (play[ic][key] === sel[ic][key]) {
+                  match = true
+                }
+              })  
+            })
+          })  
+        }
       }
+      console.log(match)
+      return match
     },
     getCurrentPlayer(state) {
       return state.currentPlayer
