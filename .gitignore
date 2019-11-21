@@ -49,6 +49,7 @@ yarn-error.log*
 
 [Oo]bj/
 [Bb]in/
+[Ll]ib/
 .nuget/
 _ReSharper.*
 packages/
@@ -61,3 +62,4 @@ artifacts/
 
 .vs
 .vscode
+
