@@ -19,6 +19,8 @@ import 'vue-awesome/icons/child'
 import 'vue-awesome/icons/brands/bitcoin'
 import 'vue-awesome/icons/brands/stack-overflow'
 import 'vue-awesome/icons/poo'
+import 'vue-awesome/icons/forward'
+import 'vue-awesome/icons/backward'
 import VueSwing from 'vue-swing'
 
 import Icon from 'vue-awesome/components/Icon'

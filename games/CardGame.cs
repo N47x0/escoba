@@ -111,12 +111,16 @@ namespace games {
       set {}
     }
     public CardDeck Deck { get; set;}
+    // what sets current player
     public Player CurrentPlayer {get; set;}
     public int TurnCount {get; set; }
+
+    public Dictionary<string, List<List<Card>>> ValidPlays { get; set; }
 
     // This has been commented as "not generic enough"
     //public int current  { get; set; }
     public bool IsDone { get; set;}
+
 
     // public GameState( CardDeck deck, List<Player> players, int turnCount, bool isDone ) {
     //   Deck = deck;
@@ -130,9 +134,11 @@ namespace games {
   public interface ICardGame {
     GameState InitGame();
     GameState PlayTurn(List<Card> cardsPlayed, Player player, GameState currentState);
+
   }
 
   public class InvalidGameParametersException : System.Exception {
+    // why are there three things with the same name here;  seems like it has something to do with the recursive/nested nature of exceptions
     public InvalidGameParametersException(){}
     public InvalidGameParametersException(string message) : base(message) {}
     public InvalidGameParametersException(string message, System.Exception innerException): base(message, innerException) {}

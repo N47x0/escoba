@@ -27,7 +27,9 @@ export default new Vuex.Store({
     rulesErrored: false,
     rulesPlays: [],
     // baseUrl: process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:5000' : 'TODO prod URL'
-    baseUrl: process.env.NODE_ENV === 'development' ? 'https://localhost:5001' : 'TODO prod URL'
+    baseUrl: process.env.NODE_ENV === 'development' ? 'https://localhost:5001' : 'TODO prod URL',
+    currentPlayer: null,
+    currentSelected: []
   },
   getters: {
     getBaseUrl: function (state) {
@@ -36,7 +38,7 @@ export default new Vuex.Store({
     getClientSessionId: function (state) {
       return state.clientSessionId
     },
-    getCards: function (state) {
+    __getCards: function (state) {
       var cards = []
       // console.log(Object.entries(state.gameData.cards))
       Object.entries(state.gameData.game.deck.card_store).forEach((v, i, a) => {
@@ -72,6 +74,7 @@ export default new Vuex.Store({
       return state.validPlaysLoaded
     },
     getValidPlays: (state) => {
+      console.log(state.validPlays)
       return state.validPlays
     },
     getTableCards: (state) => {
@@ -82,6 +85,33 @@ export default new Vuex.Store({
     },
     getRulesLoaded (state) {
       return state.rulesLoaded
+    },
+    validateSelection: (state) => (selection) => {
+      var plays = [ ...state.validPlays[state.currentPlayer.name]]
+      plays = plays.map(x => x.sort())
+      var sel = [ ...selection]
+      sel = sel.sort()
+      var match = false
+      var keys = Object.keys(selection[0])
+      plays = plays.filter(play => play.length === sel.length)
+      if (plays.length > 0) {
+        while (match !== true) {
+          plays.forEach((play, ip) => {
+            play.forEach((card, ic) => {
+              keys.forEach((key, ik) => {
+                if (play[ic][key] === sel[ic][key]) {
+                  match = true
+                }
+              })  
+            })
+          })  
+        }
+      }
+      console.log(match)
+      return match
+    },
+    getCurrentPlayer(state) {
+      return state.currentPlayer
     }
   },
   mutations: {
@@ -99,7 +129,7 @@ export default new Vuex.Store({
     },
     [types.CHANGE_GAME_DATA]: function (state, payload) {
       // console.log(payload)
-      state.gameData.game = payload.game
+      state.gameData = payload
       // console.log(state.gameData)
     },
     [types.CHANGE_RULE_DATA_ERRORED]: function (state, errored) {
@@ -134,6 +164,9 @@ export default new Vuex.Store({
       // console.log(state.player2)
       state.tableCards = payload
       // console.log(state.player2)
+    },
+    [types.CHANGE_CURRENT_PLAYER]: function (state, payload) {
+      state.currentPlayer = payload
     }
 
   },
@@ -180,18 +213,23 @@ export default new Vuex.Store({
       console.log(config)
       axios.get(url, config)
         .then(function (response) {
+          console.log(response)
           const parsedResponse = {
             gameState: response.data.gameState,
             player1: response.data.gameState.players.filter(player => player.name === 'Player 1'),
             player2: response.data.gameState.players.filter(player => player.name === 'Player 2'),
             sessionId: response.data.sessionId,
-            tableCards: response.data.gameState.tableCards
+            tableCards: response.data.gameState.tableCards,
+            validPlays: response.data.gameState.validPlays,
+            currentPlayer: response.data.gameState.currentPlayer
           }
           commit(types.INIT_GAME_DATA, parsedResponse.gameState)
           commit(types.SET_CLIENT_SESSION_ID, parsedResponse.sessionId)
           commit(types.CHANGE_PLAYER_1_DATA, parsedResponse.player1)
           commit(types.CHANGE_PLAYER_2_DATA, parsedResponse.player2)
           commit(types.CHANGE_TABLE_CARD_DATA, parsedResponse.tableCards)
+          commit(types.CHANGE_VALID_PLAYS, parsedResponse.validPlays)
+          commit(types.CHANGE_CURRENT_PLAYER, parsedResponse.currentPlayer)
           dispatch('loadRuleData')
         })
         .catch(function (error) {
@@ -203,9 +241,11 @@ export default new Vuex.Store({
           commit(types.CHANGE_GAME_DATA_LOADED, true)
         })
     },
-    loadValidPlays: function ({ commit, getters }, payload) {
+    loadNextTurn: function ({ commit, getters }, payload) {
+      // not sure if i want to change the loaded state and force rerender of everything
+      // commit(types.CHANGE_RULE_DATA_LOADED, false)
       console.log(payload)
-      var url = getters.getBaseUrl + endpoints.GET_VALID_PLAYS
+      var url = getters.getBaseUrl + endpoints.GET_NEXT_TURN + getters.getClientSessionId
       var config = {
         headers: {
           'Content-Type': 'application/json',
@@ -216,6 +256,21 @@ export default new Vuex.Store({
         .post(url, payload, config)
         .then(function (response) {
           console.log(response)
+          const parsedResponse = {
+            gameState: response.data.gameState,
+            player1: response.data.gameState.players.filter(player => player.name === 'Player 1'),
+            player2: response.data.gameState.players.filter(player => player.name === 'Player 2'),
+            sessionId: response.data.sessionId,
+            tableCards: response.data.gameState.tableCards,
+            validPlays: response.data.gameState.validPlays,
+            currentPlayer: response.data.gameState.currentPlayer
+          }
+          commit(types.CHANGE_GAME_DATA, parsedResponse.gameState)
+          commit(types.CHANGE_PLAYER_1_DATA, parsedResponse.player1)
+          commit(types.CHANGE_PLAYER_2_DATA, parsedResponse.player2)
+          commit(types.CHANGE_TABLE_CARD_DATA, parsedResponse.tableCards)
+          commit(types.CHANGE_VALID_PLAYS, parsedResponse.validPlays)
+          commit(types.CHANGE_CURRENT_PLAYER, parsedResponse.currentPlayer)
         })
         .catch(function (error) {
           console.log(error)

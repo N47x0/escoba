@@ -1,90 +1,40 @@
 <template>
-  <div class="hand-comp">
-    <div v-if="getGameDataLoaded">
-      <!-- <b-alert
-        :show="tooManySelections"
-        dismissible
-        variant="warning"
-        @dismissed="clearSelections"
-      ></b-alert> -->
-      <b-card
-        :class="'hand-' +getPlayer.name"
-        :id="'hand-' +getPlayer.name"
-      >
-        <b-row>
-          <b-col></b-col>
-          <b-col>{{getPlayer.name}}'s Hand</b-col>
-          <b-col></b-col>
-        </b-row>
-        <b-row>
-          <b-col>
-            <b-button
-              @click="loadValidPlays(validPayload)"
-            >
-              Get Valid Plays
-            </b-button>
-          </b-col>
-          <b-col>
-            <v-icon
-              id="hand-icon"
-              name="hand-spock"
-              scale=3.5
-            ></v-icon>
-          </b-col>
-          <b-col>
-            <b-button
-              @click="getBestPlay()"
-            >
-              Get Best Play
-            </b-button>
-          </b-col>
-        </b-row>
-        <hr />
-        <b-row>
-          <b-col
-            v-for="(c, i) in getHand"
-            :key="i"
-          >
-            <CardComp
-              class="player-card"
-              @card-selected="handleCardSelected($event)"
-              :card="c"
-              :isHand="true"
-              :selected="cardsSelected[c.id]"
-            />
-          </b-col>
-        </b-row>
-      </b-card>
-    </div>
+  <div class="hand-comp-cards">
+    <b-row>
+      <CardCollection 
+        :collection="getHand"
+        owner="player"
+        :highlighted="highlighted"
+        @new-selected="onNewSelected"
+      />
+    </b-row>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import CardComp from '@/components/CardComp'
+import CardCollection from '@/components/CardCollection'
 
 export default {
-  name: 'HandComp',
+  name: 'HandCompCards',
   data: function () {
     return {
-      cardsSelected: Object
+      selected: []
     }
   },
   props: {
-    selectable: Number,
-    // cards: Object,
-    player: String
+    player: String,
+    highlighted: {
+      type: Array
+    }
   },
   components: {
-    CardComp
+    CardCollection
   },
   computed: {
     ...mapGetters([
-      'getGameDataLoaded',
       'getPlayer1',
-      'getPlayer2',
-      'getDeck',
-      'getTableCards'
+      'getPlayer2'
     ]),
     getPlayer: function () {
       return this[`getPlayer${this.player}`]
@@ -92,22 +42,15 @@ export default {
     getHand: function () {
       return this.getPlayer.hand
     },
-    cards: function () {
-      console.log(this.getHand)
-      return this.getDeck.filter(x => this.getHand.includes(x.card))
-    },
     validPayload () {
       // return "test-payload"
       return JSON.stringify({
-        tableCards: this.getTableCards,
-        hand: this.getHand
+        sessionId: this.getClientSessionId
       })
     }
   },
   methods: {
     ...mapActions([
-      'getBestPlay',
-      'loadValidPlays'
     ]),
     log: function (input) {
       var comp = this
@@ -117,23 +60,32 @@ export default {
         console.log(comp)
       }
     },
-    handleCardSelected (card) {
-      const prevSelectState = (card.id in this.cardsSelected) ? this.cardsSelected[card.id] : false
-      const numberSelected = Object.values(this.cardsSelected).filter(x => x === true).length
-      const selectionsAvailable = (numberSelected < this.selectable && !prevSelectState)
-      this.cardsSelected = Object.assign({}, this.cardsSelected, { [card.id]: selectionsAvailable })
-      this.$set(this.cardsSelected, card.id, selectionsAvailable)
+    onNewSelected (selection) {
+      console.log(selection)
+      this.selected = selection
+      console.log('on new selected from hand comp cards')
+      this.$emit('new-selected', this.selected)
+    }
+  },
+  watch: {
+    highlighted: function(val, oldVal) {
+      if(val !== oldVal) {
+        console.log('change in highlighted watch')
+      }
     }
   },
   mounted: function () {
-    console.log('#### hand comp ####')
-    // console.log(this)
+    console.log('#### hand comp cards ####')
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
+.valid-plays-toolbar {
+  /* width: 100%; */
+}
 
 /* set hand comp top padding smaller to separate from icon */
 

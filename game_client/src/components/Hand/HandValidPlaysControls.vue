@@ -1,141 +1,115 @@
 <template>
-  <div class="play-area-comp">
-    <div v-if="getGameDataLoaded">
-      <b-container
-        class="play-area"
-        id="play-area"
-      >
-        <v-icon
-          id="play-area-icon"
-          name="child"
-          scale=3.5
-        />
-        <h5>Play Area</h5>
-        <hr />
-        <b-row>
-          <b-col md=4>
-            <HandComp
-              @toggle-valid="onToggleValid"
-              :show-valid="showValidPlayer1"
-              @new-table-highlighted="onNewTableHighlighted" 
-              player=1 
-              @new-selected="onNewSelected"
-            />
-          </b-col>
-          <b-col md=4>
-            <TableCardsSingle
-              :table-cards="getTableCards"
-              :highlighted="tableCardsHighlighted"
-              @new-selected="onNewSelected"
-            />
-          </b-col>
-          <b-col md=4>
-            <HandComp
-              @toggle-valid="onToggleValid"
-              :show-valid="showValidPlayer2" 
-              @new-table-highlighted="onNewTableHighlighted" 
-              player=2 
-              @new-selected="onNewSelected"
-            />
-          </b-col>
-        </b-row>
-        <!-- <b-row>
-          <b-col md=4>
-            <HandCompSingle
-              @new-highlighted="newTableCardsHighlighted"
-              @toggle-valid="onToggleValid"
-              :show-valid="showValidPlayer1" 
-              player=1 
-            />
-          </b-col>
-          <b-col md=4>
-            <TableCards
-              :table-cards="getTableCards"
-              :highlighted="tableCardsHighlighted"
-            />
-          </b-col>
-          <b-col md=4>
-            <HandCompSingle
-              @new-highlighted="newTableCardsHighlighted"
-              @toggle-valid="toggleValidPlayer2 = !toggleValidPlayer2" 
-              :show-valid="showValidPlayer2" 
-              player=2 
-            />
-          </b-col>
-        </b-row> -->
-      </b-container>
-    </div>
+  <div class="hand-valid-plays-controls">
+    <b-row 
+      v-if="showValidPlays"
+      align-h="center"
+    >
+      <b-col cols=6>
+        <b-button-toolbar 
+          aria-label="Toolbar with buttons to control which valid play is displayed and selected"
+          justify
+          class="valid-plays-toolbar"
+        >
+          <b-button-group 
+            class="mx-1"
+          >
+            <b-button
+              @click="previousValidPlay"
+            >            
+              <v-icon
+                id="backward-icon"
+                name="backward"
+              ></v-icon>
+            </b-button>
+            <b-button>{{ playerValidPlaysIds }} | {{ tableValidPlaysIds }}</b-button>
+            <b-button
+              @click="nextValidPlay"
+            >            
+              <v-icon
+                id="forward-icon"
+                name="forward"
+              ></v-icon>
+            </b-button>
+          </b-button-group>
+        </b-button-toolbar>
+      </b-col>
+    </b-row>
+    <hr />
   </div>
 </template>
 
 <script>
-import TableCardsSingle from '@/components/Table/TableCardsSingle'
-import HandCompSingle from '@/components/Hand/HandCompSingle'
-import HandComp from '@/components/Hand/HandComp'
-
-import { mapGetters } from 'vuex'
-
-function validate (query, selection) {
-  if (selection.length > 0) {
-    var keys = Object.keys(selection[0])
-    selection.forEach((set, is) => {
-      set.forEach((item, ii) => {
-        keys.forEach((key, ik) => {
-          if (set[ii][key] === query[ii][key]) {
-            return true
-          } else {
-            return false
-          }
-        })  
-      })
-    })  
-  } else {
-    return false
-  }
-}
-
-function compareArray (arr1, arr2) {
-  if (arr1.length === arr2.length) {
-    var keys = Object.keys(arr2[0])
-    arr1.forEach((item, i) => {
-      keys.forEach((key, ik) => {
-        if (arr1[i][key] === arr2[i][key]) {
-          return true
-        } else {
-          return false
-        }
-      })  
-    })      
-  } 
-}
-
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
-  name: 'PlayArea',
+  name: 'HandValidPlaysControls',
+  data: function () {
+    return {
+      cardsSelected: Object,
+      currentValidPlayIndex: 0
+    }
+  },
   props: {
+    selectable: Number,
+    // cards: Object,
+    player: String,
+    showValidPlays: {
+      type: Boolean,
+      default: false
+    }
   },
   components: {
-    TableCardsSingle,
-    HandComp,
-    HandCompSingle
-  },
-  data () {
-    return {
-      tableCardsHighlighted: [],
-      showValidPlayer1: false,
-      showValidPlayer2: false,
-      selected: []
-    }
   },
   computed: {
     ...mapGetters([
-      'getGameDataLoaded',
-      'getDeck',
-      'getTableCards',
-      'validateSelection'
-    ])
+      'getValidPlays',
+      'getPlayer1',
+      'getPlayer2'
+    ]),
+    getPlayer: function () {
+      return this[`getPlayer${this.player}`]
+    },
+    validPlays() {
+      return this.getValidPlays[`Player ${this.player}`]     
+    },
+    playerValidPlays() {
+      var pvp = []
+      if (this.showValidPlays) {
+        pvp = this.validPlays[this.currentValidPlayIndex].filter(x => x.owner === this.getPlayer.name)
+      }
+      return pvp
+    },
+    tableValidPlays() {
+      var tvp = []
+      if (this.showValidPlays === true) {
+        tvp = this.validPlays[this.currentValidPlayIndex].filter(x => x.owner === 'table')
+      }
+      return tvp
+    },
+    playerValidPlaysIds() {
+      var text = ''
+      var ids = this.playerValidPlays.map(x => x.id)
+      if (ids.length > 1) {
+        text = ids.join(', ')
+      } else {
+        text = ids[0]
+      }
+      return text
+    },
+    tableValidPlaysIds() {
+      var text = ''
+      var ids = this.tableValidPlays.map(x => x.id)
+      if (ids.length > 1) {
+        text = ids.join(', ')
+      } else {
+        text = ids[0]
+      }
+      return text
+    }
   },
   methods: {
+    ...mapActions([
+    ]),
     log: function (input) {
       var comp = this
       if (input) {
@@ -144,68 +118,58 @@ export default {
         console.log(comp)
       }
     },
-    newTableCardsHighlighted(payload) {
-      this.tableCardsHighlighted = payload
-      // console.log(payload)
-    },
-    onToggleValid(payload) {
-      console.log('on toggle valid')
-      // console.log(payload)
-      if (payload === '1') {
-        // console.log(this.showValidPlayer2)
-        this.showValidPlayer1 = true
-        this.showValidPlayer2 = false  
-        // console.log(this.showValidPlayer2)
-      } else if (payload === '2') {
-        // console.log(this.showValidPlayer1)
-        this.showValidPlayer2 = true
-        this.showValidPlayer1 = false  
-        // console.log(this.showValidPlayer1)
+    previousValidPlay() {
+      if (this.currentValidPlayIndex === 0) {
+        this.currentValidPlayIndex = this.validPlays.length - 1
+      } else {
+        this.currentValidPlayIndex -= 1
       }
-      // list of players in store for future games with more than 2 possible players
-      // payload === '1' ? this.showValidPlayer2 = false : this.showValidPlayer1 = false
     },
-    onNewTableHighlighted(payload) {
-      this.tableCardsHighlighted = payload
+    nextValidPlay() {
+      if (this.currentValidPlayIndex === this.validPlays.length - 1) {
+        this.currentValidPlayIndex = 0
+      } else {
+      this.currentValidPlayIndex += 1
+      }
     },
-    onNewSelected (selection) {
-      console.log('on new selected from play area')
-      console.log(selection)
-      console.log(this.selected)
-      if (!compareArray(selection, this.selected)) {
-        console.log('does not include card')
-        // console.log(this.selected)
-        // this.selected.push(selection)
-        if (this.selected.length > 0) {
-          // console.log(this.selected)
-          // console.log(selection)
-          this.selected = [ ...this.selected, ...selection]
-        } else {
-          console.log('resetting selection')
-          this.selected = selection
-        }
-        // console.log(this.selected)
+  },
+  watch: {
+    tableValidPlays: function(val, oldVal) {
+      if(val !== oldVal) {
+        this.$emit('on-valid-plays-controls', {
+          table: this.tableValidPlays,
+          player: this.playerValidPlays
+        })
+      }
+    },
+    playerValidPlays: function(val, oldVal) {
+      if(val !== oldVal) {
+        this.$emit('on-valid-plays-controls', {
+          table: this.tableValidPlays,
+          player: this.playerValidPlays
+        })
       }
     }
   },
   mounted: function () {
-  },
-  watch: {
-    selected: function (val, oldVal) {
-      if (val.length !== oldVal.lenth) {
-        console.log("validating")
-        // console.log(val)
-        if (this.validateSelection(val)) {
-          console.log("selection validated")
-        }
-      }
-    }
+    console.log('#### hand valid plays controls ####')
+    this.$emit('on-valid-plays-controls', {
+      table: this.tableValidPlays,
+      player: this.playerValidPlays
+    })
+    // console.log(this)
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
+.valid-plays-toolbar {
+  /* width: 100%; */
+}
+
+/* set hand comp top padding smaller to separate from icon */
 
 /* set all cards to center of div and position: relative for absolute positioning of child icons */
 

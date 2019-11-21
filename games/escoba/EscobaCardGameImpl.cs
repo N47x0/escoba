@@ -26,8 +26,13 @@ namespace games.escoba
 
       // Start, alternate 3 cards each player, 
       foreach (var i in Enumerable.Range(1,3)) {
-        player1.hand.AddRange(deck.Deal());
-        player2.hand.AddRange(deck.Deal());
+        var player1_card = deck.Deal();
+        var player2_card = deck.Deal();
+        player1.hand.AddRange(player1_card);
+        deck.SetCardOwner(player1_card.First(), player1);
+        player2.hand.AddRange(player2_card);
+        deck.SetCardOwner(player2_card.First(), player2);
+
       }
       // Deal 4 to the table
       deck.AddCardsToTable(deck.Deal(4));
@@ -36,8 +41,37 @@ namespace games.escoba
       state.TurnCount++;
       state.TableCards = deck.GetTableCards();
       state.CurrentPlayer = player1;
+      state.ValidPlays = GetValidPlays(state.Players, state.TableCards);
       
       return state;
+    }
+
+    // public List<List<Card>> GetValidPlays( List<Card> hand, List<Card> table_cards ) {
+    //   List<List<Card>> valid_plays = ValidPlays(hand, table_cards);
+    //   return valid_plays;
+    // }
+
+    // public GameState _GetValidPlays (GameState currentState) {
+    //   Player _p1 = currentState.Players.First();
+    //   Player _p2 = currentState.Players.Last();
+    //   List<Card> _table_cards = currentState.Deck.GetTableCards();
+    //   List<List<Card>> _p1_valid_plays = ValidPlays(_p1.hand, _table_cards);
+    //   List<List<Card>> _p2_valid_plays = ValidPlays(_p2.hand, _table_cards);
+    //   currentState.ValidPlays = new Dictionary<string, List<List<Card>>>();
+    //   currentState.ValidPlays.Add(_p1.name, _p1_valid_plays);
+    //   currentState.ValidPlays.Add(_p2.name, _p2_valid_plays);
+    //   return currentState;
+    // }
+    public Dictionary<string, List<List<Card>>> GetValidPlays (List<Player> players, List<Card> table_cards) {
+      Player _p1 = players.First();
+      Player _p2 = players.Last();
+      List<Card> _table_cards = table_cards;
+      List<List<Card>> _p1_valid_plays = ValidPlays(_p1.hand, _table_cards);
+      List<List<Card>> _p2_valid_plays = ValidPlays(_p2.hand, _table_cards);
+      var _valid_plays = new Dictionary<string, List<List<Card>>>();
+      _valid_plays.Add(_p1.name, _p1_valid_plays);
+      _valid_plays.Add(_p2.name, _p2_valid_plays);
+      return _valid_plays;
     }
 
     // This is where "escoba' specific (read: "business") logic belongs
@@ -138,7 +172,7 @@ namespace games.escoba
           acc.Add(new List<Card> {c});
         } 
       }
-      return acc;
+      return acc.Select(x => x).Distinct().ToList();
     }
     
     static bool ApplyPlay( List<Card> play, Player player, CardDeck deck ) {
