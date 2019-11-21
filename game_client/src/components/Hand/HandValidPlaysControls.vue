@@ -58,6 +58,7 @@ export default {
     }
   },
   props: {
+    selectable: Number,
     // cards: Object,
     player: String,
     showValidPlays: {
