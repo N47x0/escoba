@@ -103,10 +103,9 @@ export default {
       // console.log(this.highlighted)
       this.$emit('new-table-highlighted', payload.table)
     },
-    onNewSelected (selection) {
-      this.selected = selection
+    onNewSelected (payload) {
       console.log('on new selected from hand comp')
-      this.$emit('new-selected', this.selected)
+      this.$emit('new-selected', payload)
     }
   },
   watch: {

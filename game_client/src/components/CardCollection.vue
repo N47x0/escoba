@@ -82,15 +82,8 @@ export default {
     },
     onToggleSelect (payload) {
       console.log(payload)
-      if(payload.isSelected === true) {
-        this.selected.push(payload.card)
-        console.log('on true new selected from card collection')
-        this.$emit('new-selected', this.selected)
-      } else if (payload.isSelected === false ) {
-        console.log('on false new selected from card collection')
-        this.selected = this.selected.filter(x => x !== payload.card)
-        this.$emit('new-selected', this.selected)
-      }
+      this.$emit('new-selected', payload)
+      console.log('on new selected from card collection')
     }
   },
   mounted: function () {

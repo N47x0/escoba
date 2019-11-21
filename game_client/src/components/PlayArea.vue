@@ -39,30 +39,6 @@
             />
           </b-col>
         </b-row>
-        <!-- <b-row>
-          <b-col md=4>
-            <HandCompSingle
-              @new-highlighted="newTableCardsHighlighted"
-              @toggle-valid="onToggleValid"
-              :show-valid="showValidPlayer1" 
-              player=1 
-            />
-          </b-col>
-          <b-col md=4>
-            <TableCards
-              :table-cards="getTableCards"
-              :highlighted="tableCardsHighlighted"
-            />
-          </b-col>
-          <b-col md=4>
-            <HandCompSingle
-              @new-highlighted="newTableCardsHighlighted"
-              @toggle-valid="toggleValidPlayer2 = !toggleValidPlayer2" 
-              :show-valid="showValidPlayer2" 
-              player=2 
-            />
-          </b-col>
-        </b-row> -->
       </b-container>
     </div>
   </div>
@@ -168,24 +144,43 @@ export default {
     onNewTableHighlighted(payload) {
       this.tableCardsHighlighted = payload
     },
-    onNewSelected (selection) {
+    onNewSelected (payload) {
       console.log('on new selected from play area')
-      console.log(selection)
+      console.log(payload)
       console.log(this.selected)
-      if (!compareArray(selection, this.selected)) {
-        console.log('does not include card')
-        // console.log(this.selected)
-        // this.selected.push(selection)
-        if (this.selected.length > 0) {
-          // console.log(this.selected)
-          // console.log(selection)
-          this.selected = [ ...this.selected, ...selection]
-        } else {
-          console.log('resetting selection')
-          this.selected = selection
-        }
-        // console.log(this.selected)
+      if(payload.isSelected === true) {
+        this.selected.push(payload.card)
+        console.log('on true new selected from play area')
+      } else if (payload.isSelected === false ) {
+        console.log('on false new selected from play area')
+        this.selected = this.selected.filter(x => x !== payload.card)
       }
+
+      // if (this.selection.length === 0) {
+      //   console.log('empty selection')
+      // } else {
+
+      //   if (this.selected.length === 0) {
+      //     this.selected = selection
+      //   }
+
+      //   }
+
+      // if (this.selection.length === 0) {
+      //   console.log('empty selection')
+      //   // console.log(this.selected)
+      //   // this.selected.push(selection)
+      // } else {
+      //           if (this.selected.length > 0) {
+      //     // console.log(this.selected)
+      //     // console.log(selection)
+      //     this.selected = [ ...this.selected, ...selection]
+      //   } else {
+      //     console.log('resetting selection')
+      //     this.selected = selection
+      //   }
+
+      // }
     }
   },
   mounted: function () {

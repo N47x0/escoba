@@ -60,11 +60,10 @@ export default {
         console.log(comp)
       }
     },
-    onNewSelected (selection) {
-      console.log(selection)
-      this.selected = selection
+    onNewSelected (payload) {
+      console.log(payload)
       console.log('on new selected from hand comp cards')
-      this.$emit('new-selected', this.selected)
+      this.$emit('new-selected', payload)
     }
   },
   watch: {

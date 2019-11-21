@@ -89,6 +89,34 @@
       </b-card>
     </div>
   </div>
+          <!-- <b-row>
+          <b-col md=4>
+            <HandCompSingle
+              @new-highlighted="newTableCardsHighlighted"
+              @toggle-valid="onToggleValid"
+              :show-valid="showValidPlayer1" 
+              player=1 
+            />
+            
+            #### this block was in play area ####
+
+          </b-col>
+          <b-col md=4>
+            <TableCards
+              :table-cards="getTableCards"
+              :highlighted="tableCardsHighlighted"
+            />
+          </b-col>
+          <b-col md=4>
+            <HandCompSingle
+              @new-highlighted="newTableCardsHighlighted"
+              @toggle-valid="toggleValidPlayer2 = !toggleValidPlayer2" 
+              :show-valid="showValidPlayer2" 
+              player=2 
+            />
+          </b-col>
+        </b-row> -->
+
 </template>
 
 <script>
