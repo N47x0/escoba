@@ -97,6 +97,7 @@ namespace games.escoba
         throw new System.Exception("Too many turns");
       }
       // possibly unnecessary check for validity of the play.
+      // if (!ValidPlays(currentState.CurrentPlayer.hand, currentState.Deck.GetTableCards()).Any(x => x.SequenceEqual(cardsPlayed, new CardComparer()))) {
       if (!ValidPlays(currentState.CurrentPlayer.hand, currentState.Deck.GetTableCards()).Any(x => x.SequenceEqual(cardsPlayed))) {
         throw new System.Exception($"The cardsPlayed: {cardsPlayed} are not currently a valid move");
       }

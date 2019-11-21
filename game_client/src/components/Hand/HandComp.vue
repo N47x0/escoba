@@ -14,6 +14,7 @@
         :player="player"
         :show-valid-plays="showValidPlays"
         @on-valid-plays-controls="onValidPlaysControls"
+        :valid-selection="validSelection"
       />
       <HandCompCards
         :player="player"
@@ -38,8 +39,7 @@ export default {
       showValidPlays: false,
       currentValidPlayIndex: 0,
       highlighted: [],
-      showHighlighted: false,
-      selected: []
+      showHighlighted: false
     }
   },
   props: {
@@ -47,6 +47,9 @@ export default {
     showValid: {
       type: Boolean,
       default: false
+    },
+    validSelection: {
+      type: Array
     }
   },
   components: {

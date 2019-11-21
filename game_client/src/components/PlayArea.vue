@@ -20,6 +20,7 @@
               @new-table-highlighted="onNewTableHighlighted" 
               player=1 
               @new-selected="onNewSelected"
+              :valid-selection="validSelection"
             />
           </b-col>
           <b-col md=4>
@@ -36,6 +37,7 @@
               @new-table-highlighted="onNewTableHighlighted" 
               player=2 
               @new-selected="onNewSelected"
+              :valid-selection="validSelection"
             />
           </b-col>
         </b-row>
@@ -100,7 +102,8 @@ export default {
       tableCardsHighlighted: [],
       showValidPlayer1: false,
       showValidPlayer2: false,
-      selected: []
+      selected: [],
+      validSelection: []
     }
   },
   computed: {
@@ -155,32 +158,6 @@ export default {
         console.log('on false new selected from play area')
         this.selected = this.selected.filter(x => x !== payload.card)
       }
-
-      // if (this.selection.length === 0) {
-      //   console.log('empty selection')
-      // } else {
-
-      //   if (this.selected.length === 0) {
-      //     this.selected = selection
-      //   }
-
-      //   }
-
-      // if (this.selection.length === 0) {
-      //   console.log('empty selection')
-      //   // console.log(this.selected)
-      //   // this.selected.push(selection)
-      // } else {
-      //           if (this.selected.length > 0) {
-      //     // console.log(this.selected)
-      //     // console.log(selection)
-      //     this.selected = [ ...this.selected, ...selection]
-      //   } else {
-      //     console.log('resetting selection')
-      //     this.selected = selection
-      //   }
-
-      // }
     }
   },
   mounted: function () {
@@ -192,6 +169,7 @@ export default {
         // console.log(val)
         if (this.validateSelection(val)) {
           console.log("selection validated")
+          this.validSelection = val
         }
       }
     }

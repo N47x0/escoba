@@ -21,7 +21,15 @@
                 name="backward"
               ></v-icon>
             </b-button>
-            <b-button>{{ playerValidPlaysIds }} | {{ tableValidPlaysIds }}</b-button>
+            <b-button
+              id="play-turn-button"
+              @click="onPlayTurn"
+            >
+              {{ playerValidPlaysIds }} | {{ tableValidPlaysIds }}
+            </b-button>
+            <b-tooltip target="play-turn-button" triggers="hover">
+              <b>Play Turn</b>
+            </b-tooltip>            
             <b-button
               @click="nextValidPlay"
             >            
@@ -55,6 +63,9 @@ export default {
     showValidPlays: {
       type: Boolean,
       default: false
+    },
+    validSelection: {
+      type: Array
     }
   },
   components: {
@@ -63,7 +74,8 @@ export default {
     ...mapGetters([
       'getValidPlays',
       'getPlayer1',
-      'getPlayer2'
+      'getPlayer2',
+      'getClientSessionId'
     ]),
     getPlayer: function () {
       return this[`getPlayer${this.player}`]
@@ -131,6 +143,13 @@ export default {
       this.currentValidPlayIndex += 1
       }
     },
+    onPlayTurn() {
+      var payload = {
+        cardsPlayed: this.validSelection,
+        sessionId: this.getClientSessionId
+      }
+      this.$store.dispatch('loadNextTurn', payload)
+    }
   },
   watch: {
     tableValidPlays: function(val, oldVal) {

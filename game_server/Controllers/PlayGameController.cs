@@ -55,7 +55,7 @@ namespace game_server.Controllers
     }
 
     [EnableCors]
-    [HttpPost("PlayNextTurn/{sessionid}")]
+    [HttpPost("PlayNextTurn")]
     async public Task<ValidPlaysPayload> PlayNextTurn([FromBody]PlayTurnIncomingPayload incomingPayload){
       Console.WriteLine(incomingPayload);
       // TODO - Specific gamename resolution
@@ -69,11 +69,13 @@ namespace game_server.Controllers
       gameSession = _context.GameSessions.Find(sessionid);
       var current_game_state = gameSession.GameStates.OrderBy(x => x.TurnCount).LastOrDefault();
 
-      await _context.SaveChangesAsync();
       var payload = new Models.ValidPlaysPayload {
         SessionId = gameSession.GameSessionId,
         GameState = _cardGameService.PlayTurn(incomingPayload.CardsPlayed, current_game_state.CurrentPlayer, current_game_state)
       };
+
+      gameSession.GameStates.Add(payload.GameState);
+      await _context.SaveChangesAsync();
       return payload;
     }
 

@@ -1,10 +1,12 @@
+using System;
 using System.Linq;
 using System.Collections.Generic;
+
 namespace games {
   
   // Generic card stucture
   // TODO - seed with a "deck type" ? Naipes/French-Deck/UNO-cards
-  public class Card {
+  public class Card : IEquatable<Card> {
     public string suit {get; set;}
     public uint val {get; set;}
     public string owner {get; set;} 
@@ -15,7 +17,39 @@ namespace games {
       this.owner = owner;
       this.id = suit + val.ToString();
     }
+    public Card() :
+      this("", 0) {
+      }
+
+    public bool Equals(Card other) {
+      if (other == null) return false;
+      if (this.id == other.id) return true;
+      else return false;
+    }
+    public override bool Equals(Object obj) {
+      if (obj == null) return false;
+      Card cardObj = obj as Card;
+      if (cardObj == null) return false;
+      else return Equals(cardObj);
+    }
+    public override int GetHashCode(){
+      return this.id.GetHashCode();
+    }
   }
+
+  // public class CardComparer : IEqualityComparer<Card> {
+  //   public bool Equals(Card x, Card y) {
+  //     if (object.ReferenceEquals(x, y)) return true;
+  //     if (object.ReferenceEquals(x, null) || object.ReferenceEquals(y, null)) return false;
+  //     return x.id == y.id;
+  //   }
+  //   public int GetHashCode(Card card) {
+  //     if (object.ReferenceEquals(card, null)) return 0;
+  //     int hashCardId = card.id == null ? 0 : card.id.GetHashCode();
+  //     int hasCardOwner = card.owner.GetHashCode();
+  //     return hashCardId ^ hasCardOwner;
+  //   }
+  // }
 
   // Generic 'card' player (not a generic player tho :-} )
   // just keeps track of player-state (score, current hand)

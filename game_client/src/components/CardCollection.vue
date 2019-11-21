@@ -96,7 +96,6 @@ export default {
       // console.log(val)
       if (val.length !== oldVal.length) {
         console.log('new val from selected watch in card collection')
-        this.$emit('new-selected', val)
       }
     }
   }

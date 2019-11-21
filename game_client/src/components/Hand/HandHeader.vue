@@ -12,6 +12,7 @@
         > -->
         <b-button
           @click="onGetValidPlays"
+          :disabled="!activePlayer"
         >
           Get Valid Plays
         </b-button>
@@ -51,10 +52,14 @@ export default {
   computed: {
     ...mapGetters([
       'getPlayer1',
-      'getPlayer2'
+      'getPlayer2',
+      'getCurrentPlayer'
     ]),
     getPlayer: function () {
       return this[`getPlayer${this.player}`]
+    },
+    activePlayer() {
+      return !!(this.getCurrentPlayer.name === this.getPlayer.name) //? true : false
     }
   },
   methods: {
