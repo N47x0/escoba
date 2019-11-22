@@ -132,6 +132,7 @@ export default {
 /* set all cards to center of div and position: relative for absolute positioning of child icons */
 
 
+
 .highlighted {
   border: 2px dashed #42b983;
 }
@@ -139,12 +140,18 @@ export default {
 .selected {
   border: 2px solid #42b983;
 }
+  
+  [id*=icon-] {
+    color:rgb(88, 0, 88)
+  }
+
 
 
 [class*=play-card-] {
   transform: translate(500,0);
   display: inline-block;
   position: relative;
+  background-color: rgba(255, 255, 255, 0.219);
 }
 
 /* card value 1 */

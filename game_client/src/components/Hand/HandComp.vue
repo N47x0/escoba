@@ -1,9 +1,9 @@
 <template>
-  <div class="hand-comp">
+  <div class="hand-comp" id="hand">
     <div v-if="getGameDataLoaded">
       <b-card
-        :class="'hand-' +getPlayer.name"
-        :id="'hand-' +getPlayer.name"
+        :class="attrStr"
+        :id="attrStr"
       >
       <HandHeader
         :player="player"
@@ -72,6 +72,11 @@ export default {
       return JSON.stringify({
         sessionId: this.getClientSessionId
       })
+    },
+    attrStr () {
+      var formatted = this.getPlayer.name.toLowerCase()
+      formatted = formatted.replace(' ', '-')
+      return 'hand-' + formatted
     }
   },
   methods: {
@@ -140,18 +145,29 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
+  [class*=hand-player-] {
+    background-color: #1d2833;
+    border: solid 1px #42b983;
+  }
+  
+  button {
+    background-color: rgba(255, 255, 255, 0.219);
+    color:#42b983
+  }
+
+  h3 {
+    margin: 40px 0 0;
+  }
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  li {
+    display: inline-block;
+    margin: 0 10px;
+  }
+  a {
+    color: #42b983;
+  }
+
 </style>

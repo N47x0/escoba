@@ -93,18 +93,25 @@ export default {
 
 /* set all cards to center of div and position: relative for absolute positioning of child icons */
 
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
+  
+  button {
+    background-color: rgba(255, 255, 255, 0.219);
+    color:#42b983
+  }
+
+  h3 {
+    margin: 40px 0 0;
+  }
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  li {
+    display: inline-block;
+    margin: 0 10px;
+  }
+  a {
+    color: #42b983;
+  }
+
 </style>

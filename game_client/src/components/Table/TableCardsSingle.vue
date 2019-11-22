@@ -90,6 +90,15 @@ export default {
 
 /* set all cards to center of div and position: relative for absolute positioning of child icons */
 
+.table-cards-single {
+  background-color: aqua;
+}
+
+  .table-cards {
+    background-color: #1d2833;
+    border: solid 1px #42b983;
+  }
+
 
 h3 {
   margin: 40px 0 0;
