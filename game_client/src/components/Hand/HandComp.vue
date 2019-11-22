@@ -91,10 +91,11 @@ export default {
       }
     },
     onValidPlays() {
-      // console.log('on valid plays')
-      // console.log(this.showValidPlays)
+      console.log('on valid plays')
+      console.log(this.showValidPlays)
+      // TODO separate logic for all these actions aka toggle display vs index vs highlighted
       this.showValidPlays = !this.showValidPlays
-      // console.log(this.showValidPlays)
+      console.log(this.showValidPlays)
       this.currentValidPlayIndex = 0
       this.$emit('toggle-valid', this.player)
       if (this.highlighted.length > 0) {
@@ -148,11 +149,6 @@ export default {
   [class*=hand-player-] {
     background-color: #1d2833;
     border: solid 1px #42b983;
-  }
-  
-  button {
-    background-color: rgba(255, 255, 255, 0.219);
-    color:#42b983
   }
 
   h3 {

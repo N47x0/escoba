@@ -144,12 +144,17 @@ export default {
       this.currentValidPlayIndex += 1
       }
     },
+    // async onPlayTurn() {
     onPlayTurn() {
       var payload = {
         cardsPlayed: this.validSelection,
         sessionId: this.getClientSessionId
       }
+      // await this.$store.dispatch('loadNextTurn', payload).then(
+      //   this.$emit('on-valid-plays')
+      // )
       this.$store.dispatch('loadNextTurn', payload)
+      this.$emit('on-valid-plays')
     }
   },
   watch: {

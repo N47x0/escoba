@@ -151,7 +151,8 @@ export default {
   transform: translate(500,0);
   display: inline-block;
   position: relative;
-  background-color: rgba(255, 255, 255, 0.219);
+  background-color: rgba(255, 255, 255, 0.842);
+  margin: 0rem 0rem 1rem 0rem;
 }
 
 /* card value 1 */
