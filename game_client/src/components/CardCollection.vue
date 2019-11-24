@@ -1,28 +1,28 @@
 <template>
-  <div class="card-collection">
-    <div v-if="getGameDataLoaded">
-      <!-- <b-alert
-        :show="tooManySelections"
-        dismissible
-        variant="warning"
-        @dismissed="clearSelections"
-      ></b-alert> -->
-        <b-row>
-          <b-col
-            v-for="(c, i) in collection"
-            :key="i"
-          >
-            <CardComp
-              :class="[owner + '-card']"
-              :card="c"
-              :isHand="true"
-              @toggle-select="onToggleSelect"
-              :highlighted="cardHighlighted(c)"
-              :selected="cardSelected(c)"
-            />
-          </b-col>
-        </b-row>
-    </div>
+  <div class="card-collection" v-if="getGameDataLoaded">
+    <!-- <b-alert
+      :show="tooManySelections"
+      dismissible
+      variant="warning"
+      @dismissed="clearSelections"
+    ></b-alert> -->
+    <b-row>
+      <b-col
+        lg="6"
+        sm="12"
+        v-for="(c, i) in collection"
+        :key="i"
+      >
+        <CardComp
+          :class="[owner + '-card']"
+          :card="c"
+          :isHand="true"
+          @toggle-select="onToggleSelect"
+          :highlighted="cardHighlighted(c)"
+          :selected="cardSelected(c)"
+        />
+      </b-col>
+    </b-row>
   </div>
 </template>
 
@@ -68,6 +68,9 @@ export default {
     },
     getHand: function () {
       return this.getPlayer.hand
+    },
+    columns () {
+      return this.collection.length < 3 ? 6 : 4
     }
   },
   methods: {
@@ -103,7 +106,8 @@ export default {
   },
   mounted: function () {
     console.log('#### card collection comp ####')
-    // console.log(this)
+    console.log(this.owner)
+    console.log(this)
   },
   watch: {
     selected: function(val, oldVal) {
@@ -124,17 +128,17 @@ export default {
 
 /* set all cards to center of div and position: relative for absolute positioning of child icons */
 
-h3 {
+/* h3 {
   margin: 40px 0 0;
-}
+} */
 ul {
   list-style-type: none;
   padding: 0;
 }
-li {
+/* li {
   display: inline-block;
   margin: 0 10px;
-}
+} */
 a {
   color: #42b983;
 }

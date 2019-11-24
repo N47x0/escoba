@@ -54,7 +54,7 @@ export default {
 
 <style scoped>
   .board {
-    padding: 1rem 0rem 0rem 0rem;
+    padding: 1rem 0rem 5rem 0rem;
     background-color: #2c3e50;  
   }
 </style>

@@ -1,42 +1,38 @@
 <template>
-  <div class="hand-comp" id="hand">
-    <div v-if="getGameDataLoaded">
-      <b-card
-        :class="attrStr"
-        :id="attrStr"
-      >
-      <b-row>
-        <b-col>
-          <HandHeader
-            :player="player"
-            @get-valid-plays="onGetValidPlays"
-          />
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col>
-          <HandValidPlaysControls
-            v-if="showValidComputed"
-            :player="player"
-            :show-valid-plays="activePlayer"
-            @valid-plays-change="onValidPlaysChange"
-            :valid-selection="validSelection"
-            @play-turn="onPlayTurn"
-          />
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col>
-          <HandCompCards
-            :player="player"
-            :highlighted="highlighted"
-            @new-selected="onNewSelected"
-            :selected="selected"
-          />
-        </b-col>
-      </b-row>
-      </b-card>
-    </div>
+  <div v-if="getGameDataLoaded"
+    :class="attrStr"
+    :id="attrStr"
+  >
+    <b-row>
+      <b-col>
+        <HandHeader
+          :player="player"
+          @get-valid-plays="onGetValidPlays"
+        />
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col>
+        <HandValidPlaysControls
+          v-if="showValidComputed"
+          :player="player"
+          :show-valid-plays="activePlayer"
+          @valid-plays-change="onValidPlaysChange"
+          :valid-selection="validSelection"
+          @play-turn="onPlayTurn"
+        />
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col>
+        <HandCompCards
+          :player="player"
+          :highlighted="highlighted"
+          @new-selected="onNewSelected"
+          :selected="selected"
+        />
+      </b-col>
+    </b-row>
   </div>
 </template>
 
@@ -191,17 +187,17 @@ export default {
     border: solid 1px #42b983;
   }
 
-  h3 {
+  /* h3 {
     margin: 40px 0 0;
-  }
+  } */
   ul {
     list-style-type: none;
     padding: 0;
   }
-  li {
+  /* li {
     display: inline-block;
     margin: 0 10px;
-  }
+  } */
   a {
     color: #42b983;
   }

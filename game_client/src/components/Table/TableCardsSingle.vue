@@ -1,37 +1,30 @@
 <template>
-  <div class="table-cards-single">
-    <div v-if="getGameDataLoaded">
-      <b-card
-        class="table-cards"
-        id="table-cards"
-      >
-        <b-row>
-          <b-col md=4>
-          </b-col>
-          <b-col md=4>Table Cards</b-col>
-          <b-col md=4></b-col>
-        </b-row>
-        <b-row>
-          <b-col md=4></b-col>
-          <b-col md=4>
-            <v-icon
-              id="table-cards-icon"
-              name="brands/stack-overflow"
-              scale=3.5
-            ></v-icon>
-          </b-col>
-          <b-col md=4></b-col>
-        </b-row>
-        <hr />
-          <CardCollection 
-            :collection="getTableCards"
-            owner="table"
-            :highlighted="highlighted"
-            @new-selected="onNewSelected"
-            :selected="selected"
-          />
-      </b-card>
-    </div>
+  <div id="table-cards-single" class="table-cards-single"  v-if="getGameDataLoaded">
+    <b-row>
+      <b-col md=4>
+      </b-col>
+      <b-col md=4>Table Cards</b-col>
+      <b-col md=4></b-col>
+    </b-row>
+    <b-row>
+      <b-col md=4></b-col>
+      <b-col md=4>
+        <v-icon
+          id="table-cards-icon"
+          name="brands/stack-overflow"
+          scale=3.5
+        ></v-icon>
+      </b-col>
+      <b-col md=4></b-col>
+    </b-row>
+    <hr />
+    <CardCollection 
+      :collection="getTableCards"
+      owner="table"
+      :highlighted="highlighted"
+      @new-selected="onNewSelected"
+      :selected="selected"
+    />
   </div>
 </template>
 
@@ -112,11 +105,8 @@ export default {
 
 /* set all cards to center of div and position: relative for absolute positioning of child icons */
 
-.table-cards-single {
-  background-color: aqua;
-}
 
-  .table-cards {
+  .table-cards-single {
     background-color: #1d2833;
     border: solid 1px #42b983;
   }

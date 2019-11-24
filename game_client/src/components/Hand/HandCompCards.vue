@@ -1,14 +1,12 @@
 <template>
   <div class="hand-comp-cards">
-    <b-row>
-      <CardCollection 
-        :collection="getHand"
-        owner="player"
-        :highlighted="highlighted"
-        @new-selected="onNewSelected"
-        :selected="selected"
-      />
-    </b-row>
+    <CardCollection 
+      :collection="getHand"
+      owner="player"
+      :highlighted="highlighted"
+      @new-selected="onNewSelected"
+      :selected="selected"
+    />
   </div>
 </template>
 

@@ -1,54 +1,52 @@
 <template>
-  <div class="play-area-comp">
-    <div v-if="getGameDataLoaded">
-      <b-container
-        class="play-area"
-        id="play-area"
-      >
-        <v-icon
-          id="play-area-icon"
-          name="child"
-          scale=3.5
-        />
-        <h5>Play Area</h5>
-        <hr />
-        <b-row>
-          <b-col md=4>
-            <HandComp
-              @toggle-valid="onToggleValid"
-              :show-valid="showValidPlayer1"
-              @new-table-highlighted="onNewTableHighlighted" 
-              player=1 
-              @new-selected="onNewSelected"
-              :valid-selection="validSelection"
-              @play-turn="onPlayTurn"
-              :selected="selectedPlayer1"
-            />
-          </b-col>
-          <b-col md=4>
-            <TableCardsSingle
-              :table-cards="getTableCards"
-              :highlighted="tableCardsHighlighted"
-              @new-selected="onNewSelected"
-              @play-turn="onPlayTurn"
-              :selected="selectedTable"
-            />
-          </b-col>
-          <b-col md=4>
-            <HandComp
-              @toggle-valid="onToggleValid"
-              :show-valid="showValidPlayer2" 
-              @new-table-highlighted="onNewTableHighlighted" 
-              player=2 
-              @new-selected="onNewSelected"
-              :valid-selection="validSelection"
-              @play-turn="onPlayTurn"
-              :selected="selectedPlayer2"
-            />
-          </b-col>
-        </b-row>
-      </b-container>
-    </div>
+  <div class="play-area-comp" v-if="getGameDataLoaded">
+    <b-container
+      class="play-area"
+      id="play-area"
+    >
+      <v-icon
+        id="play-area-icon"
+        name="child"
+        scale=3.5
+      />
+      <h5>Play Area</h5>
+      <hr />
+      <b-row>
+        <b-col md=4>
+          <HandComp
+            @toggle-valid="onToggleValid"
+            :show-valid="showValidPlayer1"
+            @new-table-highlighted="onNewTableHighlighted" 
+            player=1 
+            @new-selected="onNewSelected"
+            :valid-selection="validSelection"
+            @play-turn="onPlayTurn"
+            :selected="selectedPlayer1"
+          />
+        </b-col>
+        <b-col md=4>
+          <TableCardsSingle
+            :table-cards="getTableCards"
+            :highlighted="tableCardsHighlighted"
+            @new-selected="onNewSelected"
+            @play-turn="onPlayTurn"
+            :selected="selectedTable"
+          />
+        </b-col>
+        <b-col md=4>
+          <HandComp
+            @toggle-valid="onToggleValid"
+            :show-valid="showValidPlayer2" 
+            @new-table-highlighted="onNewTableHighlighted" 
+            player=2 
+            @new-selected="onNewSelected"
+            :valid-selection="validSelection"
+            @play-turn="onPlayTurn"
+            :selected="selectedPlayer2"
+          />
+        </b-col>
+      </b-row>
+    </b-container>
   </div>
 </template>
 
@@ -209,17 +207,17 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
-h3 {
+/* h3 {
   margin: 40px 0 0;
-}
+} */
 ul {
   list-style-type: none;
   padding: 0;
 }
-li {
+/* li {
   display: inline-block;
   margin: 0 10px;
-}
+} */
 a {
   color: #42b983;
 }
