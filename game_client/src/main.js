@@ -21,6 +21,8 @@ import 'vue-awesome/icons/brands/stack-overflow'
 import 'vue-awesome/icons/poo'
 import 'vue-awesome/icons/forward'
 import 'vue-awesome/icons/backward'
+import 'vue-awesome/icons/circle'
+import 'vue-awesome/icons/times'
 import VueSwing from 'vue-swing'
 
 import Icon from 'vue-awesome/components/Icon'

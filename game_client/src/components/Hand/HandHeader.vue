@@ -1,5 +1,32 @@
 <template>
   <div class="hand-header">
+    <div class="score-container">
+      <b-row class="score-header">
+        <b-col>
+          <b>Score:</b>
+        </b-col>
+      </b-row>
+      <b-row>
+        <b-col>
+          <div class="score-display">
+            <v-icon
+              class="score-icon-stack"
+              label="score-icon"
+            >
+              <v-icon 
+              class="score-icon"
+              name="circle" 
+              scale="5"
+              />
+              <!-- <v-icon style="color:white" name="times" /> -->
+            </v-icon>
+            <b class="score-text">
+                {{getPlayer.score}}
+            </b>
+          </div>
+        </b-col>
+      </b-row>
+    </div>
     <b-row class="player-name">
       <b-col>{{getPlayer.name}}'s Hand</b-col>
     </b-row>
@@ -81,6 +108,40 @@ export default {
 /* set hand comp top padding smaller to separate from icon */
 
 /* set all cards to center of div and position: relative for absolute positioning of child icons */
+  
+
+  /* .score-container::before {
+    content: "Score";
+  } */
+
+  .score-container {
+    padding: 1rem 0rem 0rem 0rem;
+  }
+
+  .score-display {
+    padding: 1rem 0rem 0rem 0rem;
+    position: relative;
+    height: 8rem;
+  }
+  
+  .score-text {
+    color: white;
+    font-size: 3.5rem;
+    position: relative;
+    bottom: 5rem;
+    display: block;
+  }
+
+
+  .score-icon-stack {
+    position: relative;
+    display: inline-block;
+  }
+
+  /* .score-icon::after {
+    content: "\0030";
+    color: white;
+  } */
 
   .hand-header {
     margin: 0rem 0rem 0rem 0rem;
