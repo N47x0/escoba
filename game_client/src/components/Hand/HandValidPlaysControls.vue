@@ -177,7 +177,8 @@ export default {
   },
   mounted: function () {
     console.log('#### hand valid plays controls ####')
-    this.$emit('on-valid-plays-controls', {
+    // initialize highlighted cards 
+    this.$emit('valid-plays-change', {
       table: this.tableValidPlays,
       player: this.playerValidPlays
     })
