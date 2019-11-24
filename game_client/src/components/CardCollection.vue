@@ -106,8 +106,8 @@ export default {
   },
   mounted: function () {
     console.log('#### card collection comp ####')
-    console.log(this.owner)
-    console.log(this)
+    // console.log(this.owner)
+    // console.log(this)
   },
   watch: {
     selected: function(val, oldVal) {

@@ -14,8 +14,9 @@
       <b-row>
         <b-col md=4>
           <HandComp
-            @toggle-valid="onToggleValid"
-            :show-valid="showValidPlayer1"
+            @toggle-valid-plays="onToggleValidPlays"
+            :active-player="activePlayer1" 
+            :show-valid="activePlayer1" 
             @new-table-highlighted="onNewTableHighlighted" 
             player=1 
             @new-selected="onNewSelected"
@@ -35,8 +36,9 @@
         </b-col>
         <b-col md=4>
           <HandComp
-            @toggle-valid="onToggleValid"
-            :show-valid="showValidPlayer2" 
+            @toggle-valid-plays="onToggleValidPlays"
+            :active-player="activePlayer2" 
+            :show-valid="activePlayer2" 
             @new-table-highlighted="onNewTableHighlighted" 
             player=2 
             @new-selected="onNewSelected"
@@ -104,8 +106,8 @@ export default {
   data () {
     return {
       tableCardsHighlighted: [],
-      showValidPlayer1: false,
-      showValidPlayer2: false,
+      showValidPlayer1: null,
+      showValidPlayer2: null,
       selectedPlayer1: [],
       selectedPlayer2: [],
       selectedTable: []
@@ -120,11 +122,14 @@ export default {
       'getPlayer2',
       'getCurrentPlayer'
     ]),
-    getPlayer: function () {
-      return this[`getPlayer${this.player}`]
+    getPlayer: function (payload) {
+      return this[`getPlayer${payload}`]
     },
-    activePlayer() {
-      return !!(this.getCurrentPlayer.name === this.getPlayer.name) //? true : false
+    activePlayer1 () {
+      return !!(this.getCurrentPlayer.name === 'Player 1') //? true : false
+    },
+    activePlayer2 () {
+      return !!(this.getCurrentPlayer.name === 'Player 2') //? true : false
     },
     totalSelected () {
       var totalSelected = []
@@ -159,19 +164,13 @@ export default {
       this.tableCardsHighlighted = payload
       // console.log(payload)
     },
-    onToggleValid(payload) {
-      console.log('on toggle valid')
-      // console.log(payload)
+    onToggleValidPlays(payload) {
+      console.log('on toggle valid plays from play area')
+      console.log(payload)
       if (payload === '1') {
-        // console.log(this.showValidPlayer2)
-        this.showValidPlayer1 = true
-        this.showValidPlayer2 = false  
-        // console.log(this.showValidPlayer2)
+        this.showValidPlayer1 = !this.showValidPlayer1
       } else if (payload === '2') {
-        // console.log(this.showValidPlayer1)
-        this.showValidPlayer2 = true
-        this.showValidPlayer1 = false  
-        // console.log(this.showValidPlayer1)
+        this.showValidPlayer2 = !this.showValidPlayer2
       }
       // list of players in store for future games with more than 2 possible players
       // payload === '1' ? this.showValidPlayer2 = false : this.showValidPlayer1 = false

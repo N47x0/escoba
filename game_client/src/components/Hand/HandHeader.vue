@@ -6,8 +6,8 @@
     <b-row>
       <b-col>
         <div
-          @click="onGetValidPlays"
-          :disabled="!activePlayer"
+          @click="toggleValidPlays"
+          :class="[{'active-player': this.activePlayer}, {'inactive-player': !this.activePlayer}, this.getPlayer.name.toLowerCase().replace(' ', '') + '-hand-icon-div']"
         >
           <v-icon
             id="hand-icon"
@@ -62,8 +62,8 @@ export default {
         console.log(comp)
       }
     },
-    onGetValidPlays() {
-      this.$emit('get-valid-plays')
+    toggleValidPlays() {
+      this.$emit('toggle-valid-plays')
     }
   },
   watch: {
@@ -90,6 +90,10 @@ export default {
     margin: 0rem 0rem 1rem 0rem;
   }
   
+  .inactive-player {
+    color: gray
+  }
+
   button {
     background-color: rgba(255, 255, 255, 0.219);
     color:#42b983

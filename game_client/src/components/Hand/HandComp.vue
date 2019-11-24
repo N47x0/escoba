@@ -7,16 +7,16 @@
       <b-col>
         <HandHeader
           :player="player"
-          @get-valid-plays="onGetValidPlays"
+          @toggle-valid-plays="onToggleValidPlays"
         />
       </b-col>
     </b-row>
     <b-row>
       <b-col>
         <HandValidPlaysControls
-          v-if="showValidComputed"
+          v-if="showValidPlays"
           :player="player"
-          :show-valid-plays="activePlayer"
+          :show-valid-plays="showValidPlays"
           @valid-plays-change="onValidPlaysChange"
           :valid-selection="validSelection"
           @play-turn="onPlayTurn"
@@ -46,14 +46,14 @@ export default {
   name: 'HandComp',
   data: function () {
     return {
-      showValidPlays: true,
+      showValidPlays: this.activePlayer === true ? true : false,
       highlighted: [],
       showHighlighted: false
     }
   },
   props: {
     player: String,
-    showValid: {
+    activePlayer: {
       type: Boolean
     },
     validSelection: {
@@ -81,9 +81,9 @@ export default {
     getPlayer: function () {
       return this[`getPlayer${this.player}`]
     },
-    activePlayer() {
-      return !!(this.getCurrentPlayer.name === this.getPlayer.name) //? true : false
-    },
+    // activePlayer() {
+    //   return !!(this.getCurrentPlayer.name === this.getPlayer.name) //? true : false
+    // },
     validPayload () {
       // return "test-payload"
       return JSON.stringify({
@@ -94,13 +94,6 @@ export default {
       var formatted = this.getPlayer.name.toLowerCase()
       formatted = formatted.replace(' ', '-')
       return 'hand-' + formatted
-    },
-    showValidComputed () {
-      var show
-      if (this.activePlayer) {
-        show = this.showValidPlays
-      }
-      return show
     }
   },
   methods: {
@@ -114,19 +107,17 @@ export default {
         console.log(comp)
       }
     },
-    onGetValidPlays() {
-      console.log('on get valid plays')
-      // console.log(this.showValidPlays)
-      // TODO 
-      // separate logic for all these actions aka toggle display  vs highlighted
-      this.showValidPlays = !this.showValidPlays
-      // console.log(this.showValidPlays)
-      this.$emit('toggle-valid', this.player)
-      if (this.highlighted.length > 0) {
-        this.highlighted = []
-        this.showHighlighted = false
+    onToggleValidPlays() {
+      console.log('on toggle valid plays from hand comp')
+      if (this.activePlayer === true) {
+        this.showValidPlays = !this.showValidPlays
+        this.$emit('toggle-valid-plays', this.player)
+        if (this.highlighted.length > 0) {
+          this.highlighted = []
+          this.showHighlighted = false
+        }
+        this.$emit('new-table-highlighted', [])
       }
-      this.$emit('new-table-highlighted', [])
     },
     onValidPlaysChange(payload) {
       // console.log('on valid plays change')
