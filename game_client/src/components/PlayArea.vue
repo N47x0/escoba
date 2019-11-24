@@ -130,15 +130,8 @@ export default {
     },
     totalSelected () {
       var totalSelected = []
-      console.log(this.selectedPlayer1)
-      console.log(this.selectedPlayer2)
-      console.log(this.selectedTable)
       if ((this.selectedPlayer1.length > 0 || this.selectedPlayer2.length > 0) || this.selectedTable.length > 0) {
-        console.log(this.selectedPlayer1)
-        console.log(this.selectedPlayer2)
-        console.log(this.selectedTable)
         totalSelected = [ ...this.selectedPlayer1, ...this.selectedPlayer2, ...this.selectedTable]
-        console.log(totalSelected)
       return totalSelected
       }
     },
@@ -192,21 +185,12 @@ export default {
       console.log('on new selected from play area')
       console.log(payload)
       var owner = payload.card.owner.charAt(0).toUpperCase() + payload.card.owner.slice(1).replace(' ', '')
-      console.log(owner)
       if(payload.isSelected === true) {
-        console.log(this[`selected${owner}`])
         this[`selected${owner}`].push(payload.card)
-        console.log(this[`selected${owner}`])
         console.log('on true new selected from play area')
       } else if (payload.isSelected === false ) {
         console.log('on false new selected from play area')
-        console.log(this[`selected${owner}`])
         this[`selected${owner}`] = this[`selected${owner}`].filter(x => x !== payload.card)
-        console.log(this[`selected${owner}`])
-      } else if (payload.length === 0) {
-        console.log('empty payload from play area')
-        this.selected = payload
-        console.log(this.selected)
       }
     },
     onPlayTurn () {

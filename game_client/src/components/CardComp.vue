@@ -127,7 +127,7 @@ export default {
   },
   mounted: function () {
     console.log('#### card comp ####')
-    console.log(`selected bool from card comp: ${this.card.id}: # ${this.selected} #`)
+    // console.log(`selected bool from card comp: ${this.card.id}: # ${this.selected} #`)
     // console.log(this)
     // this.log(this.getDeck)
     // if(this.getGameDataLoaded) {

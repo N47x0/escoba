@@ -1,17 +1,18 @@
 <template>
-  <div class="hand-valid-plays-controls">
+  <div id="hand-valid-plays-controls" class="hand-valid-plays-controls">
     <b-row 
       v-if="showValidPlays"
       align-h="center"
     >
-      <b-col cols=6>
+      <b-col></b-col>
+      <b-col>
         <b-button-toolbar 
           aria-label="Toolbar with buttons to control which valid play is displayed and selected"
-          justify
+          :justify="true"
           class="valid-plays-toolbar"
+          id="valid-plays-toolbar"
         >
           <b-button-group 
-            class="mx-1"
           >
             <b-button
               @click="previousValidPlay"
@@ -41,6 +42,7 @@
           </b-button-group>
         </b-button-toolbar>
       </b-col>
+      <b-col></b-col>
     </b-row>
     <hr />
   </div>
@@ -190,8 +192,11 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
-.valid-plays-toolbar {
-  /* width: 100%; */
+#valid-plays-toolbar {
+  width: 100%;
+}
+#hand-valid-plays-controls {
+  width: 100%;
 }
 
 /* set hand comp top padding smaller to separate from icon */

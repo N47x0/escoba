@@ -1,34 +1,23 @@
 <template>
   <div class="hand-header">
-    <b-row>
-      <b-col md=4></b-col>
-      <b-col md=4>{{getPlayer.name}}'s Hand</b-col>
-      <b-col md=4></b-col>
+    <b-row class="player-name">
+      <b-col>{{getPlayer.name}}'s Hand</b-col>
     </b-row>
     <b-row>
-      <b-col md=4>
-        <!-- <b-button
-          @click="loadValidPlays(validPayload)"
-        > -->
-        <b-button
+      <b-col>
+        <div
           @click="onGetValidPlays"
           :disabled="!activePlayer"
         >
-          Get Valid Plays
-        </b-button>
-      </b-col>
-      <b-col md=4>
-        <v-icon
-          id="hand-icon"
-          name="hand-spock"
-          scale=3.5
-        ></v-icon>
-      </b-col>
-      <b-col md=4>
-        <b-button
-        >
-          Get Best Play
-        </b-button>
+          <v-icon
+            id="hand-icon"
+            name="hand-spock"
+            scale=3.5
+          />
+        </div>
+        <b-tooltip target="hand-icon" triggers="hover" placement="right">
+          <b>Toggle Valid Plays Controls</b>
+        </b-tooltip>            
       </b-col>
     </b-row>
     <hr />
@@ -80,7 +69,7 @@ export default {
   watch: {
   },
   mounted: function () {
-    console.log('#### hand comp ####')
+    console.log('#### hand header ####')
     // console.log(this)
   }
 }
@@ -93,6 +82,13 @@ export default {
 
 /* set all cards to center of div and position: relative for absolute positioning of child icons */
 
+  .hand-header {
+    margin: 0rem 0rem 0rem 0rem;
+  }
+
+  .player-name {
+    margin: 0rem 0rem 1rem 0rem;
+  }
   
   button {
     background-color: rgba(255, 255, 255, 0.219);

@@ -5,24 +5,36 @@
         :class="attrStr"
         :id="attrStr"
       >
-      <HandHeader
-        :player="player"
-        @get-valid-plays="onGetValidPlays"
-      />
-      <HandValidPlaysControls
-        v-if="showValidComputed"
-        :player="player"
-        :show-valid-plays="activePlayer"
-        @valid-plays-change="onValidPlaysChange"
-        :valid-selection="validSelection"
-        @play-turn="onPlayTurn"
-      />
-      <HandCompCards
-        :player="player"
-        :highlighted="highlighted"
-        @new-selected="onNewSelected"
-        :selected="selected"
-      />
+      <b-row>
+        <b-col>
+          <HandHeader
+            :player="player"
+            @get-valid-plays="onGetValidPlays"
+          />
+        </b-col>
+      </b-row>
+      <b-row>
+        <b-col>
+          <HandValidPlaysControls
+            v-if="showValidComputed"
+            :player="player"
+            :show-valid-plays="activePlayer"
+            @valid-plays-change="onValidPlaysChange"
+            :valid-selection="validSelection"
+            @play-turn="onPlayTurn"
+          />
+        </b-col>
+      </b-row>
+      <b-row>
+        <b-col>
+          <HandCompCards
+            :player="player"
+            :highlighted="highlighted"
+            @new-selected="onNewSelected"
+            :selected="selected"
+          />
+        </b-col>
+      </b-row>
       </b-card>
     </div>
   </div>
@@ -108,11 +120,11 @@ export default {
     },
     onGetValidPlays() {
       console.log('on get valid plays')
-      console.log(this.showValidPlays)
+      // console.log(this.showValidPlays)
       // TODO 
       // separate logic for all these actions aka toggle display  vs highlighted
       this.showValidPlays = !this.showValidPlays
-      console.log(this.showValidPlays)
+      // console.log(this.showValidPlays)
       this.$emit('toggle-valid', this.player)
       if (this.highlighted.length > 0) {
         this.highlighted = []
@@ -134,7 +146,7 @@ export default {
       this.$emit('new-selected', payload)
     },
     onPlayTurn () {
-      console.log('on play trun from hand comp')
+      console.log('on play turn from hand comp')
       this.$emit('play-turn')
     }
   },
@@ -158,8 +170,8 @@ export default {
     selected: function(val, oldVal) {
       if(val.length !== oldVal.length) {
         console.log('change in selected watch from hand comp')
-        console.log(val)
-        console.log(oldVal)
+        // console.log(val)
+        // console.log(oldVal)
       }
     }
   },

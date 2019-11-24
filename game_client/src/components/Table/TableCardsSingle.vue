@@ -90,17 +90,19 @@ export default {
       deep: true,
       immediate: true,
       handler: function(val, oldVal) {
-        console.log(this.selected)
-        if(val.length !== oldVal.length) {
-          console.log('change in selected watch from table cards')
-          console.log(val)
-          console.log(oldVal)
+        if (val !== undefined && oldVal !== undefined) {
+          // console.log(this.selected)
+          if(val.length !== oldVal.length) {
+            console.log('change in selected watch from table cards')
+            // console.log(val)
+            // console.log(oldVal)
+          }
         }
       }
     }
   },
   mounted: function () {
-    console.log(this.selected)
+    // console.log(this.selected)
   }
 }
 </script>
