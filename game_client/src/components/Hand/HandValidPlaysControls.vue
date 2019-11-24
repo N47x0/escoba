@@ -160,7 +160,7 @@ export default {
   watch: {
     tableValidPlays: function(val, oldVal) {
       if(val !== oldVal) {
-        this.$emit('on-valid-plays-controls', {
+        this.$emit('valid-plays-change', {
           table: this.tableValidPlays,
           player: this.playerValidPlays
         })
@@ -168,7 +168,7 @@ export default {
     },
     playerValidPlays: function(val, oldVal) {
       if(val !== oldVal) {
-        this.$emit('on-valid-plays-controls', {
+        this.$emit('valid-plays-change', {
           table: this.tableValidPlays,
           player: this.playerValidPlays
         })

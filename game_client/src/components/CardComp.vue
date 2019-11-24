@@ -134,11 +134,14 @@ export default {
 
 
 .highlighted {
-  border: 2px dashed #42b983;
+  /* border: 3px dashed #42b983; */
+  border: 3px dashed rgb(88, 0, 88);
 }
 
 .selected {
-  border: 2px solid #42b983;
+  /* border: 3px solid #b98542; */
+  border: 3px solid rgb(88, 0, 88);
+  outline: 1px solid white;
 }
   
   [id*=icon-] {

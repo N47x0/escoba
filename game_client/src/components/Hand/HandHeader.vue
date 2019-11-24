@@ -74,7 +74,7 @@ export default {
       }
     },
     onGetValidPlays() {
-      this.$emit('on-valid-plays')
+      this.$emit('get-valid-plays')
     }
   },
   watch: {

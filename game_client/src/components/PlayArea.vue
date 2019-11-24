@@ -100,8 +100,8 @@ export default {
   data () {
     return {
       tableCardsHighlighted: [],
-      showValidPlayer1: false,
-      showValidPlayer2: false,
+      showValidPlayer1: this.activePlayer,
+      showValidPlayer2: this.activePlayer,
       selected: [],
       validSelection: []
     }
@@ -109,10 +109,18 @@ export default {
   computed: {
     ...mapGetters([
       'getGameDataLoaded',
-      'getDeck',
       'getTableCards',
-      'validateSelection'
-    ])
+      'validateSelection',
+      'getPlayer1',
+      'getPlayer2',
+      'getCurrentPlayer'
+    ]),
+    getPlayer: function () {
+      return this[`getPlayer${this.player}`]
+    },
+    activePlayer() {
+      return !!(this.getCurrentPlayer.name === this.getPlayer.name) //? true : false
+    }
   },
   methods: {
     log: function (input) {

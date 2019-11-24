@@ -7,13 +7,13 @@
       >
       <HandHeader
         :player="player"
-        @on-valid-plays="onValidPlays"
+        @get-valid-plays="onGetValidPlays"
       />
       <HandValidPlaysControls
-        v-if="showValidPlays"
+        v-if="showValidComputed"
         :player="player"
-        :show-valid-plays="showValidPlays"
-        @on-valid-plays-controls="onValidPlaysControls"
+        :show-valid-plays="activePlayer"
+        @valid-plays-change="onValidPlaysChange"
         :valid-selection="validSelection"
       />
       <HandCompCards
@@ -36,8 +36,7 @@ export default {
   name: 'HandComp',
   data: function () {
     return {
-      showValidPlays: false,
-      currentValidPlayIndex: 0,
+      showValidPlays: true,
       highlighted: [],
       showHighlighted: false
     }
@@ -45,8 +44,7 @@ export default {
   props: {
     player: String,
     showValid: {
-      type: Boolean,
-      default: false
+      type: Boolean
     },
     validSelection: {
       type: Array
@@ -62,10 +60,14 @@ export default {
       'getGameDataLoaded',
       'getValidPlays',
       'getPlayer1',
-      'getPlayer2'
+      'getPlayer2',
+      'getCurrentPlayer'
     ]),
     getPlayer: function () {
       return this[`getPlayer${this.player}`]
+    },
+    activePlayer() {
+      return !!(this.getCurrentPlayer.name === this.getPlayer.name) //? true : false
     },
     validPayload () {
       // return "test-payload"
@@ -77,6 +79,13 @@ export default {
       var formatted = this.getPlayer.name.toLowerCase()
       formatted = formatted.replace(' ', '-')
       return 'hand-' + formatted
+    },
+    showValidComputed () {
+      var show
+      if (this.activePlayer) {
+        show = this.showValidPlays
+      }
+      return show
     }
   },
   methods: {
@@ -90,13 +99,13 @@ export default {
         console.log(comp)
       }
     },
-    onValidPlays() {
-      console.log('on valid plays')
+    onGetValidPlays() {
+      console.log('on get valid plays')
       console.log(this.showValidPlays)
-      // TODO separate logic for all these actions aka toggle display vs index vs highlighted
+      // TODO 
+      // separate logic for all these actions aka toggle display  vs highlighted
       this.showValidPlays = !this.showValidPlays
       console.log(this.showValidPlays)
-      this.currentValidPlayIndex = 0
       this.$emit('toggle-valid', this.player)
       if (this.highlighted.length > 0) {
         this.highlighted = []
@@ -104,8 +113,8 @@ export default {
       }
       this.$emit('new-table-highlighted', [])
     },
-    onValidPlaysControls(payload) {
-      // console.log('on valid plays controls')
+    onValidPlaysChange(payload) {
+      // console.log('on valid plays change')
       // console.log(payload)
       // console.log(this.highlighted)
       this.highlighted = payload.player
