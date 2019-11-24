@@ -6,6 +6,7 @@
         owner="player"
         :highlighted="highlighted"
         @new-selected="onNewSelected"
+        :selected="selected"
       />
     </b-row>
   </div>
@@ -19,12 +20,14 @@ export default {
   name: 'HandCompCards',
   data: function () {
     return {
-      selected: []
     }
   },
   props: {
     player: String,
     highlighted: {
+      type: Array
+    },
+    selected: {
       type: Array
     }
   },

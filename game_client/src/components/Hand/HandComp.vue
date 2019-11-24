@@ -15,11 +15,13 @@
         :show-valid-plays="activePlayer"
         @valid-plays-change="onValidPlaysChange"
         :valid-selection="validSelection"
+        @play-turn="onPlayTurn"
       />
       <HandCompCards
         :player="player"
         :highlighted="highlighted"
         @new-selected="onNewSelected"
+        :selected="selected"
       />
       </b-card>
     </div>
@@ -48,7 +50,12 @@ export default {
     },
     validSelection: {
       type: Array
-    }
+    },
+    selected: {
+      type: Array,
+      required: false,
+      default: () => []
+    },
   },
   components: {
     HandHeader,
@@ -123,7 +130,12 @@ export default {
     },
     onNewSelected (payload) {
       console.log('on new selected from hand comp')
+      console.log(payload)
       this.$emit('new-selected', payload)
+    },
+    onPlayTurn () {
+      console.log('on play trun from hand comp')
+      this.$emit('play-turn')
     }
   },
   watch: {
@@ -141,6 +153,13 @@ export default {
       if(val !== oldVal) {
         // console.log(val)
         // console.log(oldVal)
+      }
+    },
+    selected: function(val, oldVal) {
+      if(val.length !== oldVal.length) {
+        console.log('change in selected watch from hand comp')
+        console.log(val)
+        console.log(oldVal)
       }
     }
   },

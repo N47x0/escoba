@@ -154,7 +154,7 @@ export default {
       //   this.$emit('on-valid-plays')
       // )
       this.$store.dispatch('loadNextTurn', payload)
-      this.$emit('on-valid-plays')
+      this.$emit('play-turn')
     }
   },
   watch: {

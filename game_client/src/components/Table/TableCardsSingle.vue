@@ -28,6 +28,7 @@
             owner="table"
             :highlighted="highlighted"
             @new-selected="onNewSelected"
+            :selected="selected"
           />
       </b-card>
     </div>
@@ -43,7 +44,12 @@ export default {
   name: 'TableCardsSingle',
   props: {
     tableCards: Array,
-    highlighted: Array
+    highlighted: Array,
+    selected: {
+      type: Array,
+      required: false,
+      default: () => []
+    },
   },
   components: {
     CardComp,
@@ -51,8 +57,7 @@ export default {
   },
   data() {
     return {
-      validTurn: false,
-      selected: []
+      validTurn: false
     }
   },
   computed: {
@@ -75,12 +80,27 @@ export default {
       }
     },
     onNewSelected (payload) {
-      console.log(payload)
       console.log('on new selected from table cards single')
+      console.log(payload)
       this.$emit('new-selected', payload)
     },
   },
+  watch: {
+    selected: {
+      deep: true,
+      immediate: true,
+      handler: function(val, oldVal) {
+        console.log(this.selected)
+        if(val.length !== oldVal.length) {
+          console.log('change in selected watch from table cards')
+          console.log(val)
+          console.log(oldVal)
+        }
+      }
+    }
+  },
   mounted: function () {
+    console.log(this.selected)
   }
 }
 </script>

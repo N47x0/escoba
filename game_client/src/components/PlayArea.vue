@@ -21,6 +21,8 @@
               player=1 
               @new-selected="onNewSelected"
               :valid-selection="validSelection"
+              @play-turn="onPlayTurn"
+              :selected="selectedPlayer1"
             />
           </b-col>
           <b-col md=4>
@@ -28,6 +30,8 @@
               :table-cards="getTableCards"
               :highlighted="tableCardsHighlighted"
               @new-selected="onNewSelected"
+              @play-turn="onPlayTurn"
+              :selected="selectedTable"
             />
           </b-col>
           <b-col md=4>
@@ -38,6 +42,8 @@
               player=2 
               @new-selected="onNewSelected"
               :valid-selection="validSelection"
+              @play-turn="onPlayTurn"
+              :selected="selectedPlayer2"
             />
           </b-col>
         </b-row>
@@ -100,10 +106,11 @@ export default {
   data () {
     return {
       tableCardsHighlighted: [],
-      showValidPlayer1: this.activePlayer,
-      showValidPlayer2: this.activePlayer,
-      selected: [],
-      validSelection: []
+      showValidPlayer1: false,
+      showValidPlayer2: false,
+      selectedPlayer1: [],
+      selectedPlayer2: [],
+      selectedTable: []
     }
   },
   computed: {
@@ -120,6 +127,32 @@ export default {
     },
     activePlayer() {
       return !!(this.getCurrentPlayer.name === this.getPlayer.name) //? true : false
+    },
+    totalSelected () {
+      var totalSelected = []
+      console.log(this.selectedPlayer1)
+      console.log(this.selectedPlayer2)
+      console.log(this.selectedTable)
+      if ((this.selectedPlayer1.length > 0 || this.selectedPlayer2.length > 0) || this.selectedTable.length > 0) {
+        console.log(this.selectedPlayer1)
+        console.log(this.selectedPlayer2)
+        console.log(this.selectedTable)
+        totalSelected = [ ...this.selectedPlayer1, ...this.selectedPlayer2, ...this.selectedTable]
+        console.log(totalSelected)
+      return totalSelected
+      }
+    },
+    validSelection () {
+      var validSelection
+      // console.log(val)
+      if (this.totalSelected !== undefined) {
+        console.log("validating")
+        if (this.validateSelection(this.totalSelected)) {
+          console.log("selection validated")
+          validSelection = this.totalSelected
+        }
+      }
+      return validSelection
     }
   },
   methods: {
@@ -158,29 +191,33 @@ export default {
     onNewSelected (payload) {
       console.log('on new selected from play area')
       console.log(payload)
-      console.log(this.selected)
+      var owner = payload.card.owner.charAt(0).toUpperCase() + payload.card.owner.slice(1).replace(' ', '')
+      console.log(owner)
       if(payload.isSelected === true) {
-        this.selected.push(payload.card)
+        console.log(this[`selected${owner}`])
+        this[`selected${owner}`].push(payload.card)
+        console.log(this[`selected${owner}`])
         console.log('on true new selected from play area')
       } else if (payload.isSelected === false ) {
         console.log('on false new selected from play area')
-        this.selected = this.selected.filter(x => x !== payload.card)
+        console.log(this[`selected${owner}`])
+        this[`selected${owner}`] = this[`selected${owner}`].filter(x => x !== payload.card)
+        console.log(this[`selected${owner}`])
+      } else if (payload.length === 0) {
+        console.log('empty payload from play area')
+        this.selected = payload
+        console.log(this.selected)
       }
+    },
+    onPlayTurn () {
+      this.selectedTable = []
+      this.selectedPlayer1 = []
+      this.selectedPlayer2 = []
     }
   },
   mounted: function () {
   },
   watch: {
-    selected: function (val, oldVal) {
-      if (val.length !== oldVal.lenth) {
-        console.log("validating")
-        // console.log(val)
-        if (this.validateSelection(val)) {
-          console.log("selection validated")
-          this.validSelection = val
-        }
-      }
-    }
   }
 }
 </script>

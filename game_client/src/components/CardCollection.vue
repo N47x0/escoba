@@ -18,6 +18,7 @@
               :isHand="true"
               @toggle-select="onToggleSelect"
               :highlighted="cardHighlighted(c)"
+              :selected="cardSelected(c)"
             />
           </b-col>
         </b-row>
@@ -34,7 +35,6 @@ export default {
   data: function () {
     return {
       cardsSelected: Object,
-      selected: []
     }
   },
   props: {
@@ -47,6 +47,10 @@ export default {
       default: () => []
     },
     highlighted: {
+      type: Array,
+      required: false
+    },
+    selected: {
       type: Array,
       required: false
     }
@@ -80,10 +84,21 @@ export default {
     cardHighlighted (card) {
       return this.highlighted.some(x => x.id === card.id) ? true : false
     },
+    cardSelected (card) {
+      var cardSelected
+      if (this.selected !== undefined) {
+        // console.log(this.selected)
+        // console.log(this.selected.map(x => x.id))
+        // console.log(card.id)
+        cardSelected = this.selected.some(x => x.id === card.id) ? true : false
+      }
+      // console.log(cardSelected)
+      return cardSelected
+    },
     onToggleSelect (payload) {
+      console.log('on new selected from card collection')
       console.log(payload)
       this.$emit('new-selected', payload)
-      console.log('on new selected from card collection')
     }
   },
   mounted: function () {

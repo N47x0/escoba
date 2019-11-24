@@ -43,6 +43,10 @@ export default {
     highlighted: {
       type: Boolean,
       default: false
+    },
+    selected: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
@@ -109,8 +113,21 @@ export default {
       this.$emit('toggle-select', payload)
     }
   },
+  watch: {
+    selected: function (val, oldVal) {
+      // console.log(this.selected)
+      if (val === false) {
+        // console.log('change in val to false from card comp selected watch')
+        // console.log(val)
+        // console.log(this.isSelected)
+        this.isSelected = false
+        // console.log(this.isSelected)
+      }
+    }
+  },
   mounted: function () {
     console.log('#### card comp ####')
+    console.log(`selected bool from card comp: ${this.card.id}: # ${this.selected} #`)
     // console.log(this)
     // this.log(this.getDeck)
     // if(this.getGameDataLoaded) {
