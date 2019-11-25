@@ -55,9 +55,6 @@ export default {
     activePlayer: {
       type: Boolean
     },
-    showValid: {
-      type: Boolean
-    },
     validSelection: {
       type: Array
     },
@@ -117,11 +114,6 @@ export default {
       console.log('on toggle valid plays from hand comp')
       if (this.activePlayer === true) {
         this.showValidPlays = !this.showValidPlays
-        var payload = {
-          player: this.player,
-          setting: this.showValidPlays
-        }
-        this.$emit('toggle-valid-plays', payload)
       }
     },
     onValidPlaysChange(payload) {
@@ -148,17 +140,8 @@ export default {
     }
   },
   watch: {
-    // showValid: function(val, oldVal) {
-    //   if(val !== oldVal) {
-    //     console.log(val)
-    //     console.log(oldVal)
-    //     this.showValidPlays = val
-    //   }
-    // },
     activePlayer: function(val, oldVal) {
       if(val !== oldVal) {
-        console.log(val)
-        console.log(oldVal)
         this.showValidPlays = val
       }
     },

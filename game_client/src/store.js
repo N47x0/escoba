@@ -11,6 +11,21 @@ import {
 
 Vue.use(Vuex)
 
+const dedupe = (objectArray) => {
+  var deepCopy = JSON.parse(JSON.stringify(objectArray))
+  console.log(deepCopy)
+  deepCopy = deepCopy.map(play => play
+    .reduce((accumulator, play) => {
+      accumulator.push(play.id)
+      return accumulator
+    },
+      []
+    ))
+      .filter((v, i, a) => a.indexOf(v) === i)
+  console.log(deepCopy)
+  return deepCopy
+}
+
 export default new Vuex.Store({
   state: {
     gameDataLoaded: false,
@@ -86,7 +101,9 @@ export default new Vuex.Store({
       return state.rulesLoaded
     },
     validateSelection: (state) => (selection) => {
-      var plays = [ ...state.validPlays[state.currentPlayer.name]]
+      var plays = JSON.parse(JSON.stringify(state.validPlays[state.currentPlayer.name]))
+      // deep copy because not making copy of object
+      // var plays = [ ...state.validPlays[state.currentPlayer.name]]
       plays = plays.map(x => x.sort())
       var sel = [ ...selection]
       sel = sel.sort()
@@ -220,8 +237,13 @@ export default new Vuex.Store({
             sessionId: response.data.sessionId,
             tableCards: response.data.gameState.tableCards,
             validPlays: response.data.gameState.validPlays,
+            validPlaysDeduped: {
+              'Player 1': dedupe(response.data.gameState.validPlays['Player 1']),
+              'Player 2': dedupe(response.data.gameState.validPlays['Player 2'])
+            },
             currentPlayer: response.data.gameState.currentPlayer
           }
+          console.log(parsedResponse)
           commit(types.INIT_GAME_DATA, parsedResponse.gameState)
           commit(types.SET_CLIENT_SESSION_ID, parsedResponse.sessionId)
           commit(types.CHANGE_PLAYER_1_DATA, parsedResponse.player1)
@@ -262,6 +284,10 @@ export default new Vuex.Store({
             player2: response.data.gameState.players.filter(player => player.name === 'Player 2')[0],
             tableCards: response.data.gameState.tableCards,
             validPlays: response.data.gameState.validPlays,
+            validPlaysDeduped: {
+              'Player 1': dedupe(response.data.gameState.validPlays['Player 1']),
+              'Player 2': dedupe(response.data.gameState.validPlays['Player 2'])
+            },
             currentPlayer: response.data.gameState.currentPlayer
           }
           console.log(parsedResponse)
