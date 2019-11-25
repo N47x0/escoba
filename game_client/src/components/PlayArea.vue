@@ -14,9 +14,7 @@
       <b-row>
         <b-col md=4>
           <HandComp
-            @toggle-valid-plays="onToggleValidPlays"
             :active-player="activePlayer1" 
-            :show-valid="showValidPlayer1" 
             @valid-plays-change="onValidPlaysChange" 
             player=1 
             @new-selected="onNewSelected"
@@ -37,9 +35,7 @@
         </b-col>
         <b-col md=4>
           <HandComp
-            @toggle-valid-plays="onToggleValidPlays"
             :active-player="activePlayer2" 
-            :show-valid="showValidPlayer2" 
             @valid-plays-change="onValidPlaysChange" 
             player=2 
             @new-selected="onNewSelected"
@@ -108,8 +104,6 @@ export default {
   data () {
     return {
       tableCardsHighlighted: [],
-      showValidPlayer1: null,
-      showValidPlayer2: null,
       selectedPlayer1: [],
       selectedPlayer2: [],
       selectedTable: [],
@@ -168,21 +162,6 @@ export default {
     newTableCardsHighlighted(payload) {
       this.tableCardsHighlighted = payload
       // console.log(payload)
-    },
-    onToggleValidPlays(payload) {
-      console.log('on toggle valid plays from play area')
-      console.log(payload)
-      if (payload.player === '1') {
-        console.log(this.showValidPlayer1)
-        this.showValidPlayer1 = payload.setting
-        console.log(this.showValidPlayer1)
-      } else if (payload === '2') {
-        console.log(this.showValidPlayer2)
-        this.showValidPlayer2 = payload.setting     
-        console.log(this.showValidPlayer2)
-      }
-      // list of players in store for future games with more than 2 possible players
-      // payload === '1' ? this.showValidPlayer2 = false : this.showValidPlayer1 = false
     },
     onValidPlaysChange(payload) {
       console.log('on valid plays change from play area')

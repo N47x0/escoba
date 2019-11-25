@@ -148,8 +148,17 @@ export default {
     }
   },
   watch: {
-    showValid: function(val, oldVal) {
+    // showValid: function(val, oldVal) {
+    //   if(val !== oldVal) {
+    //     console.log(val)
+    //     console.log(oldVal)
+    //     this.showValidPlays = val
+    //   }
+    // },
+    activePlayer: function(val, oldVal) {
       if(val !== oldVal) {
+        console.log(val)
+        console.log(oldVal)
         this.showValidPlays = val
       }
     },
