@@ -55,6 +55,9 @@ export default {
     activePlayer: {
       type: Boolean
     },
+    showValid: {
+      type: Boolean
+    },
     validSelection: {
       type: Array
     },
@@ -114,12 +117,11 @@ export default {
       console.log('on toggle valid plays from hand comp')
       if (this.activePlayer === true) {
         this.showValidPlays = !this.showValidPlays
-        this.$emit('toggle-valid-plays', this.player)
-        if (this.highlighted.length > 0) {
-          this.highlighted = []
-          this.showHighlighted = false
+        var payload = {
+          player: this.player,
+          setting: this.showValidPlays
         }
-        this.$emit('new-table-highlighted', [])
+        this.$emit('toggle-valid-plays', payload)
       }
     },
     onValidPlaysChange(payload) {
@@ -138,6 +140,11 @@ export default {
     onPlayTurn () {
       console.log('on play turn from hand comp')
       this.$emit('play-turn')
+      var payload = {
+        player: this.player,
+        setting: false
+      }
+      this.$emit('toggle-valid-plays', payload)
     }
   },
   watch: {

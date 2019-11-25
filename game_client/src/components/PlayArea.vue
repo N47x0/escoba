@@ -16,7 +16,7 @@
           <HandComp
             @toggle-valid-plays="onToggleValidPlays"
             :active-player="activePlayer1" 
-            :show-valid="activePlayer1" 
+            :show-valid="showValidPlayer1" 
             @valid-plays-change="onValidPlaysChange" 
             player=1 
             @new-selected="onNewSelected"
@@ -39,7 +39,7 @@
           <HandComp
             @toggle-valid-plays="onToggleValidPlays"
             :active-player="activePlayer2" 
-            :show-valid="activePlayer2" 
+            :show-valid="showValidPlayer2" 
             @valid-plays-change="onValidPlaysChange" 
             player=2 
             @new-selected="onNewSelected"
@@ -172,10 +172,14 @@ export default {
     onToggleValidPlays(payload) {
       console.log('on toggle valid plays from play area')
       console.log(payload)
-      if (payload === '1') {
-        this.showValidPlayer1 = !this.showValidPlayer1
+      if (payload.player === '1') {
+        console.log(this.showValidPlayer1)
+        this.showValidPlayer1 = payload.setting
+        console.log(this.showValidPlayer1)
       } else if (payload === '2') {
-        this.showValidPlayer2 = !this.showValidPlayer2
+        console.log(this.showValidPlayer2)
+        this.showValidPlayer2 = payload.setting     
+        console.log(this.showValidPlayer2)
       }
       // list of players in store for future games with more than 2 possible players
       // payload === '1' ? this.showValidPlayer2 = false : this.showValidPlayer1 = false
@@ -186,7 +190,6 @@ export default {
       // console.log(this.highlighted)
       this.higlightedTable = payload.tablePlays
       if (payload.player === '1') {
-        console.log('player 1 from valid plays change')
         this.higlightedPlayer1 = payload.playerPlays
       } else if (payload.player === '2') {
         this.higlightedPlayer2 = payload.playerPlays
