@@ -17,21 +17,22 @@
             @toggle-valid-plays="onToggleValidPlays"
             :active-player="activePlayer1" 
             :show-valid="activePlayer1" 
-            @new-table-highlighted="onNewTableHighlighted" 
+            @valid-plays-change="onValidPlaysChange" 
             player=1 
             @new-selected="onNewSelected"
             :valid-selection="validSelection"
             @play-turn="onPlayTurn"
             :selected="selectedPlayer1"
+            :highlighted="higlightedPlayer1"
           />
         </b-col>
         <b-col md=4>
           <TableCardsSingle
             :table-cards="getTableCards"
-            :highlighted="tableCardsHighlighted"
             @new-selected="onNewSelected"
             @play-turn="onPlayTurn"
             :selected="selectedTable"
+            :highlighted="higlightedTable"
           />
         </b-col>
         <b-col md=4>
@@ -39,12 +40,13 @@
             @toggle-valid-plays="onToggleValidPlays"
             :active-player="activePlayer2" 
             :show-valid="activePlayer2" 
-            @new-table-highlighted="onNewTableHighlighted" 
+            @valid-plays-change="onValidPlaysChange" 
             player=2 
             @new-selected="onNewSelected"
             :valid-selection="validSelection"
             @play-turn="onPlayTurn"
             :selected="selectedPlayer2"
+            :highlighted="higlightedPlayer2"
           />
         </b-col>
       </b-row>
@@ -110,7 +112,10 @@ export default {
       showValidPlayer2: null,
       selectedPlayer1: [],
       selectedPlayer2: [],
-      selectedTable: []
+      selectedTable: [],
+      higlightedPlayer1: [],
+      higlightedPlayer2: [],
+      higlightedTable: []
     }
   },
   computed: {
@@ -175,8 +180,17 @@ export default {
       // list of players in store for future games with more than 2 possible players
       // payload === '1' ? this.showValidPlayer2 = false : this.showValidPlayer1 = false
     },
-    onNewTableHighlighted(payload) {
-      this.tableCardsHighlighted = payload
+    onValidPlaysChange(payload) {
+      console.log('on valid plays change from play area')
+      console.log(payload)
+      // console.log(this.highlighted)
+      this.higlightedTable = payload.tablePlays
+      if (payload.player === '1') {
+        console.log('player 1 from valid plays change')
+        this.higlightedPlayer1 = payload.playerPlays
+      } else if (payload.player === '2') {
+        this.higlightedPlayer2 = payload.playerPlays
+      }
     },
     onNewSelected (payload) {
       console.log('on new selected from play area')

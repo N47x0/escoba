@@ -163,16 +163,18 @@ export default {
     tableValidPlays: function(val, oldVal) {
       if(val !== oldVal) {
         this.$emit('valid-plays-change', {
-          table: this.tableValidPlays,
-          player: this.playerValidPlays
+          tablePlays: this.tableValidPlays,
+          playerPlays: this.playerValidPlays,
+          player: this.player
         })
       }
     },
     playerValidPlays: function(val, oldVal) {
       if(val !== oldVal) {
         this.$emit('valid-plays-change', {
-          table: this.tableValidPlays,
-          player: this.playerValidPlays
+          tablePlays: this.tableValidPlays,
+          playerPlays: this.playerValidPlays,
+          player: this.player
         })
       }
     }
@@ -181,8 +183,9 @@ export default {
     console.log('#### hand valid plays controls ####')
     // initialize highlighted cards 
     this.$emit('valid-plays-change', {
-      table: this.tableValidPlays,
-      player: this.playerValidPlays
+      tablePlays: this.tableValidPlays,
+      playerPlays: this.playerValidPlays,
+      player: this.player
     })
     // console.log(this)
   }

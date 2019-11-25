@@ -47,7 +47,6 @@ export default {
   data: function () {
     return {
       showValidPlays: this.activePlayer === true ? true : false,
-      highlighted: [],
       showHighlighted: false
     }
   },
@@ -63,6 +62,10 @@ export default {
       type: Array,
       required: false,
       default: () => []
+    },
+    highlighted: {
+      type: Array,
+      required: false
     },
   },
   components: {
@@ -123,9 +126,9 @@ export default {
       // console.log('on valid plays change')
       // console.log(payload)
       // console.log(this.highlighted)
-      this.highlighted = payload.player
+      // this.highlighted = payload.player
       // console.log(this.highlighted)
-      this.$emit('new-table-highlighted', payload.table)
+      this.$emit('valid-plays-change', payload)
     },
     onNewSelected (payload) {
       console.log('on new selected from hand comp')
