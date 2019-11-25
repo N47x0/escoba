@@ -25,6 +25,8 @@
             <b-button
               id="play-turn-button"
               @click="onPlayTurn"
+              :disabled="!hasValidSelection"
+              :class="[{'active-play-turn-button': hasValidSelection}]"
             >
               {{ playerValidPlaysIds }} | {{ tableValidPlaysIds }}
             </b-button>
@@ -85,6 +87,13 @@ export default {
     },
     validPlays() {
       return this.getValidPlays[`Player ${this.player}`]     
+    },
+    hasValidSelection () {
+      var valid = false
+      if (this.validSelection !== undefined) {
+        valid = this.validSelection.length > 0
+      }
+      return valid
     },
     playerValidPlays() {
       var pvp = []
@@ -200,6 +209,10 @@ export default {
 }
 #hand-valid-plays-controls {
   width: 100%;
+}
+
+.active-play-turn-button {
+  border: 3px solid #42b983 !important;
 }
 
 /* set hand comp top padding smaller to separate from icon */
