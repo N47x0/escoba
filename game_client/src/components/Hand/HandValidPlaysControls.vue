@@ -218,8 +218,6 @@ export default {
 /* set hand comp top padding smaller to separate from icon */
 
 /* set all cards to center of div and position: relative for absolute positioning of child icons */
-
-
   
   button {
     background-color: rgba(255, 255, 255, 0.219);

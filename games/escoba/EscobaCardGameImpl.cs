@@ -132,6 +132,9 @@ namespace games.escoba
       }
       // also advance valid plays state to reflect new hand
       currentState.ValidPlays = GetValidPlays(currentState.Players, currentState.TableCards);
+      // also advance table cards
+      currentState.TableCards = currentState.Deck.GetTableCards();
+
 
       return currentState;
     }
@@ -193,14 +196,17 @@ namespace games.escoba
         if (scored) {
           c.owner = player.name;
           if (player.hand.Contains(c)) { 
+            // player.hand = player.hand.Where(x => x != c).ToList();
             player.hand.Remove(c); 
           } else {
             deck.GetTableCards().Remove(c);
+            // player.hand = player.hand.Where(x => x != c).ToList();
           }
         } else {
           if (player.hand.Contains(c)) {
-            deck.GetTableCards().Add(c);
             player.hand.Remove(c);
+            c.owner = "table";
+            // deck = deck.AddCardsToTable(c);
           }
         }
       }
