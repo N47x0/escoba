@@ -78,25 +78,5 @@ namespace game_server.Controllers
       await _context.SaveChangesAsync();
       return payload;
     }
-
-//     [EnableCors]
-//     [HttpGet]
-//     public InitGamePayload Get(){
-
-//       return new InitGamePayload {
-//         gameState = new games.GameState {
-//           CurrentPlayer = new games.Player {
-            
-//           }
-//         }
-//       }
-//     }
-
-//     [EnableCors]
-//     [HttpPost]
-//     public string Post(){
-
-//     }
-
   }
 }

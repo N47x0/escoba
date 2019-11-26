@@ -37,20 +37,6 @@ namespace games {
     }
   }
 
-  // public class CardComparer : IEqualityComparer<Card> {
-  //   public bool Equals(Card x, Card y) {
-  //     if (object.ReferenceEquals(x, y)) return true;
-  //     if (object.ReferenceEquals(x, null) || object.ReferenceEquals(y, null)) return false;
-  //     return x.id == y.id;
-  //   }
-  //   public int GetHashCode(Card card) {
-  //     if (object.ReferenceEquals(card, null)) return 0;
-  //     int hashCardId = card.id == null ? 0 : card.id.GetHashCode();
-  //     int hasCardOwner = card.owner.GetHashCode();
-  //     return hashCardId ^ hasCardOwner;
-  //   }
-  // }
-
   // Generic 'card' player (not a generic player tho :-} )
   // just keeps track of player-state (score, current hand)
   // action policy is separate
@@ -123,7 +109,7 @@ namespace games {
     }
 
     public void SetCardOwner(Card card, Player player) {
-      card.owner = player.name;
+      cards[card.id].owner = player.name;
     }
 
     // Decide where "table" definition belongs, more broadly: ownership could be better defined than "strings"
@@ -155,13 +141,6 @@ namespace games {
     //public int current  { get; set; }
     public bool IsDone { get; set;}
 
-
-    // public GameState( CardDeck deck, List<Player> players, int turnCount, bool isDone ) {
-    //   Deck = deck;
-    //   Players = players;
-    //   TurnCount = turnCount;
-    //   IsDone = isDone;
-    // }
   }
 
   // Generic Card Game interface
