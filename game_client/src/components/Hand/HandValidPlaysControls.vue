@@ -157,6 +157,7 @@ export default {
     },
     // async onPlayTurn() {
     onPlayTurn() {
+      console.log(this.validSelection.map(x => x.id))
       var payload = {
         cardsPlayed: this.validSelection,
         sessionId: this.getClientSessionId

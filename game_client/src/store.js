@@ -102,28 +102,57 @@ export default new Vuex.Store({
     },
     validateSelection: (state) => (selection) => {
       var plays = JSON.parse(JSON.stringify(state.validPlays[state.currentPlayer.name]))
+      var playsIds = dedupe(plays)
       // deep copy because not making copy of object
       // var plays = [ ...state.validPlays[state.currentPlayer.name]]
-      plays = plays.map(x => x.sort())
+      // plays = plays.map(x => x.sort())
       var sel = [ ...selection]
-      sel = sel.sort()
+      // sel = sel.sort()
       var match = false
+      // perhaps only compare on id.  index being returned doesn
+      var index = 0
       var keys = Object.keys(plays[0][0])
-      plays = plays.filter(play => play.length === sel.length)
-      if (plays.length > 0) {
+      var equalLengthPlays = plays.filter(play => play.length === sel.length)
+      var selIds = sel.map(s => s.id)
+      console.log(selIds)
+      var equalLengthPlaysIds = dedupe(equalLengthPlays)
+      
+      // if (equalLengthPlays.length > 0) {
+      //   while (match !== true) {
+      //     equalLengthPlays.forEach((play, ip) => {
+      //       play.forEach((card, ic) => {
+      //         keys.forEach((key, ik) => {
+      //           if (play[ic][key] === sel[ic][key]) {
+      //             // console.log(play[ic][key])
+      //             console.log(ip)
+      //             // console.log(ic)
+      //             // console.log(key)
+      //             match = true
+      //           }
+      //         })  
+      //       })
+      //     })  
+      //   }
+      // }
+      var selString = selIds.sort().join('')
+      console.log(selString)
+      if (equalLengthPlays.length > 0) {
         while (match !== true) {
-          plays.forEach((play, ip) => {
-            play.forEach((card, ic) => {
-              keys.forEach((key, ik) => {
-                if (play[ic][key] === sel[ic][key]) {
-                  match = true
-                }
-              })  
-            })
+          equalLengthPlaysIds.forEach((play, ip) => {
+            var playString = play.sort().join('')
+            if (playString === selString) {
+              console.log(playString)
+              console.log(ip)
+              // console.log(ic)
+              // console.log(key)
+              match = true
+            }
           })  
         }
       }
-      console.log(match)
+      // if (match) {
+      //   console.log(index)
+      // }
       return match
     },
     getCurrentPlayer(state) {
