@@ -136,6 +136,7 @@ export default new Vuex.Store({
       // }
       var selString = selIds.sort().join('')
       console.log(selString)
+
       if (equalLengthPlays.length > 0) {
         while (match !== true) {
           equalLengthPlaysIds.forEach((play, ip) => {
