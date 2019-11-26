@@ -128,7 +128,7 @@ namespace games {
 
     // Decide where "table" definition belongs, more broadly: ownership could be better defined than "strings"
     // Current implementation will break if Player.name == 'table'
-    public void AddCardsToTable(Card card) { card.owner = "table" ;}
+    public void AddCardsToTable(Card card) {cards[card.id].owner = "table" ;}
     public void AddCardsToTable(IEnumerable<Card> cards) {foreach (var c in cards) { AddCardsToTable(c) ;}}
     public List<Card> GetTableCards() {
       return cards.Where( card => card.Value.owner == "table" ).Select(card => card.Value ).ToList();

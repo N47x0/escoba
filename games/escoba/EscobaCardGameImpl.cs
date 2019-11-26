@@ -205,8 +205,7 @@ namespace games.escoba
         } else {
           if (player.hand.Contains(c)) {
             player.hand.Remove(c);
-            c.owner = "table";
-            // deck = deck.AddCardsToTable(c);
+            deck.AddCardsToTable(c);
           }
         }
       }
