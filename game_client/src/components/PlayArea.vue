@@ -1,70 +1,52 @@
 <template>
-  <div class="play-area-comp">
-    <div v-if="getGameDataLoaded">
-      <b-container
-        class="play-area"
-        id="play-area"
-      >
-        <v-icon
-          id="play-area-icon"
-          name="child"
-          scale=3.5
-        />
-        <h5>Play Area</h5>
-        <hr />
-        <b-row>
-          <b-col md=4>
-            <HandComp
-              @toggle-valid="onToggleValid"
-              :show-valid="showValidPlayer1"
-              @new-table-highlighted="onNewTableHighlighted" 
-              player=1 
-              @new-selected="onNewSelected"
-            />
-          </b-col>
-          <b-col md=4>
-            <TableCardsSingle
-              :table-cards="getTableCards"
-              :highlighted="tableCardsHighlighted"
-              @new-selected="onNewSelected"
-            />
-          </b-col>
-          <b-col md=4>
-            <HandComp
-              @toggle-valid="onToggleValid"
-              :show-valid="showValidPlayer2" 
-              @new-table-highlighted="onNewTableHighlighted" 
-              player=2 
-              @new-selected="onNewSelected"
-            />
-          </b-col>
-        </b-row>
-        <!-- <b-row>
-          <b-col md=4>
-            <HandCompSingle
-              @new-highlighted="newTableCardsHighlighted"
-              @toggle-valid="onToggleValid"
-              :show-valid="showValidPlayer1" 
-              player=1 
-            />
-          </b-col>
-          <b-col md=4>
-            <TableCards
-              :table-cards="getTableCards"
-              :highlighted="tableCardsHighlighted"
-            />
-          </b-col>
-          <b-col md=4>
-            <HandCompSingle
-              @new-highlighted="newTableCardsHighlighted"
-              @toggle-valid="toggleValidPlayer2 = !toggleValidPlayer2" 
-              :show-valid="showValidPlayer2" 
-              player=2 
-            />
-          </b-col>
-        </b-row> -->
-      </b-container>
-    </div>
+  <div class="play-area-comp" v-if="getGameDataLoaded">
+    <b-container
+      class="play-area"
+      id="play-area"
+    >
+      <v-icon
+        id="play-area-icon"
+        name="child"
+        scale=3.5
+      />
+      <h5>Play Area</h5>
+      <hr />
+      <b-row>
+        <b-col md=4>
+          <HandComp
+            :active-player="activePlayer1" 
+            @valid-plays-change="onValidPlaysChange" 
+            player=1 
+            @new-selected="onNewSelected"
+            :valid-selection="validSelection"
+            @play-turn="onPlayTurn"
+            :selected="selectedPlayer1"
+            :highlighted="higlightedPlayer1"
+          />
+        </b-col>
+        <b-col md=4>
+          <TableCardsSingle
+            :table-cards="getTableCards"
+            @new-selected="onNewSelected"
+            @play-turn="onPlayTurn"
+            :selected="selectedTable"
+            :highlighted="higlightedTable"
+          />
+        </b-col>
+        <b-col md=4>
+          <HandComp
+            :active-player="activePlayer2" 
+            @valid-plays-change="onValidPlaysChange" 
+            player=2 
+            @new-selected="onNewSelected"
+            :valid-selection="validSelection"
+            @play-turn="onPlayTurn"
+            :selected="selectedPlayer2"
+            :highlighted="higlightedPlayer2"
+          />
+        </b-col>
+      </b-row>
+    </b-container>
   </div>
 </template>
 
@@ -122,18 +104,51 @@ export default {
   data () {
     return {
       tableCardsHighlighted: [],
-      showValidPlayer1: false,
-      showValidPlayer2: false,
-      selected: []
+      selectedPlayer1: [],
+      selectedPlayer2: [],
+      selectedTable: [],
+      higlightedPlayer1: [],
+      higlightedPlayer2: [],
+      higlightedTable: []
     }
   },
   computed: {
     ...mapGetters([
       'getGameDataLoaded',
-      'getDeck',
       'getTableCards',
-      'validateSelection'
-    ])
+      'validateSelection',
+      'getPlayer1',
+      'getPlayer2',
+      'getCurrentPlayer'
+    ]),
+    getPlayer: function (payload) {
+      return this[`getPlayer${payload}`]
+    },
+    activePlayer1 () {
+      return !!(this.getCurrentPlayer.name === 'Player 1') //? true : false
+    },
+    activePlayer2 () {
+      return !!(this.getCurrentPlayer.name === 'Player 2') //? true : false
+    },
+    totalSelected () {
+      var totalSelected = []
+      if ((this.selectedPlayer1.length > 0 || this.selectedPlayer2.length > 0) || this.selectedTable.length > 0) {
+        totalSelected = [ ...this.selectedPlayer1, ...this.selectedPlayer2, ...this.selectedTable]
+      return totalSelected
+      }
+    },
+    validSelection () {
+      var validSelection
+      // console.log(val)
+      if (this.totalSelected !== undefined) {
+        console.log("validating")
+        if (this.validateSelection(this.totalSelected)) {
+          console.log("selection validated")
+          validSelection = this.totalSelected
+        }
+      }
+      return validSelection
+    }
   },
   methods: {
     log: function (input) {
@@ -148,58 +163,38 @@ export default {
       this.tableCardsHighlighted = payload
       // console.log(payload)
     },
-    onToggleValid(payload) {
-      console.log('on toggle valid')
-      // console.log(payload)
-      if (payload === '1') {
-        // console.log(this.showValidPlayer2)
-        this.showValidPlayer1 = true
-        this.showValidPlayer2 = false  
-        // console.log(this.showValidPlayer2)
-      } else if (payload === '2') {
-        // console.log(this.showValidPlayer1)
-        this.showValidPlayer2 = true
-        this.showValidPlayer1 = false  
-        // console.log(this.showValidPlayer1)
+    onValidPlaysChange(payload) {
+      console.log('on valid plays change from play area')
+      console.log(payload)
+      // console.log(this.highlighted)
+      this.higlightedTable = payload.tablePlays
+      if (payload.player === '1') {
+        this.higlightedPlayer1 = payload.playerPlays
+      } else if (payload.player === '2') {
+        this.higlightedPlayer2 = payload.playerPlays
       }
-      // list of players in store for future games with more than 2 possible players
-      // payload === '1' ? this.showValidPlayer2 = false : this.showValidPlayer1 = false
     },
-    onNewTableHighlighted(payload) {
-      this.tableCardsHighlighted = payload
-    },
-    onNewSelected (selection) {
+    onNewSelected (payload) {
       console.log('on new selected from play area')
-      console.log(selection)
-      console.log(this.selected)
-      if (!compareArray(selection, this.selected)) {
-        console.log('does not include card')
-        // console.log(this.selected)
-        // this.selected.push(selection)
-        if (this.selected.length > 0) {
-          // console.log(this.selected)
-          // console.log(selection)
-          this.selected = [ ...this.selected, ...selection]
-        } else {
-          console.log('resetting selection')
-          this.selected = selection
-        }
-        // console.log(this.selected)
+      console.log(payload)
+      var owner = payload.card.owner.charAt(0).toUpperCase() + payload.card.owner.slice(1).replace(' ', '')
+      if(payload.isSelected === true) {
+        this[`selected${owner}`].push(payload.card)
+        console.log('on true new selected from play area')
+      } else if (payload.isSelected === false ) {
+        console.log('on false new selected from play area')
+        this[`selected${owner}`] = this[`selected${owner}`].filter(x => x !== payload.card)
       }
+    },
+    onPlayTurn () {
+      this.selectedTable = []
+      this.selectedPlayer1 = []
+      this.selectedPlayer2 = []
     }
   },
   mounted: function () {
   },
   watch: {
-    selected: function (val, oldVal) {
-      if (val.length !== oldVal.lenth) {
-        console.log("validating")
-        // console.log(val)
-        if (this.validateSelection(val)) {
-          console.log("selection validated")
-        }
-      }
-    }
   }
 }
 </script>
@@ -207,448 +202,17 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
-/* set all cards to center of div and position: relative for absolute positioning of child icons */
-
-[class*=play-card-] {
-  transform: translate(500,0);
-  display: inline-block;
-  position: relative;
-}
-
-/* card value 1 */
-
-.play-card-1 #icon-1 {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%)
-}
-
-/* card value 2 */
-
-.play-card-2 #icon-1 {
-  position: absolute;
-  top: 25%;
-  left: 50%;
-  transform: translate(-50%, -50%)
-}
-.play-card-2 #icon-2 {
-  position: absolute;
-  top: 75%;
-  left: 50%;
-  transform: translate(-50%, -50%)
-}
-
-/* card value 3 */
-
-.play-card-3 #icon-1 {
-  position: absolute;
-  top: 25%;
-  left: 75%;
-  transform: translate(-50%, -50%)
-}
-.play-card-3 #icon-2 {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%)
-}
-.play-card-3 #icon-3 {
-  position: absolute;
-  top: 75%;
-  left: 25%;
-  transform: translate(-50%, -50%)
-}
-
-/* card value 4 */
-
-.play-card-4 #icon-1 {
-  position: absolute;
-  top: 28%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-4 #icon-2 {
-  position: absolute;
-  top: 28%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-.play-card-4 #icon-3 {
-  position: absolute;
-  top: 72%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-4 #icon-4 {
-  position: absolute;
-  top: 72%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-
-/* card value 5 */
-
-.play-card-5 #icon-1 {
-  position: absolute;
-  top: 20%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-5 #icon-2 {
-  position: absolute;
-  top: 20%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-.play-card-5 #icon-3 {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%)
-}
-.play-card-5 #icon-4 {
-  position: absolute;
-  top: 80%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-5 #icon-5 {
-  position: absolute;
-  top: 80%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-
-/* card value 6 */
-
-.play-card-6 #icon-1 {
-  position: absolute;
-  top: 20%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-6 #icon-2 {
-  position: absolute;
-  top: 20%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-.play-card-6 #icon-3 {
-  position: absolute;
-  top: 50%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-6 #icon-4 {
-  position: absolute;
-  top: 50%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-.play-card-6 #icon-5 {
-  position: absolute;
-  top: 80%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-6 #icon-6 {
-  position: absolute;
-  top: 80%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-
-/* card value 7 */
-
-.play-card-7 #icon-1 {
-  position: absolute;
-  top: 15%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-7 #icon-2 {
-  position: absolute;
-  top: 15%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-.play-card-7 #icon-3 {
-  position: absolute;
-  top: 35%;
-  left: 50%;
-  transform: translate(-50%, -50%)
-}
-.play-card-7 #icon-4 {
-  position: absolute;
-  top: 55%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-7 #icon-5 {
-  position: absolute;
-  top: 55%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-.play-card-7 #icon-6 {
-  position: absolute;
-  top: 80%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-7 #icon-7 {
-  position: absolute;
-  top: 80%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-
-/* card value 8 */
-
-.play-card-8 #icon-1 {
-  position: absolute;
-  top: 12%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-8 #icon-2 {
-  position: absolute;
-  top: 12%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-.play-card-8 #icon-3 {
-  position: absolute;
-  top: 31%;
-  left: 50%;
-  transform: translate(-50%, -50%)
-}
-.play-card-8 #icon-4 {
-  position: absolute;
-  top: 50%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-8 #icon-5 {
-  position: absolute;
-  top: 50%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-.play-card-8 #icon-6 {
-  position: absolute;
-  top: 69%;
-  left: 50%;
-  transform: translate(-50%, -50%)
-}
-.play-card-8 #icon-7 {
-  position: absolute;
-  top: 88%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-8 #icon-8 {
-  position: absolute;
-  top: 88%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-
-/* card value 9 */
-
-.play-card-9 #icon-1 {
-  position: absolute;
-  top: 12%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-9 #icon-2 {
-  position: absolute;
-  top: 12%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-.play-card-9 #icon-3 {
-  position: absolute;
-  top: 36%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-9 #icon-4 {
-  position: absolute;
-  top: 36%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-.play-card-9 #icon-5 {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%)
-}
-.play-card-9 #icon-6 {
-  position: absolute;
-  top: 64%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-9 #icon-7 {
-  position: absolute;
-  top: 64%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-.play-card-9 #icon-8 {
-  position: absolute;
-  top: 88%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-9 #icon-9 {
-  position: absolute;
-  top: 88%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-
-/* card value 10  14% */
-
-.play-card-10 #icon-1 {
-  position: absolute;
-  top: 12%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-10 #icon-2 {
-  position: absolute;
-  top: 12%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-.play-card-10 #icon-3 {
-  position: absolute;
-  top: 26%;
-  left: 50%;
-  transform: translate(-50%, -50%)
-}
-.play-card-10 #icon-4 {
-  position: absolute;
-  top: 40%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-10 #icon-5 {
-  position: absolute;
-  top: 40%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-.play-card-10 #icon-6 {
-  position: absolute;
-  top: 60%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-10 #icon-7 {
-  position: absolute;
-  top: 60%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-.play-card-10 #icon-8 {
-  position: absolute;
-  top: 74%;
-  left: 50%;
-  transform: translate(-50%, -50%)
-}
-.play-card-10 #icon-9 {
-  position: absolute;
-  top: 88%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-10 #icon-10 {
-  position: absolute;
-  top: 88%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-
-/* 15%
-
-.play-card-10 #icon-1 {
-  position: absolute;
-  top: 12%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-10 #icon-2 {
-  position: absolute;
-  top: 12%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-.play-card-10 #icon-3 {
-  position: absolute;
-  top: 27%;
-  left: 50%;
-  transform: translate(-50%, -50%)
-}
-.play-card-10 #icon-4 {
-  position: absolute;
-  top: 42%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-10 #icon-5 {
-  position: absolute;
-  top: 42%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-.play-card-10 #icon-6 {
-  position: absolute;
-  top: 58%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-10 #icon-7 {
-  position: absolute;
-  top: 58%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-.play-card-10 #icon-8 {
-  position: absolute;
-  top: 73%;
-  left: 50%;
-  transform: translate(-50%, -50%)
-}
-.play-card-10 #icon-9 {
-  position: absolute;
-  top: 88%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-10 #icon-10 {
-  position: absolute;
-  top: 88%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-} */
-
-h3 {
+/* h3 {
   margin: 40px 0 0;
-}
+} */
 ul {
   list-style-type: none;
   padding: 0;
 }
-li {
+/* li {
   display: inline-block;
   margin: 0 10px;
-}
+} */
 a {
   color: #42b983;
 }

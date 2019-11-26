@@ -43,7 +43,11 @@ namespace game_server
         options.AddPolicy(MyAllowSpecificOrigins, builder =>
         {
             builder.WithOrigins("http://example.com",
-                                "http://localhost:8080").AllowAnyMethod().AllowAnyHeader();
+                                "http://localhost:8080",
+                                "https://localhost:5001",
+                                "http://192.168.1.106:8080",
+                                "https://localhost:8080",
+                                "https://192.168.1.106:8080").AllowAnyMethod().AllowAnyHeader();
         });
       });
 

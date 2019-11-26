@@ -1,17 +1,18 @@
 <template>
-  <div class="hand-valid-plays-controls">
+  <div id="hand-valid-plays-controls" class="hand-valid-plays-controls">
     <b-row 
       v-if="showValidPlays"
       align-h="center"
     >
-      <b-col cols=6>
+      <b-col></b-col>
+      <b-col>
         <b-button-toolbar 
           aria-label="Toolbar with buttons to control which valid play is displayed and selected"
-          justify
+          :justify="true"
           class="valid-plays-toolbar"
+          id="valid-plays-toolbar"
         >
           <b-button-group 
-            class="mx-1"
           >
             <b-button
               @click="previousValidPlay"
@@ -21,7 +22,17 @@
                 name="backward"
               ></v-icon>
             </b-button>
-            <b-button>{{ playerValidPlaysIds }} | {{ tableValidPlaysIds }}</b-button>
+            <b-button
+              id="play-turn-button"
+              @click="onPlayTurn"
+              :disabled="!hasValidSelection"
+              :class="[{'active-play-turn-button': hasValidSelection}]"
+            >
+              {{ playerValidPlaysIds }} | {{ tableValidPlaysIds }}
+            </b-button>
+            <b-tooltip target="play-turn-button" triggers="hover">
+              <b>Play Turn</b>
+            </b-tooltip>            
             <b-button
               @click="nextValidPlay"
             >            
@@ -33,6 +44,7 @@
           </b-button-group>
         </b-button-toolbar>
       </b-col>
+      <b-col></b-col>
     </b-row>
     <hr />
   </div>
@@ -56,6 +68,9 @@ export default {
     showValidPlays: {
       type: Boolean,
       default: false
+    },
+    validSelection: {
+      type: Array
     }
   },
   components: {
@@ -64,13 +79,21 @@ export default {
     ...mapGetters([
       'getValidPlays',
       'getPlayer1',
-      'getPlayer2'
+      'getPlayer2',
+      'getClientSessionId'
     ]),
     getPlayer: function () {
       return this[`getPlayer${this.player}`]
     },
     validPlays() {
       return this.getValidPlays[`Player ${this.player}`]     
+    },
+    hasValidSelection () {
+      var valid = false
+      if (this.validSelection !== undefined) {
+        valid = this.validSelection.length > 0
+      }
+      return valid
     },
     playerValidPlays() {
       var pvp = []
@@ -132,30 +155,46 @@ export default {
       this.currentValidPlayIndex += 1
       }
     },
+    // async onPlayTurn() {
+    onPlayTurn() {
+      var payload = {
+        cardsPlayed: this.validSelection,
+        sessionId: this.getClientSessionId
+      }
+      // await this.$store.dispatch('loadNextTurn', payload).then(
+      //   this.$emit('on-valid-plays')
+      // )
+      this.$store.dispatch('loadNextTurn', payload)
+      this.$emit('play-turn')
+    }
   },
   watch: {
     tableValidPlays: function(val, oldVal) {
       if(val !== oldVal) {
-        this.$emit('on-valid-plays-controls', {
-          table: this.tableValidPlays,
-          player: this.playerValidPlays
+        this.$emit('valid-plays-change', {
+          tablePlays: this.tableValidPlays,
+          playerPlays: this.playerValidPlays,
+          player: this.player
         })
       }
     },
     playerValidPlays: function(val, oldVal) {
       if(val !== oldVal) {
-        this.$emit('on-valid-plays-controls', {
-          table: this.tableValidPlays,
-          player: this.playerValidPlays
+        this.$emit('valid-plays-change', {
+          tablePlays: this.tableValidPlays,
+          playerPlays: this.playerValidPlays,
+          player: this.player
         })
       }
     }
   },
   mounted: function () {
     console.log('#### hand valid plays controls ####')
-    this.$emit('on-valid-plays-controls', {
-      table: this.tableValidPlays,
-      player: this.playerValidPlays
+    // initialize highlighted cards 
+    this.$emit('valid-plays-change', {
+      tablePlays: this.tableValidPlays,
+      playerPlays: this.playerValidPlays,
+      player: this.player
     })
     // console.log(this)
   }
@@ -165,446 +204,31 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
-.valid-plays-toolbar {
-  /* width: 100%; */
+#valid-plays-toolbar {
+  width: 100%;
+}
+#hand-valid-plays-controls {
+  width: 100%;
+}
+
+.active-play-turn-button {
+  border: 3px solid #42b983 !important;
 }
 
 /* set hand comp top padding smaller to separate from icon */
 
 /* set all cards to center of div and position: relative for absolute positioning of child icons */
 
-[class*=play-card-] {
-  transform: translate(500,0);
-  display: inline-block;
-  position: relative;
-}
 
-/* card value 1 */
+  
+  button {
+    background-color: rgba(255, 255, 255, 0.219);
+    color:#42b983
+  }
 
-.play-card-1 #icon-1 {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%)
-}
-
-/* card value 2 */
-
-.play-card-2 #icon-1 {
-  position: absolute;
-  top: 25%;
-  left: 50%;
-  transform: translate(-50%, -50%)
-}
-.play-card-2 #icon-2 {
-  position: absolute;
-  top: 75%;
-  left: 50%;
-  transform: translate(-50%, -50%)
-}
-
-/* card value 3 */
-
-.play-card-3 #icon-1 {
-  position: absolute;
-  top: 25%;
-  left: 75%;
-  transform: translate(-50%, -50%)
-}
-.play-card-3 #icon-2 {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%)
-}
-.play-card-3 #icon-3 {
-  position: absolute;
-  top: 75%;
-  left: 25%;
-  transform: translate(-50%, -50%)
-}
-
-/* card value 4 */
-
-.play-card-4 #icon-1 {
-  position: absolute;
-  top: 28%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-4 #icon-2 {
-  position: absolute;
-  top: 28%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-.play-card-4 #icon-3 {
-  position: absolute;
-  top: 72%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-4 #icon-4 {
-  position: absolute;
-  top: 72%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-
-/* card value 5 */
-
-.play-card-5 #icon-1 {
-  position: absolute;
-  top: 20%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-5 #icon-2 {
-  position: absolute;
-  top: 20%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-.play-card-5 #icon-3 {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%)
-}
-.play-card-5 #icon-4 {
-  position: absolute;
-  top: 80%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-5 #icon-5 {
-  position: absolute;
-  top: 80%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-
-/* card value 6 */
-
-.play-card-6 #icon-1 {
-  position: absolute;
-  top: 20%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-6 #icon-2 {
-  position: absolute;
-  top: 20%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-.play-card-6 #icon-3 {
-  position: absolute;
-  top: 50%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-6 #icon-4 {
-  position: absolute;
-  top: 50%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-.play-card-6 #icon-5 {
-  position: absolute;
-  top: 80%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-6 #icon-6 {
-  position: absolute;
-  top: 80%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-
-/* card value 7 */
-
-.play-card-7 #icon-1 {
-  position: absolute;
-  top: 15%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-7 #icon-2 {
-  position: absolute;
-  top: 15%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-.play-card-7 #icon-3 {
-  position: absolute;
-  top: 35%;
-  left: 50%;
-  transform: translate(-50%, -50%)
-}
-.play-card-7 #icon-4 {
-  position: absolute;
-  top: 55%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-7 #icon-5 {
-  position: absolute;
-  top: 55%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-.play-card-7 #icon-6 {
-  position: absolute;
-  top: 80%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-7 #icon-7 {
-  position: absolute;
-  top: 80%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-
-/* card value 8 */
-
-.play-card-8 #icon-1 {
-  position: absolute;
-  top: 12%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-8 #icon-2 {
-  position: absolute;
-  top: 12%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-.play-card-8 #icon-3 {
-  position: absolute;
-  top: 31%;
-  left: 50%;
-  transform: translate(-50%, -50%)
-}
-.play-card-8 #icon-4 {
-  position: absolute;
-  top: 50%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-8 #icon-5 {
-  position: absolute;
-  top: 50%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-.play-card-8 #icon-6 {
-  position: absolute;
-  top: 69%;
-  left: 50%;
-  transform: translate(-50%, -50%)
-}
-.play-card-8 #icon-7 {
-  position: absolute;
-  top: 88%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-8 #icon-8 {
-  position: absolute;
-  top: 88%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-
-/* card value 9 */
-
-.play-card-9 #icon-1 {
-  position: absolute;
-  top: 12%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-9 #icon-2 {
-  position: absolute;
-  top: 12%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-.play-card-9 #icon-3 {
-  position: absolute;
-  top: 36%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-9 #icon-4 {
-  position: absolute;
-  top: 36%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-.play-card-9 #icon-5 {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%)
-}
-.play-card-9 #icon-6 {
-  position: absolute;
-  top: 64%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-9 #icon-7 {
-  position: absolute;
-  top: 64%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-.play-card-9 #icon-8 {
-  position: absolute;
-  top: 88%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-9 #icon-9 {
-  position: absolute;
-  top: 88%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-
-/* card value 10  14% */
-
-.play-card-10 #icon-1 {
-  position: absolute;
-  top: 12%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-10 #icon-2 {
-  position: absolute;
-  top: 12%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-.play-card-10 #icon-3 {
-  position: absolute;
-  top: 26%;
-  left: 50%;
-  transform: translate(-50%, -50%)
-}
-.play-card-10 #icon-4 {
-  position: absolute;
-  top: 40%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-10 #icon-5 {
-  position: absolute;
-  top: 40%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-.play-card-10 #icon-6 {
-  position: absolute;
-  top: 60%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-10 #icon-7 {
-  position: absolute;
-  top: 60%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-.play-card-10 #icon-8 {
-  position: absolute;
-  top: 74%;
-  left: 50%;
-  transform: translate(-50%, -50%)
-}
-.play-card-10 #icon-9 {
-  position: absolute;
-  top: 88%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-10 #icon-10 {
-  position: absolute;
-  top: 88%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-
-/* 15%
-
-.play-card-10 #icon-1 {
-  position: absolute;
-  top: 12%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-10 #icon-2 {
-  position: absolute;
-  top: 12%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-.play-card-10 #icon-3 {
-  position: absolute;
-  top: 27%;
-  left: 50%;
-  transform: translate(-50%, -50%)
-}
-.play-card-10 #icon-4 {
-  position: absolute;
-  top: 42%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-10 #icon-5 {
-  position: absolute;
-  top: 42%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-.play-card-10 #icon-6 {
-  position: absolute;
-  top: 58%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-10 #icon-7 {
-  position: absolute;
-  top: 58%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-}
-.play-card-10 #icon-8 {
-  position: absolute;
-  top: 73%;
-  left: 50%;
-  transform: translate(-50%, -50%)
-}
-.play-card-10 #icon-9 {
-  position: absolute;
-  top: 88%;
-  left: 28%;
-  transform: translate(-50%, -50%)
-}
-.play-card-10 #icon-10 {
-  position: absolute;
-  top: 88%;
-  left: 72%;
-  transform: translate(-50%, -50%)
-} */
-
-h3 {
-  margin: 40px 0 0;
-}
+  h3 {
+    margin: 40px 0 0;
+  }
 ul {
   list-style-type: none;
   padding: 0;

@@ -70,6 +70,12 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
+button {
+  background-color: rgba(255, 255, 255, 0.219);
+  color:#42b983
+}
+
 h3 {
   margin: 40px 0 0;
 }

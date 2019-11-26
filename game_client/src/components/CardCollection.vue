@@ -1,27 +1,28 @@
 <template>
-  <div class="card-collection">
-    <div v-if="getGameDataLoaded">
-      <!-- <b-alert
-        :show="tooManySelections"
-        dismissible
-        variant="warning"
-        @dismissed="clearSelections"
-      ></b-alert> -->
-        <b-row>
-          <b-col
-            v-for="(c, i) in collection"
-            :key="i"
-          >
-            <CardComp
-              :class="[owner + '-card']"
-              :card="c"
-              :isHand="true"
-              @toggle-select="onToggleSelect"
-              :highlighted="cardHighlighted(c)"
-            />
-          </b-col>
-        </b-row>
-    </div>
+  <div class="card-collection" v-if="getGameDataLoaded">
+    <!-- <b-alert
+      :show="tooManySelections"
+      dismissible
+      variant="warning"
+      @dismissed="clearSelections"
+    ></b-alert> -->
+    <b-row>
+      <b-col
+        lg="6"
+        sm="12"
+        v-for="(c, i) in collection"
+        :key="i"
+      >
+        <CardComp
+          :class="[owner + '-card']"
+          :card="c"
+          :isHand="true"
+          @toggle-select="onToggleSelect"
+          :highlighted="cardHighlighted(c)"
+          :selected="cardSelected(c)"
+        />
+      </b-col>
+    </b-row>
   </div>
 </template>
 
@@ -34,7 +35,6 @@ export default {
   data: function () {
     return {
       cardsSelected: Object,
-      selected: []
     }
   },
   props: {
@@ -47,6 +47,10 @@ export default {
       default: () => []
     },
     highlighted: {
+      type: Array,
+      required: false
+    },
+    selected: {
       type: Array,
       required: false
     }
@@ -64,6 +68,9 @@ export default {
     },
     getHand: function () {
       return this.getPlayer.hand
+    },
+    columns () {
+      return this.collection.length < 3 ? 6 : 4
     }
   },
   methods: {
@@ -80,21 +87,26 @@ export default {
     cardHighlighted (card) {
       return this.highlighted.some(x => x.id === card.id) ? true : false
     },
-    onToggleSelect (payload) {
-      console.log(payload)
-      if(payload.isSelected === true) {
-        this.selected.push(payload.card)
-        console.log('on true new selected from card collection')
-        this.$emit('new-selected', this.selected)
-      } else if (payload.isSelected === false ) {
-        console.log('on false new selected from card collection')
-        this.selected = this.selected.filter(x => x !== payload.card)
-        this.$emit('new-selected', this.selected)
+    cardSelected (card) {
+      var cardSelected
+      if (this.selected !== undefined) {
+        // console.log(this.selected)
+        // console.log(this.selected.map(x => x.id))
+        // console.log(card.id)
+        cardSelected = this.selected.some(x => x.id === card.id) ? true : false
       }
+      // console.log(cardSelected)
+      return cardSelected
+    },
+    onToggleSelect (payload) {
+      console.log('on new selected from card collection')
+      console.log(payload)
+      this.$emit('new-selected', payload)
     }
   },
   mounted: function () {
     console.log('#### card collection comp ####')
+    // console.log(this.owner)
     // console.log(this)
   },
   watch: {
@@ -103,7 +115,6 @@ export default {
       // console.log(val)
       if (val.length !== oldVal.length) {
         console.log('new val from selected watch in card collection')
-        this.$emit('new-selected', val)
       }
     }
   }
@@ -117,17 +128,17 @@ export default {
 
 /* set all cards to center of div and position: relative for absolute positioning of child icons */
 
-h3 {
+/* h3 {
   margin: 40px 0 0;
-}
+} */
 ul {
   list-style-type: none;
   padding: 0;
 }
-li {
+/* li {
   display: inline-block;
   margin: 0 10px;
-}
+} */
 a {
   color: #42b983;
 }

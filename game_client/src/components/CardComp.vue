@@ -1,28 +1,24 @@
 <template>
-  <div class="card-comp"
-   ><div v-if="getGameDataLoaded"
-    ><div class="card-container">
-        <b-card
-          :class="[{highlighted: this.highlighted}, {selected: this.isSelected}, 'play-card-' + this.card.val]"
-          @click="toggleSelect"
-          :id="'card-'+card.suit"
-          :style="cardStyle"
-        >
-          <!-- TODO suit and value in top left and bottom right mirrored -->
-          <div v-show="isDeck">
-            {{ card.suit }}
-            {{ card.val }}
-          </div>
-          <v-icon
-            v-for="(value, i) in card.val"
-            :id="'icon-'+(i+1)"
-            :key="i"
-            :name="iconName"
-            :scale="iconSize"
-          ></v-icon>
-        </b-card>
+  <div class="card-comp card-container" v-if="getGameDataLoaded">
+    <b-card
+      :class="[{highlighted: this.highlighted}, {selected: this.isSelected}, 'play-card-' + this.card.val]"
+      @click="toggleSelect"
+      :id="'card-'+card.suit"
+      :style="cardStyle"
+    >
+      <!-- TODO suit and value in top left and bottom right mirrored -->
+      <div v-show="isDeck">
+        {{ card.suit }}
+        {{ card.val }}
       </div>
-    </div>
+      <v-icon
+        v-for="(value, i) in card.val"
+        :id="'icon-'+(i+1)"
+        :key="i"
+        :name="iconName"
+        :scale="iconSize"
+      />
+    </b-card>
   </div>
 </template>
 
@@ -41,6 +37,10 @@ export default {
     isDeck: Boolean,
     isHand: Boolean,
     highlighted: {
+      type: Boolean,
+      default: false
+    },
+    selected: {
       type: Boolean,
       default: false
     }
@@ -109,8 +109,21 @@ export default {
       this.$emit('toggle-select', payload)
     }
   },
+  watch: {
+    selected: function (val, oldVal) {
+      // console.log(this.selected)
+      if (val === false) {
+        // console.log('change in val to false from card comp selected watch')
+        // console.log(val)
+        // console.log(this.isSelected)
+        this.isSelected = false
+        // console.log(this.isSelected)
+      }
+    }
+  },
   mounted: function () {
     console.log('#### card comp ####')
+    // console.log(`selected bool from card comp: ${this.card.id}: # ${this.selected} #`)
     // console.log(this)
     // this.log(this.getDeck)
     // if(this.getGameDataLoaded) {
@@ -132,19 +145,30 @@ export default {
 /* set all cards to center of div and position: relative for absolute positioning of child icons */
 
 
+
 .highlighted {
-  border: 2px dashed #42b983;
+  /* border: 3px dashed #42b983; */
+  border: 3px dashed rgb(88, 0, 88);
 }
 
 .selected {
-  border: 2px solid #42b983;
+  /* border: 3px solid #b98542; */
+  border: 3px solid rgb(88, 0, 88);
+  outline: 1px solid white;
 }
+  
+  [id*=icon-] {
+    color:rgb(88, 0, 88)
+  }
+
 
 
 [class*=play-card-] {
   transform: translate(500,0);
   display: inline-block;
   position: relative;
+  background-color: rgba(255, 255, 255, 0.842);
+  margin: 0rem 0rem 1rem 0rem;
 }
 
 /* card value 1 */
@@ -570,17 +594,17 @@ export default {
   transform: translate(-50%, -50%)
 } */
 
-h3 {
+/* h3 {
   margin: 40px 0 0;
-}
+} */
 ul {
   list-style-type: none;
   padding: 0;
 }
-li {
+/* li {
   display: inline-block;
   margin: 0 10px;
-}
+} */
 a {
   color: #42b983;
 }

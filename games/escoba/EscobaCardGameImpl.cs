@@ -68,6 +68,9 @@ namespace games.escoba
       List<Card> _table_cards = table_cards;
       List<List<Card>> _p1_valid_plays = ValidPlays(_p1.hand, _table_cards);
       List<List<Card>> _p2_valid_plays = ValidPlays(_p2.hand, _table_cards);
+      // _p1_valid_plays.ForEach(play => {
+
+      // })
       var _valid_plays = new Dictionary<string, List<List<Card>>>();
       _valid_plays.Add(_p1.name, _p1_valid_plays);
       _valid_plays.Add(_p2.name, _p2_valid_plays);
@@ -97,6 +100,7 @@ namespace games.escoba
         throw new System.Exception("Too many turns");
       }
       // possibly unnecessary check for validity of the play.
+      // if (!ValidPlays(currentState.CurrentPlayer.hand, currentState.Deck.GetTableCards()).Any(x => x.SequenceEqual(cardsPlayed, new CardComparer()))) {
       if (!ValidPlays(currentState.CurrentPlayer.hand, currentState.Deck.GetTableCards()).Any(x => x.SequenceEqual(cardsPlayed))) {
         throw new System.Exception($"The cardsPlayed: {cardsPlayed} are not currently a valid move");
       }
@@ -126,6 +130,9 @@ namespace games.escoba
         TallyScore(currentState);
         currentState.IsDone = true;
       }
+      // also advance valid plays state to reflect new hand
+      currentState.ValidPlays = GetValidPlays(currentState.Players, currentState.TableCards);
+
       return currentState;
     }
 
