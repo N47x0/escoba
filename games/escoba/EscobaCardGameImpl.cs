@@ -100,9 +100,8 @@ namespace games.escoba
         throw new System.Exception("Too many turns");
       }
       // possibly unnecessary check for validity of the play.
-      // if (!ValidPlays(currentState.CurrentPlayer.hand, currentState.Deck.GetTableCards()).Any(x => x.SequenceEqual(cardsPlayed, new CardComparer()))) {
-      if (!ValidPlays(currentState.CurrentPlayer.hand, currentState.Deck.GetTableCards()).Any(x => x.SequenceEqual(cardsPlayed))) {
-        throw new System.Exception($"The cardsPlayed: {cardsPlayed} are not currently a valid move");
+      if (!ValidPlays(currentState.CurrentPlayer.hand, currentState.Deck.GetTableCards()).Any(x => Enumerable.SequenceEqual(cardsPlayed.OrderBy(x => x.id), x.OrderBy(x => x.id)))) {
+        throw new System.Exception($"The cardsPlayed: {cardsPlayed.Aggregate("", (acc, card) => {return card.id + ", " + acc; })} are not currently a valid move for player {currentState.CurrentPlayer.name}");
       }
       
       Player last_scored = null;
@@ -194,12 +193,12 @@ namespace games.escoba
       scored = play.Sum( card => card.val ) == 15;
       foreach (var c in play) {
         if (scored) {
-          c.owner = player.name;
+          deck.SetCardOwner(c, player);
           if (player.hand.Contains(c)) { 
             // player.hand = player.hand.Where(x => x != c).ToList();
-            player.hand.Remove(c); 
+            player.hand.Remove(c);
           } else {
-            deck.GetTableCards().Remove(c);
+            //deck.GetTableCards().Remove(c);
             // player.hand = player.hand.Where(x => x != c).ToList();
           }
         } else {
