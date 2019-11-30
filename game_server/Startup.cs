@@ -31,7 +31,7 @@ namespace game_server
       // services.AddDbContext<GameSessionModelDbContext>(options => 
       //   options.UseInMemoryDatabase(databaseName: "LocalInMemory"));
 
-      services.AddTransient(typeof(IGameSessionModelDbContextFactory), typeof(GameSessionModelDbContextFactory));
+      services.AddTransient<IGameSessionModelDbContextFactory, GameSessionModelDbContextFactory>();
       
       // services.AddTransient<IGameSessionModelDbContextFactory, GameSessionModelDbContextFactory>();
 

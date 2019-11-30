@@ -14,13 +14,13 @@ using game_server.Models;
 
 namespace game_server
 {
-  public interface IGameSessionModelDbContextFactory
+  public interface IGameSessionModelDbContextFactory : IDesignTimeDbContextFactory<GameSessionModelDbContext>
   {
 
     // GameSessionModelDbContext CreateDbContext();
     GameSessionModelDbContext CreateDbContext(string[] args);
   }
-  public class GameSessionModelDbContextFactory : IDesignTimeDbContextFactory<GameSessionModelDbContext>
+  public class GameSessionModelDbContextFactory : IGameSessionModelDbContextFactory
   {
     private static string _connectionString;
     // public GameSessionModelDbContext CreateDbContext()
