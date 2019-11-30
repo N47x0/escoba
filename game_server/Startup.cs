@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore.Design;
 
 namespace game_server
 {
@@ -27,10 +28,13 @@ namespace game_server
     public void ConfigureServices(IServiceCollection services)
     {
       services.AddControllersWithViews();
-      services.AddDbContext<GameSessionModelDBContext>(options => 
-        options.UseInMemoryDatabase(databaseName: "LocalInMemory"));
+      // services.AddDbContext<GameSessionModelDbContext>(options => 
+      //   options.UseInMemoryDatabase(databaseName: "LocalInMemory"));
 
+      services.AddTransient(typeof(IGameSessionModelDbContextFactory), typeof(GameSessionModelDbContextFactory));
       
+      // services.AddTransient<IGameSessionModelDbContextFactory, GameSessionModelDbContextFactory>();
+
       services.AddCors(options =>
       {
         options.AddDefaultPolicy( builder =>
@@ -56,7 +60,7 @@ namespace game_server
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env, GameSessionModelDBContext game_session_ctx)
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env, GameSessionModelDbContext game_session_ctx)
     {
       if (env.IsDevelopment())
       {

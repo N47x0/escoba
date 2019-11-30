@@ -11,13 +11,15 @@ namespace game_server.Controllers
 {
   public class HomeController : Controller
   {
-    private GameSessionModelDBContext _context;
+    private game_server.GameSessionModelDbContext _context;
+    private game_server.IGameSessionModelDbContextFactory _contextFactory;
     private readonly ILogger<HomeController> _logger;
 
-    public HomeController(ILogger<HomeController> logger, GameSessionModelDBContext context)
+    public HomeController(ILogger<HomeController> logger, game_server.IGameSessionModelDbContextFactory contextFactory)
     {
       _logger = logger;
-      _context = context;
+        this._contextFactory = contextFactory;
+        _context = _contextFactory.CreateDbContext(new string[] {"Test8"});
     }
 
     public IActionResult Index()

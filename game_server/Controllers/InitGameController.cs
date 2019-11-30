@@ -17,16 +17,18 @@ namespace game_server.Controllers
   public class InitGameController : Controller
   {
     private readonly ILogger<InitGameController> _logger;
-    private GameSessionModelDBContext _context;
+    private game_server.GameSessionModelDbContext _context;
+    private game_server.IGameSessionModelDbContextFactory _contextFactory;
     private games.ICardGame _cardGameService;
 
     public InitGameController(
       ILogger<InitGameController> logger,
-      GameSessionModelDBContext context,
+      game_server.IGameSessionModelDbContextFactory contextFactory,
       games.ICardGame cardGame)
     {
         _logger = logger;
-        _context = context;
+        this._contextFactory = contextFactory;
+        _context = _contextFactory.CreateDbContext(new string[] {"Test8"});
         _cardGameService = cardGame;
     }
 
@@ -36,7 +38,7 @@ namespace game_server.Controllers
       Console.WriteLine();
       // TODO - User reg
       var user_player = _context.Users
-        .Include(e => e.Stats)
+        .Include(e => e.UserStatistics)
         .Include(e => e.GameSessions)        
         .Where(x => x.EmailAddress == userEmail)
         .SingleOrDefault();
@@ -52,8 +54,8 @@ namespace game_server.Controllers
       if (sessionid == System.Guid.Empty) {
         gameSession = new GameSession {
           GameSessionId = System.Guid.NewGuid(),
-          SelectedGameInfo = escoba_info,
-          SelectedGameInfoId = escoba_info.GameInfoId, 
+          GameInfo = escoba_info,
+          GameInfoId = escoba_info.GameInfoId, 
           GameSessionState = "running",
           UserPlayers = new List<UserGameSession>(),
           GameStates = new List<games.GameState>(),
