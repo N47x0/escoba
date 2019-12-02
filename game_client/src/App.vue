@@ -4,6 +4,7 @@
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link> |
       <router-link to="/board">Board</router-link> |
+      <router-link to="/crud">Crud</router-link> |
       <router-link to="/swingtest">Swing Test</router-link>
     </div>
     <router-view/>

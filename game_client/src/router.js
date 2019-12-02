@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
 import Board from './views/Board.vue'
+import Crud from './views/Crud.vue'
 import SwingTest from './views/SwingTest.vue'
 
 Vue.use(Router)
@@ -12,6 +13,11 @@ export default new Router({
       path: '/',
       name: 'Home',
       component: Home
+    },
+    {
+      path: '/crud',
+      name: 'Crud',
+      component: Crud
     },
     {
       path: '/board',
