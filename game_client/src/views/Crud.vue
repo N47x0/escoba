@@ -2,7 +2,11 @@
   <div class="crud">
     <div>
       <b-container>
+        <CrudHeader />
+        <hr />
         <CrudForm />
+        <hr />
+        <CrudTable />
       </b-container>
     </div>
   </div>
@@ -11,13 +15,17 @@
 <script>
 // @ is an alias to /src
 // import DeckComp from '@/components/DeckComp.vue'
+import CrudHeader from '@/components/Crud/CrudHeader.vue'
 import CrudForm from '@/components/Crud/CrudForm.vue'
+import CrudTable from '@/components/Crud/CrudTable.vue'
 import { mapGetters } from 'vuex'
 
 export default {
   name: 'Board',
   components: {
-    CrudForm
+    CrudHeader,
+    CrudForm,
+    CrudTable
   },
   computed: {
     ...mapGetters([

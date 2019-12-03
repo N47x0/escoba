@@ -1,16 +1,44 @@
 <template>
     <div
-      class="crud-form"
-      id="crud-form"
+      class="crud-header"
+      id="crud-header"
     >
-      <b-row>
-        <b-col md=4>
-        </b-col>
-        <b-col md=4>
-        </b-col>
-        <b-col md=4>
-        </b-col>
-      </b-row>
+      <div class="crud-icon-group">
+        <v-icon
+          id="crud-icon-create"
+          name="plus-square"
+          scale=3.5
+        />
+        <span class="crud-icon-spacer">
+          |
+        </span>
+        <v-icon
+          id="crud-icon-read"
+          name="brands/readme"
+          scale=3.5
+        />
+        <span class="crud-icon-spacer">
+          |
+        </span>
+        <v-icon
+          id="crud-form-icon"
+          name="pen"
+          scale=3.5
+        />
+        <span class="crud-icon-spacer">
+          |
+        </span>
+        <v-icon
+          id="crud-form-icon"
+          name="trash-alt"
+          scale=3.5
+        />
+      </div>
+      <h5
+        class="crud-header-text"
+      >
+        Crud Form
+      </h5>
     </div>
 </template>
 
@@ -21,7 +49,7 @@
 import { mapGetters } from 'vuex'
 
 export default {
-  name: 'CrudForm',
+  name: 'CrudHeader',
   props: {
   },
   components: {
@@ -65,12 +93,6 @@ export default {
 .crud-icon-spacer {
   padding: 0rem .5rem 0rem .5rem;
 }
-
-  [class*=hand-player-] {
-    background-color: #1d2833;
-    border: solid 1px #42b983;
-  }
-
 
 /* h3 {
   margin: 40px 0 0;
