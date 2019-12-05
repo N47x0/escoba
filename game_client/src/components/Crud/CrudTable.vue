@@ -33,43 +33,34 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'CrudTable',
   props: {
+    items: {
+      type: Array,
+      required: false
+    }
   },
   components: {
   },
   data () {
     return {
-      // Note 'isActive' is left out and will not appear in the rendered table
       fields: [
         {
-          key: 'last_name',
+          key: 'game',
           sortable: true
         },
         {
-          key: 'first_name',
-          sortable: false
+          key: 'ruleTitle',
+          sortable: true
         },
         {
-          key: 'age',
-          label: 'Person age',
-          sortable: true,
-          // Variant applies to the whole column, including the header and footer
-          // variant: 'danger'
+          key: 'ruleText',
+          sortable: false
         }
-      ],
-      items: [
-        { isActive: true, age: 40, first_name: 'Dickerson', last_name: 'Macdonald' },
-        { isActive: false, age: 21, first_name: 'Larsen', last_name: 'Shaw' },
-        { isActive: false, age: 89, first_name: 'Geneva', last_name: 'Wilson' },
-        { isActive: true, age: 38, first_name: 'Jami', last_name: 'Carney' }
       ]
     }
   },
   computed: {
     ...mapGetters([
     ]),
-    loaded () {
-      return this.rows.length > 0
-    },
     rows () {
       return Array.from(document.querySelectorAll('tr'))
     },
@@ -87,41 +78,31 @@ export default {
       }
     },
     applyRowIds: function () {
-      console.log('applyrow')
-      console.log(this.rows)
       this.rows.map(x => x.id = "table-row")
-      console.log(this.rows)
     },
     watchForRows: function () {
       var comp = this
-      if (comp.loaded === true) {
-        console.log(comp.rows)
-        document.addEventListener('mouseover', function(e) {
-          if (comp.cells.includes(e.target)) {
-            console.log(e)
-            var style = 
-              "background-color: #42b983;" +
-              "color: #1d2833;" 
-            e.target.parentNode.style = style
-          }
-        })
-        document.addEventListener('mouseout', function(e) {
-          if (comp.cells.includes(e.target)) {
-            console.log(e)
-            var style = 
-              "background-color: #1d2833;" +
-              "color: #42b983;"
-            e.target.parentNode.style = style
-          }
-        })
-      }
+      document.addEventListener('mouseover', function(e) {
+        if (comp.cells.includes(e.target)) {
+          var style = 
+            "background-color: #42b983;" +
+            "color: #1d2833;" 
+          e.target.parentNode.style = style
+        }
+      })
+      document.addEventListener('mouseout', function(e) {
+        if (comp.cells.includes(e.target)) {
+          var style = 
+            "background-color: #1d2833;" +
+            "color: #42b983;"
+          e.target.parentNode.style = style
+        }
+      })
     }
   },
   mounted: function () {
     this.applyRowIds()
-    if (this.loaded === true) {
-      this.watchForRows()
-    }
+    this.watchForRows()
   },
   watch: {
   }
@@ -151,7 +132,9 @@ tr#table-row:hover {
   background-color: #42b983 !important;
   color: #1d2833 !important;
 }
-
+.b-table-sort-icon-left {
+  color: #42b983
+}
 
 /* h3 {
   margin: 40px 0 0;
