@@ -19,6 +19,7 @@ namespace game_server.Web.Converters
 				GameName = source.GameName,
 				Rules = source.Rules,
 				GameSessions = source.GameSessions,
+				UserGameSessions = source.UserGameSessions,
 				GameStatistics = source.GameStatistics
 			};
 		}

@@ -19,7 +19,7 @@ namespace game_server.Web.Converters
 				GameInfoId = source.GameInfoId,
 				GameInfo = source.GameInfo,
 				GameSessionState = source.GameSessionState,
-				// UserPlayers = source.UserPlayers,
+				// UserGameSessions = source.UserGameSessions,
 				// GameStates = source.GameStates
 			};
 		}

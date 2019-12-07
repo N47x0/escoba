@@ -19,8 +19,8 @@ namespace game_server.Web.DTO
     [JsonProperty("emailAddress")]
     public string EmailAddress { get; set; }
 
-    [JsonProperty("gameSessions")]
-    public ICollection<UserGameSession> GameSessions { get; set; }
+    [JsonProperty("userGameSessions")]
+    public ICollection<UserGameSession> UserGameSessions { get; set; }
     [JsonProperty("userStatistics")]
     public ICollection<UserStatistic> UserStatistics { get; set; }
 

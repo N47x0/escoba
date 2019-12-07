@@ -8,8 +8,8 @@ namespace game_server.Database.Models
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string EmailAddress { get; set; }
-    public ICollection<UserGameSession> GameSessions { get; set; }
-    public ICollection<UserStatistic> UserStatistics {get; set; }
+    public ICollection<UserGameSession> UserGameSessions { get; set; } = new List<UserGameSession>();
+    public ICollection<UserStatistic> UserStatistics {get; set; } = new List<UserStatistic>();
   }
 
 }

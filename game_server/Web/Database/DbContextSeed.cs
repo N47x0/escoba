@@ -36,7 +36,7 @@ namespace game_server.Web.Database
 				LastName = "Doe",
 				EmailAddress = "jdoe@acme.com",
 				UserStatistics = new List<UserStatistic> {},
-				GameSessions = new List<UserGameSession>{}
+				UserGameSessions = new List<UserGameSession>{}
 			};
 
 			Guid halId = Guid.NewGuid();
@@ -47,7 +47,7 @@ namespace game_server.Web.Database
 				LastName = "9000",
 				EmailAddress = "ai@escoba.com",
 				UserStatistics = new List<UserStatistic> {},
-				GameSessions = new List<UserGameSession>{}
+				UserGameSessions = new List<UserGameSession>{}
 			};
 
 			modelBuilder.Entity<User>()

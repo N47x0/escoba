@@ -19,8 +19,12 @@ namespace game_server.Web.DTO
     [JsonProperty("gameSessionState")]
     public string GameSessionState { get; set; }
 
-    [JsonProperty("userPlayers")]
-    public ICollection<UserGameSession> UserPlayers { get; set; }
+    [JsonProperty("userGameSessions")]
+
+    public ICollection<UserGameSession> UserGameSessions { get; set; }
+
+    [JsonProperty("gameStatistic")]
+    public GameStatistic GameStatistic { get; set; }
 
     [JsonProperty("gameStates")]
     public ICollection<games.GameState> GameStates { get; set; }

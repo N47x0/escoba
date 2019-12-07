@@ -19,43 +19,46 @@ namespace game_server.Database.Map
 			builder
 				.HasIndex(x => x.GameInfoId);
 
+			builder
+				.HasIndex(x => x.GameSessionId);
+
 			builder.Property<Guid>(x => x.GameStatisticId)
 				.HasColumnName("GameStatisticId")
 				.ValueGeneratedOnAdd()
 				.HasColumnType("uniqueidentifier");
 
 			builder
-				.Property<int>(x => x.AiWins)
-				.HasColumnName("AiWins")
-				.HasColumnType("int");
+				.Property<bool>(x => x.HumanWin)
+				.HasColumnName("HumanWin")
+				.HasColumnType("bit");
 			builder
-				.Property<int>(x => x.AiDraws)
-				.HasColumnName("AiDraws")
-				.HasColumnType("int");
+				.Property<bool>(x => x.AiWin)
+				.HasColumnName("AiWin")
+				.HasColumnType("bit");
 			builder
-				.Property<int>(x => x.AiLosses)
-				.HasColumnName("AiLosses")
-				.HasColumnType("int");
+				.Property<bool>(x => x.Draw)
+				.HasColumnName("Draw")
+				.HasColumnType("bit");
 			builder
-				.Property<int>(x => x.HumanWins)
-				.HasColumnName("HumanWins")
-				.HasColumnType("int");
+				.Property<DateTime>(x => x.GameStart)
+				.HasColumnName("GameStart")
+				.HasColumnType("datetime2");
 			builder
-				.Property<int>(x => x.HumanDraws)
-				.HasColumnName("HumanDraws")
-				.HasColumnType("int");
+				.Property<DateTime>(x => x.GameEnd)
+				.HasColumnName("GameEnd")
+				.HasColumnType("datetime2");
 			builder
-				.Property<int>(x => x.HumanLosses)
-				.HasColumnName("HumanLosses")
-				.HasColumnType("int");
-			builder
-				.Property<int>(x => x.TimesPlayed)
-				.HasColumnName("TimesPlayed")
-				.HasColumnType("int");
-			builder
-				.HasOne("game_server.Database.Models.GameInfo", null)
+				.HasOne("game_server.Database.Models.GameInfo", "GameInfo")
 				.WithMany("GameStatistics")
 				.HasForeignKey("GameInfoId")
+				.OnDelete(DeleteBehavior.Cascade)
+				.IsRequired();
+			builder
+				.HasOne("game_server.Database.Models.GameSession", "GameSession")
+				.WithOne("GameStatistic")
+				// migrations through error You are configuring a relationship between 'GameStatistic' and 'GameSession' but have specified a foreign key on 'GameSessionId'. The foreign key must be defined on a type that is part of the relationship.   
+				// so i changed this from GameSessionId to current form
+				.HasForeignKey("GameSession")
 				.OnDelete(DeleteBehavior.Cascade)
 				.IsRequired();
 		}

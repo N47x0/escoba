@@ -17,13 +17,14 @@ namespace game_server.Web.Converters
 			{
 				GameStatisticId = source.GameStatisticId,
 				GameInfoId = source.GameInfoId,
-				TimesPlayed = source.TimesPlayed,
-				HumanWins = source.HumanWins,
-				AiWins = source.AiWins,
-				HumanLosses = source.HumanLosses,
-				AiLosses = source.AiLosses,
-				HumanDraws = source.HumanDraws,
-				AiDraws = source.AiDraws
+				GameSessionId = source.GameSessionId,
+				UserGameSessions = source.UserGameSessions,
+				FinalScore = source.FinalScore,
+				HumanWin = source.HumanWin,
+				AiWin = source.AiWin,
+				Draw = source.Draw,
+				GameStart = source.GameStart,
+				GameEnd = source.GameEnd
 			};
 		}
 		public static IEnumerable<GameStatisticDto> Convert(IEnumerable<GameStatistic> source)

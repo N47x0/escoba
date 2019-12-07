@@ -19,7 +19,7 @@ namespace game_server.Web.Converters
 				FirstName = source.FirstName,
 				LastName = source.LastName,
 				EmailAddress = source.EmailAddress,
-				GameSessions = source.GameSessions,
+				UserGameSessions = source.UserGameSessions,
 				UserStatistics = source.UserStatistics,
 			};
 		}

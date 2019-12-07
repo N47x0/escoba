@@ -26,6 +26,10 @@ namespace game_server.Database.Map
 				.HasColumnName("GameName")
 				.HasColumnType("nvarchar(max)");
 				
+			// builder
+			// 	.HasMany("game_server.Database.Models.UserGameSession", "UserGameSession")
+			// 	.WithOne("GameInfo");
+
 		}
 	}
 }

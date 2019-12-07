@@ -34,7 +34,7 @@ namespace game_server.Database.Map
 				.HasColumnName("RuleText")
 				.HasColumnType("nvarchar(max)");
 			builder
-				.HasOne("game_server.Database.Models.GameInfo", null)
+				.HasOne("game_server.Database.Models.GameInfo", "GameInfo")
 				.WithMany("Rules")
 				.HasForeignKey("GameInfoId")
 				.OnDelete(DeleteBehavior.Cascade)

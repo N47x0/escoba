@@ -21,6 +21,9 @@ namespace game_server.Database.Map
 			builder
 				.HasIndex(x => x.GameInfoId);
 
+			builder
+				.HasIndex(x => x.GameStatisticId);
+
 			builder.Property<Guid>(x => x.GameSessionId)
 				.HasColumnName("GameSessionId")
 				.ValueGeneratedOnAdd()
@@ -36,13 +39,20 @@ namespace game_server.Database.Map
 				.HasConversion(
 				  v => JsonSerializer.Serialize<ICollection<games.GameState>>(v, new JsonSerializerOptions{AllowTrailingCommas = true, IgnoreNullValues = true}),
 				  v => JsonSerializer.Deserialize<ICollection<games.GameState>>(v, new JsonSerializerOptions {AllowTrailingCommas =true, IgnoreNullValues = true}));
-
 			builder
-				.HasOne("game_server.Database.Models.GameInfo", null)
+				.HasOne("game_server.Database.Models.GameInfo", "GameInfo")
 				.WithMany("GameSessions")
 				.HasForeignKey("GameInfoId")
 				.OnDelete(DeleteBehavior.Restrict)
 				.IsRequired();
+			builder
+				.HasOne("game_server.Database.Models.GameStatistic", "GameStatistic")
+				.WithOne("GameSession")
+				.HasForeignKey("GameStatistic")
+				.OnDelete(DeleteBehavior.Restrict)
+				.IsRequired();
+
+
 		}
 	}
 }

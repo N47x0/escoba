@@ -42,7 +42,7 @@ namespace game_server.Web.Controllers
         {
             var user_player = context.DbSet<User>()
                 .Include(e => e.UserStatistics)
-                .Include(e => e.GameSessions)        
+                .Include(e => e.UserGameSessions)        
                 .Where(x => x.EmailAddress == userEmail)
                 .SingleOrDefault();
 
@@ -67,7 +67,7 @@ namespace game_server.Web.Controllers
                     GameInfo = escoba_info,
                     GameInfoId = escoba_info.GameInfoId, 
                     GameSessionState = "running",
-                    UserPlayers = new List<UserGameSession>(),
+                    UserGameSessions = new List<UserGameSession>(),
                     GameStates = new List<games.GameState>(),
                 };
                 context.DbSet<GameSession>()
@@ -90,7 +90,7 @@ namespace game_server.Web.Controllers
                     .Add(ugs);
                 // user_player.GameSessions
                 //     .Add(ugs);
-                // gameSession.UserPlayers
+                // gameSession.UserGameSessions
                 //     .Add(ugs);
 
             } 
@@ -102,7 +102,7 @@ namespace game_server.Web.Controllers
                     .OrderBy(x => x.TurnCount)
                     .LastOrDefault();
                 // Find current/logged-in user (url param)
-                ugs = gameSession.UserPlayers
+                ugs = gameSession.UserGameSessions
                     .Where(x => x.User.EmailAddress == userEmail)
                     .SingleOrDefault();
             }

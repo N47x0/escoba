@@ -28,25 +28,35 @@ namespace game_server.Database.Map
 				.HasIndex(x => x.GameSessionId);
 
 			builder
+				.HasIndex(x => x.GameStatisticId);
+
+			builder
 				.HasIndex(x => x.UserId);
 
 			builder
-				.HasOne("game_server.Database.Models.GameInfo", null)
-				.WithMany("GameSessions")
+				.HasOne("game_server.Database.Models.GameInfo", "GameInfo")
+				.WithMany("UserGameSessions")
 				.HasForeignKey("GameInfoId");
 
 			builder
 				.HasOne("game_server.Database.Models.GameSession", "GameSession")
-				.WithMany("UserPlayers")
+				.WithMany("UserGameSessions")
 				.HasForeignKey("GameSessionId")
 				.OnDelete(DeleteBehavior.Restrict)
 				.IsRequired();
 			builder
 				.HasOne("game_server.Database.Models.User", "User")
-				.WithMany("GameSessions")
+				.WithMany("UserGameSessions")
 				.HasForeignKey("UserId")
 				.OnDelete(DeleteBehavior.Restrict)
 				.IsRequired();
+			builder
+				.HasOne("game_server.Database.Models.GameStatistic", "GameStatistic")
+				.WithMany("UserGameSessions")
+				.HasForeignKey("GameStatisticId")
+				.OnDelete(DeleteBehavior.Restrict)
+				.IsRequired();
+
 		}
 	}
 }

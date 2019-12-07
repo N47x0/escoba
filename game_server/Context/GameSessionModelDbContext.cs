@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
@@ -35,8 +36,24 @@ namespace game_server.Context
     public GameSessionModelDbContext()
     {
     }
+    static string targetDir = new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.FullName;
     public static readonly ILoggerFactory MyLoggerFactory
-    = LoggerFactory.Create(builder => { builder.AddConsole(); });
+    = LoggerFactory.Create(builder =>
+        {
+            builder
+                .AddFilter((category, level) =>
+                    category == DbLoggerCategory.Database.Command.Name
+                    && level == LogLevel.Information)
+                .AddConsole();
+                var standardOutput = new StreamWriter(Console.OpenStandardOutput());
+                standardOutput.AutoFlush = true;
+                Console.SetOut(standardOutput);
+                using (var sw = new StreamWriter(targetDir + @"\sql_output.txt")) 
+                {
+                  Console.SetOut(sw);
+                }
+        });
+    
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
       => optionsBuilder
           .UseLoggerFactory(MyLoggerFactory); // Warning: Do not create a new ILoggerFactory instance each time
