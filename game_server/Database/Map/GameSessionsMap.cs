@@ -13,24 +13,18 @@ namespace game_server.Database.Map
 		protected override void InternalMap(EntityTypeBuilder<GameSession> builder)
 		{
 			builder
-				.ToTable("GameSession", schema: "Games");
+				.ToTable("GameSessions", schema: "Games");
 
 			builder
 				.HasKey(x => x.GameSessionId);
-				// .HasName("PK_GameInfo");
         
 			builder
 				.HasIndex(x => x.GameInfoId);
-				// .HasName("PK_GameInfo");
 
-			// builder.Property<Guid>(x => x.GameSessionId)
-			// 	.HasColumnName("GameSessionId")
-			// 	.ValueGeneratedOnAdd()
-			// 	.HasColumnType("uniqueidentifier");
-
-			// builder.Property<Guid>(x => x.GameInfoId)
-			// 	.HasColumnName("GameInfoId")
-			// 	.HasColumnType("uniqueidentifier");
+			builder.Property<Guid>(x => x.GameSessionId)
+				.HasColumnName("GameSessionId")
+				.ValueGeneratedOnAdd()
+				.HasColumnType("uniqueidentifier");
 
 			builder
 				.Property<string>(x => x.GameSessionState)
@@ -43,19 +37,12 @@ namespace game_server.Database.Map
 				  v => JsonSerializer.Serialize<ICollection<games.GameState>>(v, new JsonSerializerOptions{AllowTrailingCommas = true, IgnoreNullValues = true}),
 				  v => JsonSerializer.Deserialize<ICollection<games.GameState>>(v, new JsonSerializerOptions {AllowTrailingCommas =true, IgnoreNullValues = true}));
 
-			// builder
-			// 	.HasOne("game_server.Database.Models.GameInfo", null)
-			// 	.WithMany()
-			// 	.HasForeignKey("GameInfoId")
-			// 	.OnDelete(DeleteBehavior.Restrict)
-			// 	.IsRequired();
+			builder
+				.HasOne("game_server.Database.Models.GameInfo", null)
+				.WithMany("GameSessions")
+				.HasForeignKey("GameInfoId")
+				.OnDelete(DeleteBehavior.Restrict)
+				.IsRequired();
 		}
 	}
 }
-
-			// builder
-			// 	.HasOne("game_server.Database.Models.GameInfo", null)
-			// 	.WithMany("GameSessions")
-			// 	.HasForeignKey("GameInfoId")
-			// 	.OnDelete(DeleteBehavior.Restrict)
-			// 	.IsRequired();

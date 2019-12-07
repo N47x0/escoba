@@ -25,8 +25,7 @@ namespace game_server.Web
       {
           var factory = scope.ServiceProvider.GetService<IGameSessionModelDbContextFactory>();
           var context = factory.CreateDbContext();
-          context.Database.EnsureCreated();
-          // context.Database.Migrate();
+          context.Database.Migrate();
       }
       host.Run();
 

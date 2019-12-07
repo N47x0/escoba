@@ -25,10 +25,6 @@ namespace game_server.Database.Map
 				.ValueGeneratedOnAdd()
 				.HasColumnType("uniqueidentifier");
 
-			builder.Property<Guid>(x => x.GameInfoId)
-				.HasColumnName("GameInfoId")
-				.HasColumnType("uniqueidentifier");
-
 			builder
 				.Property<string>(x => x.RuleName)
 				.HasColumnName("RuleName")

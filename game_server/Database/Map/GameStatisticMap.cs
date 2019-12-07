@@ -15,19 +15,13 @@ namespace game_server.Database.Map
 
 			builder
 				.HasKey(x => x.GameStatisticId);
-				// .HasName("PK_GameInfo");
         
 			builder
 				.HasIndex(x => x.GameInfoId);
-				// .HasName("PK_GameInfo");
 
 			builder.Property<Guid>(x => x.GameStatisticId)
 				.HasColumnName("GameStatisticId")
 				.ValueGeneratedOnAdd()
-				.HasColumnType("uniqueidentifier");
-
-			builder.Property<Guid>(x => x.GameInfoId)
-				.HasColumnName("GameInfoId")
 				.HasColumnType("uniqueidentifier");
 
 			builder

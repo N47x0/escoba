@@ -15,7 +15,6 @@ namespace game_server.Database.Map
 
 			builder
 				.HasKey(x => x.GameInfoId);
-				// .HasName("PK_GameInfo");
 
 			builder.Property<Guid>(x => x.GameInfoId)
 				.HasColumnName("GameInfoId")
@@ -26,6 +25,7 @@ namespace game_server.Database.Map
 				.Property<string>(x => x.GameName)
 				.HasColumnName("GameName")
 				.HasColumnType("nvarchar(max)");
+				
 		}
 	}
 }
