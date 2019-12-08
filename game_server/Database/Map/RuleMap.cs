@@ -39,6 +39,12 @@ namespace game_server.Database.Map
 				.HasForeignKey("GameInfoId")
 				.OnDelete(DeleteBehavior.Cascade)
 				.IsRequired();
+			builder
+				.HasOne("game_server.Database.Models.User", "User")
+				.WithMany("Rules")
+				.HasForeignKey("UserId")
+				.OnDelete(DeleteBehavior.Restrict)
+				.IsRequired();
 		}
 	}
 }

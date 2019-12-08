@@ -10,5 +10,6 @@ namespace game_server.Database.Models
     public ICollection<GameSession> GameSessions { get; set; } = new List<GameSession>();
     public ICollection<UserGameSession> UserGameSessions { get; set; } = new List<UserGameSession>();
     public ICollection<GameStatistic> GameStatistics { get; set; } = new List<GameStatistic>();
+    public ICollection<UserStatistic> UserStatistics { get; set; } = new List<UserStatistic>();
   }
 }

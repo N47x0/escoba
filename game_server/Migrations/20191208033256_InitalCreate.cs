@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace game_server.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class InitalCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -39,38 +39,12 @@ namespace game_server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "GameStatistics",
-                schema: "Games",
-                columns: table => new
-                {
-                    GameStatisticId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    GameInfoId = table.Column<Guid>(nullable: false),
-                    GameSessionId = table.Column<Guid>(nullable: false),
-                    FinalScore = table.Column<string>(nullable: true),
-                    HumanWin = table.Column<bool>(type: "bit", nullable: false),
-                    AiWin = table.Column<bool>(type: "bit", nullable: false),
-                    Draw = table.Column<bool>(type: "bit", nullable: false),
-                    GameStart = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    GameEnd = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_GameStatistics", x => x.GameStatisticId);
-                    table.ForeignKey(
-                        name: "FK_GameStatistics_GameInfo_GameInfoId",
-                        column: x => x.GameInfoId,
-                        principalSchema: "Games",
-                        principalTable: "GameInfo",
-                        principalColumn: "GameInfoId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Rules",
                 schema: "Games",
                 columns: table => new
                 {
                     RuleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(nullable: false),
                     GameInfoId = table.Column<Guid>(nullable: false),
                     RuleName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RuleText = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -85,37 +59,89 @@ namespace game_server.Migrations
                         principalTable: "GameInfo",
                         principalColumn: "GameInfoId",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Rules_Users_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "Games",
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserStatistic",
+                name: "UserStatistics",
+                schema: "Games",
                 columns: table => new
                 {
-                    UserStatisticId = table.Column<Guid>(nullable: false),
+                    UserStatisticId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<Guid>(nullable: false),
                     GameInfoId = table.Column<Guid>(nullable: false),
-                    NumberOfPlays = table.Column<int>(nullable: false),
-                    Wins = table.Column<int>(nullable: false),
-                    Losses = table.Column<int>(nullable: false),
-                    Draws = table.Column<int>(nullable: false)
+                    NumberOfPlays = table.Column<int>(type: "int", nullable: false),
+                    Wins = table.Column<int>(type: "int", nullable: false),
+                    Losses = table.Column<int>(type: "int", nullable: false),
+                    Draws = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserStatistic", x => x.UserStatisticId);
+                    table.PrimaryKey("PK_UserStatistics", x => x.UserStatisticId);
                     table.ForeignKey(
-                        name: "FK_UserStatistic_GameInfo_GameInfoId",
+                        name: "FK_UserStatistics_GameInfo_GameInfoId",
                         column: x => x.GameInfoId,
                         principalSchema: "Games",
                         principalTable: "GameInfo",
                         principalColumn: "GameInfoId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UserStatistic_Users_UserId",
+                        name: "FK_UserStatistics_Users_UserId",
                         column: x => x.UserId,
                         principalSchema: "Games",
                         principalTable: "Users",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GameStatistics",
+                schema: "Games",
+                columns: table => new
+                {
+                    GameStatisticId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    GameInfoId = table.Column<Guid>(nullable: false),
+                    GameSessionId = table.Column<Guid>(nullable: false),
+                    UserStatisticId = table.Column<Guid>(nullable: false),
+                    UserId = table.Column<Guid>(nullable: false),
+                    FinalScore = table.Column<string>(nullable: true),
+                    HumanWin = table.Column<bool>(type: "bit", nullable: true),
+                    AiWin = table.Column<bool>(type: "bit", nullable: true),
+                    Draw = table.Column<bool>(type: "bit", nullable: true),
+                    GameComplete = table.Column<bool>(type: "bit", nullable: false),
+                    GameStart = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    GameEnd = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GameStatistics", x => x.GameStatisticId);
+                    table.ForeignKey(
+                        name: "FK_GameStatistics_GameInfo_GameInfoId",
+                        column: x => x.GameInfoId,
+                        principalSchema: "Games",
+                        principalTable: "GameInfo",
+                        principalColumn: "GameInfoId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GameStatistics_Users_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "Games",
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GameStatistics_UserStatistics_UserStatisticId",
+                        column: x => x.UserStatisticId,
+                        principalSchema: "Games",
+                        principalTable: "UserStatistics",
+                        principalColumn: "UserStatisticId",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -198,8 +224,8 @@ namespace game_server.Migrations
                 columns: new[] { "GameInfoId", "GameName" },
                 values: new object[,]
                 {
-                    { new Guid("84949e24-35ff-4edc-be57-6798e5bb14ff"), "Escoba" },
-                    { new Guid("829094cb-c7bc-4bb1-92e3-e1ad5198ea94"), "Pusoy Dos" }
+                    { new Guid("95aff857-682e-494a-97e9-21996b5a753d"), "Escoba" },
+                    { new Guid("7bdbcf13-dce5-4424-92cd-f7be50f3259a"), "Pusoy Dos" }
                 });
 
             migrationBuilder.InsertData(
@@ -208,19 +234,21 @@ namespace game_server.Migrations
                 columns: new[] { "UserId", "EmailAddress", "FirstName", "LastName" },
                 values: new object[,]
                 {
-                    { new Guid("389ac3cf-70dd-4214-ad31-f7591ddec096"), "jdoe@acme.com", "John", "Doe" },
-                    { new Guid("5464e256-4561-4759-8cb7-f3828f23fc73"), "ai@escoba.com", "Hal", "9000" }
+                    { new Guid("29d76e39-e05e-4b84-a13d-7d98924ab18c"), "jdoe@acme.com", "John", "Doe" },
+                    { new Guid("7611b043-b630-49a4-8fcc-c6e783d72719"), "ai@escoba.com", "Hal", "9000" }
                 });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_UserStatistic_GameInfoId",
-                table: "UserStatistic",
-                column: "GameInfoId");
+            migrationBuilder.InsertData(
+                schema: "Games",
+                table: "UserStatistics",
+                columns: new[] { "UserStatisticId", "Draws", "GameInfoId", "Losses", "NumberOfPlays", "UserId", "Wins" },
+                values: new object[] { new Guid("da8d378f-8896-4c21-94b6-6d438ace6bb8"), 0, new Guid("95aff857-682e-494a-97e9-21996b5a753d"), 0, 0, new Guid("29d76e39-e05e-4b84-a13d-7d98924ab18c"), 0 });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_UserStatistic_UserId",
-                table: "UserStatistic",
-                column: "UserId");
+            migrationBuilder.InsertData(
+                schema: "Games",
+                table: "UserStatistics",
+                columns: new[] { "UserStatisticId", "Draws", "GameInfoId", "Losses", "NumberOfPlays", "UserId", "Wins" },
+                values: new object[] { new Guid("accd8c26-496e-4f96-97e2-4fde22d1dea9"), 0, new Guid("95aff857-682e-494a-97e9-21996b5a753d"), 0, 0, new Guid("7611b043-b630-49a4-8fcc-c6e783d72719"), 0 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_GameSessions_GameInfoId",
@@ -249,10 +277,28 @@ namespace game_server.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_GameStatistics_UserId",
+                schema: "Games",
+                table: "GameStatistics",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GameStatistics_UserStatisticId",
+                schema: "Games",
+                table: "GameStatistics",
+                column: "UserStatisticId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Rules_GameInfoId",
                 schema: "Games",
                 table: "Rules",
                 column: "GameInfoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Rules_UserId",
+                schema: "Games",
+                table: "Rules",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserGameSessions_GameInfoId",
@@ -277,13 +323,22 @@ namespace game_server.Migrations
                 schema: "Games",
                 table: "UserGameSessions",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserStatistics_GameInfoId",
+                schema: "Games",
+                table: "UserStatistics",
+                column: "GameInfoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserStatistics_UserId",
+                schema: "Games",
+                table: "UserStatistics",
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "UserStatistic");
-
             migrationBuilder.DropTable(
                 name: "Rules",
                 schema: "Games");
@@ -297,15 +352,19 @@ namespace game_server.Migrations
                 schema: "Games");
 
             migrationBuilder.DropTable(
-                name: "Users",
-                schema: "Games");
-
-            migrationBuilder.DropTable(
                 name: "GameStatistics",
                 schema: "Games");
 
             migrationBuilder.DropTable(
+                name: "UserStatistics",
+                schema: "Games");
+
+            migrationBuilder.DropTable(
                 name: "GameInfo",
+                schema: "Games");
+
+            migrationBuilder.DropTable(
+                name: "Users",
                 schema: "Games");
         }
     }

@@ -49,10 +49,8 @@ namespace game_server.Database.Map
 				.HasOne("game_server.Database.Models.GameStatistic", "GameStatistic")
 				.WithOne("GameSession")
 				.HasForeignKey("GameStatistic")
-				.OnDelete(DeleteBehavior.Restrict)
+				.OnDelete(DeleteBehavior.Cascade)
 				.IsRequired();
-
-
 		}
 	}
 }

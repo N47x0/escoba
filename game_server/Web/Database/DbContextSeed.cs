@@ -17,12 +17,14 @@ namespace game_server.Web.Database
 		public void Seed(ModelBuilder modelBuilder)
 		{
 			// Add Customers:
+			Guid escobaId = Guid.NewGuid();
+			Guid pusoyId = Guid.NewGuid();
 			var escoba_info = new GameInfo {
-				GameInfoId = Guid.NewGuid(),
+				GameInfoId = escobaId,
 				GameName = "Escoba"
 				};
 			var pusoydos_info = new GameInfo {
-				GameInfoId = Guid.NewGuid(),
+				GameInfoId = pusoyId,
 				GameName = "Pusoy Dos"
 				};
 			modelBuilder.Entity<GameInfo>()
@@ -36,7 +38,8 @@ namespace game_server.Web.Database
 				LastName = "Doe",
 				EmailAddress = "jdoe@acme.com",
 				UserStatistics = new List<UserStatistic> {},
-				UserGameSessions = new List<UserGameSession>{}
+				UserGameSessions = new List<UserGameSession>{},
+				GameStatistics = new List<GameStatistic>{}
 			};
 
 			Guid halId = Guid.NewGuid();
@@ -47,39 +50,37 @@ namespace game_server.Web.Database
 				LastName = "9000",
 				EmailAddress = "ai@escoba.com",
 				UserStatistics = new List<UserStatistic> {},
-				UserGameSessions = new List<UserGameSession>{}
+				UserGameSessions = new List<UserGameSession>{},
+				GameStatistics = new List<GameStatistic>{}
 			};
 
 			modelBuilder.Entity<User>()
 				.HasData(johnD, hal);
 
-			var johnStats = new UserStatistic {
+			var johnStat = new UserStatistic {
 				UserStatisticId = Guid.NewGuid(),
 				UserId = johnId,
-				GameInfoId = escoba_info.GameInfoId,
-				GameInfo = escoba_info,
-				NumberOfPlays = 100,
-				Wins = 33,
-				Losses = 23,
-				Draws = 44,
+				GameInfoId = escobaId,
+				NumberOfPlays = 0,
+				Wins = 0,
+				Losses = 0,
+				Draws = 0,
+				GameStatistics = new List<GameStatistic>{}
 			};
-			var halStats = new UserStatistic {
+			var halStat = new UserStatistic {
 				UserStatisticId = Guid.NewGuid(),
 				UserId = halId,
-				GameInfoId = escoba_info.GameInfoId,
-				GameInfo = escoba_info,
-				NumberOfPlays = 100,
-				Wins = 33,
-				Losses = 23,
-				Draws = 44,
+				GameInfoId = escobaId,
+				NumberOfPlays = 0,
+				Wins = 0,
+				Losses = 0,
+				Draws = 0,
+				GameStatistics = new List<GameStatistic>{}
 			};
 
-			// this was causing the migration to fail 
-			// The type 'UserStatistic' cannot be configured as non-owned because an owned entity type with the same name already exists.
+			modelBuilder.Entity<UserStatistic>()
+				.HasData(johnStat, halStat);
 
-			// modelBuilder.Entity<UserStatistic>()
-			// 	// .OwnsOne(us => us.GameInfoId)
-			// 	.HasData(johnStats, halStats);
 
 		}
 	}

@@ -23,7 +23,8 @@ namespace game_server.Web.Converters
 				NumberOfPlays = source.NumberOfPlays,
 				Wins = source.Wins,
 				Losses = source.Losses,
-				Draws = source.Draws
+				Draws = source.Draws,
+				GameStatistics = source.GameStatistics
 			};
 		}
 		public static IEnumerable<UserStatisticDto> Convert(IEnumerable<UserStatistic> source)

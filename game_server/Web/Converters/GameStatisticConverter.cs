@@ -18,11 +18,16 @@ namespace game_server.Web.Converters
 				GameStatisticId = source.GameStatisticId,
 				GameInfoId = source.GameInfoId,
 				GameSessionId = source.GameSessionId,
+				UserId = source.UserId,
+				User = source.User,
+				UserStatisticId = source.UserStatisticId,
+				UserStatistic = source.UserStatistic,
 				UserGameSessions = source.UserGameSessions,
 				FinalScore = source.FinalScore,
 				HumanWin = source.HumanWin,
 				AiWin = source.AiWin,
 				Draw = source.Draw,
+				GameComplete = source.GameComplete,
 				GameStart = source.GameStart,
 				GameEnd = source.GameEnd
 			};

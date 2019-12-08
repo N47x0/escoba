@@ -8,50 +8,48 @@ namespace game_server.Database.Map
 {
 	public class UserStatisticMap : BaseEntityMapy<UserStatistic>
 	{
-		protected override void InternalMap(EntityTypeBuilder<UserStatistic> statBuilder)
+		protected override void InternalMap(EntityTypeBuilder<UserStatistic> builder)
 		{
-			statBuilder
+			builder
 				.ToTable("UserStatistics", schema: "Games");
 
-			statBuilder
+			builder
 				.HasKey(x => x.UserStatisticId);
-				// .HasName("PK_GameInfo");
         
-			statBuilder
+			builder
 				.HasIndex(x => x.GameInfoId);
 
-			statBuilder
+			builder
 				.HasIndex(x => x.UserId);
-				// .HasName("PK_GameInfo");
 
-			statBuilder.Property<Guid>(x => x.UserStatisticId)
+			builder.Property<Guid>(x => x.UserStatisticId)
 				.HasColumnName("UserStatisticId")
 				.ValueGeneratedOnAdd()
 				.HasColumnType("uniqueidentifier");
 
-			statBuilder
+			builder
 				.Property<int>(x => x.Wins)
 				.HasColumnName("Wins")
 				.HasColumnType("int");
-			statBuilder
+			builder
 				.Property<int>(x => x.Draws)
 				.HasColumnName("Draws")
 				.HasColumnType("int");
-			statBuilder
+			builder
 				.Property<int>(x => x.Losses)
 				.HasColumnName("Losses")
 				.HasColumnType("int");
-			statBuilder
+			builder
 				.Property<int>(x => x.NumberOfPlays)
 				.HasColumnName("NumberOfPlays")
 				.HasColumnType("int");
-			statBuilder
+			builder
 				.HasOne("game_server.Database.Models.GameInfo", "GameInfo")
-				.WithMany()
+				.WithMany("UserStatistics")
 				.HasForeignKey("GameInfoId")
 				.OnDelete(DeleteBehavior.Cascade)
 				.IsRequired();
-			statBuilder
+			builder
 				.HasOne("game_server.Database.Models.User", "User")
 				.WithMany("UserStatistics")
 				.HasForeignKey("UserId")

@@ -84,6 +84,7 @@ namespace game_server.Web
       services.AddScoped<IEntityTypeMap, UserMap>();
       services.AddScoped<IEntityTypeMap, RuleMap>();
       services.AddScoped<IEntityTypeMap, UserGameSessionMap>();
+      services.AddScoped<IEntityTypeMap, UserStatisticMap>();
       // services.AddScoped<IEntityTypeMap, UserStatisticMap>();
 
       services.AddScoped<IDbContextSeed, DbContextSeed>();

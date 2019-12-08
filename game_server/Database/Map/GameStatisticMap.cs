@@ -22,29 +22,39 @@ namespace game_server.Database.Map
 			builder
 				.HasIndex(x => x.GameSessionId);
 
+			builder
+				.HasIndex(x => x.UserStatisticId);
+
+			builder
+				.HasIndex(x => x.UserId);
+
 			builder.Property<Guid>(x => x.GameStatisticId)
 				.HasColumnName("GameStatisticId")
 				.ValueGeneratedOnAdd()
 				.HasColumnType("uniqueidentifier");
 
 			builder
-				.Property<bool>(x => x.HumanWin)
+				.Property<bool?>(x => x.HumanWin)
 				.HasColumnName("HumanWin")
 				.HasColumnType("bit");
 			builder
-				.Property<bool>(x => x.AiWin)
+				.Property<bool?>(x => x.AiWin)
 				.HasColumnName("AiWin")
 				.HasColumnType("bit");
 			builder
-				.Property<bool>(x => x.Draw)
+				.Property<bool?>(x => x.Draw)
 				.HasColumnName("Draw")
+				.HasColumnType("bit");
+			builder
+				.Property<bool>(x => x.GameComplete)
+				.HasColumnName("GameComplete")
 				.HasColumnType("bit");
 			builder
 				.Property<DateTime>(x => x.GameStart)
 				.HasColumnName("GameStart")
 				.HasColumnType("datetime2");
 			builder
-				.Property<DateTime>(x => x.GameEnd)
+				.Property<DateTime?>(x => x.GameEnd)
 				.HasColumnName("GameEnd")
 				.HasColumnType("datetime2");
 			builder
@@ -52,6 +62,18 @@ namespace game_server.Database.Map
 				.WithMany("GameStatistics")
 				.HasForeignKey("GameInfoId")
 				.OnDelete(DeleteBehavior.Cascade)
+				.IsRequired();
+			builder
+				.HasOne("game_server.Database.Models.User", "User")
+				.WithMany("GameStatistics")
+				.HasForeignKey("UserId")
+				.OnDelete(DeleteBehavior.Cascade)
+				.IsRequired();
+			builder
+				.HasOne("game_server.Database.Models.UserStatistic", "UserStatistic")
+				.WithMany("GameStatistics")
+				.HasForeignKey("UserStatisticId")
+				.OnDelete(DeleteBehavior.Restrict)
 				.IsRequired();
 			builder
 				.HasOne("game_server.Database.Models.GameSession", "GameSession")

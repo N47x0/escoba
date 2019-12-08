@@ -10,8 +10,8 @@ using game_server.Context;
 namespace game_server.Migrations
 {
     [DbContext(typeof(GameSessionModelDbContext))]
-    [Migration("20191207172621_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20191208033256_InitalCreate")]
+    partial class InitalCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -39,12 +39,12 @@ namespace game_server.Migrations
                     b.HasData(
                         new
                         {
-                            GameInfoId = new Guid("84949e24-35ff-4edc-be57-6798e5bb14ff"),
+                            GameInfoId = new Guid("95aff857-682e-494a-97e9-21996b5a753d"),
                             GameName = "Escoba"
                         },
                         new
                         {
-                            GameInfoId = new Guid("829094cb-c7bc-4bb1-92e3-e1ad5198ea94"),
+                            GameInfoId = new Guid("7bdbcf13-dce5-4424-92cd-f7be50f3259a"),
                             GameName = "Pusoy Dos"
                         });
                 });
@@ -86,18 +86,22 @@ namespace game_server.Migrations
                         .HasColumnName("GameStatisticId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("AiWin")
+                    b.Property<bool?>("AiWin")
                         .HasColumnName("AiWin")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("Draw")
+                    b.Property<bool?>("Draw")
                         .HasColumnName("Draw")
                         .HasColumnType("bit");
 
                     b.Property<string>("FinalScore")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("GameEnd")
+                    b.Property<bool>("GameComplete")
+                        .HasColumnName("GameComplete")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("GameEnd")
                         .HasColumnName("GameEnd")
                         .HasColumnType("datetime2");
 
@@ -111,9 +115,15 @@ namespace game_server.Migrations
                         .HasColumnName("GameStart")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("HumanWin")
+                    b.Property<bool?>("HumanWin")
                         .HasColumnName("HumanWin")
                         .HasColumnType("bit");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserStatisticId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("GameStatisticId");
 
@@ -121,6 +131,10 @@ namespace game_server.Migrations
 
                     b.HasIndex("GameSessionId")
                         .IsUnique();
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("UserStatisticId");
 
                     b.ToTable("GameStatistics","Games");
                 });
@@ -143,9 +157,14 @@ namespace game_server.Migrations
                         .HasColumnName("RuleText")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("RuleId");
 
                     b.HasIndex("GameInfoId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Rules","Games");
                 });
@@ -176,14 +195,14 @@ namespace game_server.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = new Guid("389ac3cf-70dd-4214-ad31-f7591ddec096"),
+                            UserId = new Guid("29d76e39-e05e-4b84-a13d-7d98924ab18c"),
                             EmailAddress = "jdoe@acme.com",
                             FirstName = "John",
                             LastName = "Doe"
                         },
                         new
                         {
-                            UserId = new Guid("5464e256-4561-4759-8cb7-f3828f23fc73"),
+                            UserId = new Guid("7611b043-b630-49a4-8fcc-c6e783d72719"),
                             EmailAddress = "ai@escoba.com",
                             FirstName = "Hal",
                             LastName = "9000"
@@ -226,24 +245,29 @@ namespace game_server.Migrations
                 {
                     b.Property<Guid>("UserStatisticId")
                         .ValueGeneratedOnAdd()
+                        .HasColumnName("UserStatisticId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Draws")
+                        .HasColumnName("Draws")
                         .HasColumnType("int");
 
                     b.Property<Guid>("GameInfoId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Losses")
+                        .HasColumnName("Losses")
                         .HasColumnType("int");
 
                     b.Property<int>("NumberOfPlays")
+                        .HasColumnName("NumberOfPlays")
                         .HasColumnType("int");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Wins")
+                        .HasColumnName("Wins")
                         .HasColumnType("int");
 
                     b.HasKey("UserStatisticId");
@@ -252,7 +276,29 @@ namespace game_server.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserStatistic");
+                    b.ToTable("UserStatistics","Games");
+
+                    b.HasData(
+                        new
+                        {
+                            UserStatisticId = new Guid("da8d378f-8896-4c21-94b6-6d438ace6bb8"),
+                            Draws = 0,
+                            GameInfoId = new Guid("95aff857-682e-494a-97e9-21996b5a753d"),
+                            Losses = 0,
+                            NumberOfPlays = 0,
+                            UserId = new Guid("29d76e39-e05e-4b84-a13d-7d98924ab18c"),
+                            Wins = 0
+                        },
+                        new
+                        {
+                            UserStatisticId = new Guid("accd8c26-496e-4f96-97e2-4fde22d1dea9"),
+                            Draws = 0,
+                            GameInfoId = new Guid("95aff857-682e-494a-97e9-21996b5a753d"),
+                            Losses = 0,
+                            NumberOfPlays = 0,
+                            UserId = new Guid("7611b043-b630-49a4-8fcc-c6e783d72719"),
+                            Wins = 0
+                        });
                 });
 
             modelBuilder.Entity("game_server.Database.Models.GameSession", b =>
@@ -277,6 +323,18 @@ namespace game_server.Migrations
                         .HasForeignKey("GameInfoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("game_server.Database.Models.User", "User")
+                        .WithMany("GameStatistics")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("game_server.Database.Models.UserStatistic", "UserStatistic")
+                        .WithMany("GameStatistics")
+                        .HasForeignKey("UserStatisticId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("game_server.Database.Models.Rule", b =>
@@ -285,6 +343,12 @@ namespace game_server.Migrations
                         .WithMany("Rules")
                         .HasForeignKey("GameInfoId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("game_server.Database.Models.User", "User")
+                        .WithMany("Rules")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -318,7 +382,7 @@ namespace game_server.Migrations
             modelBuilder.Entity("game_server.Database.Models.UserStatistic", b =>
                 {
                     b.HasOne("game_server.Database.Models.GameInfo", "GameInfo")
-                        .WithMany()
+                        .WithMany("UserStatistics")
                         .HasForeignKey("GameInfoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

@@ -57,9 +57,11 @@ namespace game_server.Web.Controllers
 
             var initial_game_state = _cardGameService
                 .InitGame();
-
+            GameStatistic playerGameStatistic;
+            GameStatistic aiGameStatistic;
             GameSession gameSession;
-            UserGameSession ugs;
+            UserGameSession ugsPlayer;
+            UserGameSession ugsAi;
             // Make New GameSession
             if (sessionid == System.Guid.Empty) {
                 gameSession = new GameSession {
@@ -70,10 +72,50 @@ namespace game_server.Web.Controllers
                     UserGameSessions = new List<UserGameSession>(),
                     GameStates = new List<games.GameState>(),
                 };
+                playerGameStatistic = new GameStatistic {
+                    GameStatisticId = System.Guid.NewGuid(),
+                    GameInfoId = escoba_info.GameInfoId,
+                    GameSessionId = gameSession.GameSessionId,
+                    UserId = user_player.UserId,
+                    User = user_player,
+                    UserStatisticId = user_player.UserStatistics.Where(us => us.GameInfoId == escoba_info.GameInfoId).FirstOrDefault().UserStatisticId,
+                    UserStatistic = user_player.UserStatistics.Where(us => us.GameInfoId == escoba_info.GameInfoId).FirstOrDefault(),
+                    UserGameSessions = new List<UserGameSession>(),
+                    FinalScore = null,
+                    HumanWin = null,
+                    AiWin = null,
+                    Draw = null,
+                    // GameComplete = false,
+                    GameStart = DateTime.Now,
+                    GameEnd = null
+                };
+
+                aiGameStatistic = new GameStatistic {
+                    GameStatisticId = System.Guid.NewGuid(),
+                    GameInfoId = escoba_info.GameInfoId,
+                    GameSessionId = gameSession.GameSessionId,
+                    UserId = ai_player.UserId,
+                    User = ai_player,
+                    UserStatisticId = ai_player.UserStatistics.Where(us => us.GameInfoId == escoba_info.GameInfoId).FirstOrDefault().UserStatisticId,
+                    UserStatistic = ai_player.UserStatistics.Where(us => us.GameInfoId == escoba_info.GameInfoId).FirstOrDefault(),
+                    UserGameSessions = new List<UserGameSession>(),
+                    FinalScore = null,
+                    HumanWin = null,
+                    AiWin = null,
+                    Draw = null,
+                    // GameComplete = false,
+                    GameStart = DateTime.Now,
+                    GameEnd = null
+                };
+
                 context.DbSet<GameSession>()
                     .Add(gameSession);
+                context.DbSet<GameStatistic>()
+                    .Add(playerGameStatistic);
+                context.DbSet<GameStatistic>()
+                    .Add(aiGameStatistic);
 
-                ugs = new UserGameSession {
+                ugsPlayer = new UserGameSession {
                     UserGameSessionId = System.Guid.NewGuid(),
                     GameInfoId = escoba_info.GameInfoId,
                     GameSessionId = gameSession.GameSessionId,
@@ -81,17 +123,22 @@ namespace game_server.Web.Controllers
                     User = user_player,
                     UserId = user_player.UserId,
                 };
+                ugsAi = new UserGameSession {
+                    UserGameSessionId = System.Guid.NewGuid(),
+                    GameInfoId = escoba_info.GameInfoId,
+                    GameSessionId = gameSession.GameSessionId,
+                    GameSession = gameSession,
+                    User = ai_player,
+                    UserId = ai_player.UserId,
+                };
 
                 gameSession.GameStates
                     .Add(initial_game_state);
         
-                // TODO - Is all this needed or some auto?
                 context.DbSet<UserGameSession>()
-                    .Add(ugs);
-                // user_player.GameSessions
-                //     .Add(ugs);
-                // gameSession.UserGameSessions
-                //     .Add(ugs);
+                    .Add(ugsPlayer);
+                context.DbSet<UserGameSession>()
+                    .Add(ugsAi);
 
             } 
             // Lookup game session
@@ -102,7 +149,7 @@ namespace game_server.Web.Controllers
                     .OrderBy(x => x.TurnCount)
                     .LastOrDefault();
                 // Find current/logged-in user (url param)
-                ugs = gameSession.UserGameSessions
+                ugsPlayer = gameSession.UserGameSessions
                     .Where(x => x.User.EmailAddress == userEmail)
                     .SingleOrDefault();
             }

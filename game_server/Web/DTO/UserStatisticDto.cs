@@ -1,5 +1,6 @@
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using game_server.Database.Models;
 
 namespace game_server.Web.DTO
@@ -32,6 +33,10 @@ namespace game_server.Web.DTO
 
     [JsonProperty("draws")]
     public int Draws { get; set; }
+
+    [JsonProperty("gameStatistics")]
+    public ICollection<GameStatistic> GameStatistics { get; set; }
+
 
   }
 }

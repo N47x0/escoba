@@ -6,10 +6,10 @@ namespace game_server.Database.Models
   {
     public Guid UserGameSessionId { get; set; }
 
-    [ForeignKey("GameSession")]
+    [ForeignKey("GameSessions")]
     public Guid GameSessionId { get; set; }
 
-    [ForeignKey("GameStatistic")]
+    [ForeignKey("GameStatistics")]
     public Guid GameStatisticId { get; set; } 
 
     [ForeignKey("GameInfo")]
