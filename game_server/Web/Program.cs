@@ -19,6 +19,7 @@ namespace game_server.Web
   {
     public static void Main(string[] args)
     {
+      Console.Title = "GameServer";
 
       var host = CreateHostBuilder(args).Build();
       using (var scope = host.Services.CreateScope())

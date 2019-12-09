@@ -16,9 +16,7 @@ namespace game_server.Database.Models
     [ForeignKey("UserStatistics")]
     public Guid UserStatisticId { get; set; }
 
-    [ForeignKey("Users")]
-    public Guid UserId { get; set; }
-    public User User{ get; set; }
+    public ICollection<User> Users { get; set; } = new List<User>();
     public UserStatistic UserStatistic { get; set; }
     public GameInfo GameInfo { get; set; }
     public GameSession GameSession { get; set; }

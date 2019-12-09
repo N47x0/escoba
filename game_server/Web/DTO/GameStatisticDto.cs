@@ -22,11 +22,8 @@ namespace game_server.Web.DTO
         [JsonProperty("userStatistic")]
         public UserStatistic UserStatistic { get; set; }
 
-        [JsonProperty("userId")]
-        public Guid UserId { get; set; }
-
-        [JsonProperty("user")]
-        public User User { get; set; }
+        [JsonProperty("users")]
+        public ICollection<User> Users { get; set; }
 
         [JsonProperty("userGameSessions")]
         public ICollection<UserGameSession> UserGameSessions { get; set; }

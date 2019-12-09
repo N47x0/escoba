@@ -25,8 +25,6 @@ namespace game_server.Database.Map
 			builder
 				.HasIndex(x => x.UserStatisticId);
 
-			builder
-				.HasIndex(x => x.UserId);
 
 			builder.Property<Guid>(x => x.GameStatisticId)
 				.HasColumnName("GameStatisticId")
@@ -61,12 +59,6 @@ namespace game_server.Database.Map
 				.HasOne("game_server.Database.Models.GameInfo", "GameInfo")
 				.WithMany("GameStatistics")
 				.HasForeignKey("GameInfoId")
-				.OnDelete(DeleteBehavior.Cascade)
-				.IsRequired();
-			builder
-				.HasOne("game_server.Database.Models.User", "User")
-				.WithMany("GameStatistics")
-				.HasForeignKey("UserId")
 				.OnDelete(DeleteBehavior.Cascade)
 				.IsRequired();
 			builder

@@ -47,6 +47,8 @@ namespace game_server.Web.Controllers
                 .SingleOrDefault();
 
             var ai_player = context.DbSet<User>()
+                .Include(e => e.UserStatistics)
+                .Include(e => e.UserGameSessions)        
                 .Where(x => x.EmailAddress == "ai@escoba.com")
                 .SingleOrDefault();
 
@@ -64,20 +66,20 @@ namespace game_server.Web.Controllers
             UserGameSession ugsAi;
             // Make New GameSession
             if (sessionid == System.Guid.Empty) {
+                Guid newGameSessionId = Guid.NewGuid();
                 gameSession = new GameSession {
-                    GameSessionId = System.Guid.NewGuid(),
+                    GameSessionId = newGameSessionId,
                     GameInfo = escoba_info,
                     GameInfoId = escoba_info.GameInfoId, 
                     GameSessionState = "running",
                     UserGameSessions = new List<UserGameSession>(),
                     GameStates = new List<games.GameState>(),
                 };
+                Guid playerGameStatisticId = Guid.NewGuid();
                 playerGameStatistic = new GameStatistic {
-                    GameStatisticId = System.Guid.NewGuid(),
+                    GameStatisticId = playerGameStatisticId,
                     GameInfoId = escoba_info.GameInfoId,
-                    GameSessionId = gameSession.GameSessionId,
-                    UserId = user_player.UserId,
-                    User = user_player,
+                    GameSessionId = newGameSessionId,
                     UserStatisticId = user_player.UserStatistics.Where(us => us.GameInfoId == escoba_info.GameInfoId).FirstOrDefault().UserStatisticId,
                     UserStatistic = user_player.UserStatistics.Where(us => us.GameInfoId == escoba_info.GameInfoId).FirstOrDefault(),
                     UserGameSessions = new List<UserGameSession>(),
@@ -90,12 +92,11 @@ namespace game_server.Web.Controllers
                     GameEnd = null
                 };
 
+                Guid aiGameStatisticId = Guid.NewGuid();
                 aiGameStatistic = new GameStatistic {
-                    GameStatisticId = System.Guid.NewGuid(),
+                    GameStatisticId = aiGameStatisticId,
                     GameInfoId = escoba_info.GameInfoId,
-                    GameSessionId = gameSession.GameSessionId,
-                    UserId = ai_player.UserId,
-                    User = ai_player,
+                    GameSessionId = newGameSessionId,
                     UserStatisticId = ai_player.UserStatistics.Where(us => us.GameInfoId == escoba_info.GameInfoId).FirstOrDefault().UserStatisticId,
                     UserStatistic = ai_player.UserStatistics.Where(us => us.GameInfoId == escoba_info.GameInfoId).FirstOrDefault(),
                     UserGameSessions = new List<UserGameSession>(),
@@ -116,7 +117,7 @@ namespace game_server.Web.Controllers
                     .Add(aiGameStatistic);
 
                 ugsPlayer = new UserGameSession {
-                    UserGameSessionId = System.Guid.NewGuid(),
+                    UserGameSessionId = Guid.NewGuid(),
                     GameInfoId = escoba_info.GameInfoId,
                     GameSessionId = gameSession.GameSessionId,
                     GameSession = gameSession,
@@ -124,7 +125,7 @@ namespace game_server.Web.Controllers
                     UserId = user_player.UserId,
                 };
                 ugsAi = new UserGameSession {
-                    UserGameSessionId = System.Guid.NewGuid(),
+                    UserGameSessionId = Guid.NewGuid(),
                     GameInfoId = escoba_info.GameInfoId,
                     GameSessionId = gameSession.GameSessionId,
                     GameSession = gameSession,
