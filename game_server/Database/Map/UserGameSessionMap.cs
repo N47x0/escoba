@@ -27,8 +27,8 @@ namespace game_server.Database.Map
 			builder
 				.HasIndex(x => x.GameSessionId);
 
-			builder
-				.HasIndex(x => x.GameStatisticId);
+			// builder
+			// 	.HasIndex(x => x.GameStatisticId);
 
 			builder
 				.HasIndex(x => x.UserId);
@@ -50,13 +50,6 @@ namespace game_server.Database.Map
 				.HasForeignKey("UserId")
 				.OnDelete(DeleteBehavior.Restrict)
 				.IsRequired();
-			builder
-				.HasOne("game_server.Database.Models.GameStatistic", "GameStatistic")
-				.WithMany("UserGameSessions")
-				.HasForeignKey("GameStatisticId")
-				.OnDelete(DeleteBehavior.Restrict)
-				.IsRequired();
-
 		}
 	}
 }

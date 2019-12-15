@@ -7,7 +7,7 @@ namespace game_server.Database.Models
   public class UserStatistic {
     public Guid UserStatisticId {get;set;}
 
-    [ForeignKey("Users")]
+    [ForeignKey("User")]
     public Guid UserId {get; set;}
     public User User {get;set;}
 

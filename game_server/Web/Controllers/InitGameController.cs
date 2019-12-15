@@ -82,7 +82,6 @@ namespace game_server.Web.Controllers
                     GameSessionId = newGameSessionId,
                     UserStatisticId = user_player.UserStatistics.Where(us => us.GameInfoId == escoba_info.GameInfoId).FirstOrDefault().UserStatisticId,
                     UserStatistic = user_player.UserStatistics.Where(us => us.GameInfoId == escoba_info.GameInfoId).FirstOrDefault(),
-                    UserGameSessions = new List<UserGameSession>(),
                     FinalScore = null,
                     HumanWin = null,
                     AiWin = null,
@@ -99,7 +98,6 @@ namespace game_server.Web.Controllers
                     GameSessionId = newGameSessionId,
                     UserStatisticId = ai_player.UserStatistics.Where(us => us.GameInfoId == escoba_info.GameInfoId).FirstOrDefault().UserStatisticId,
                     UserStatistic = ai_player.UserStatistics.Where(us => us.GameInfoId == escoba_info.GameInfoId).FirstOrDefault(),
-                    UserGameSessions = new List<UserGameSession>(),
                     FinalScore = null,
                     HumanWin = null,
                     AiWin = null,
@@ -154,7 +152,7 @@ namespace game_server.Web.Controllers
                     .Where(x => x.User.EmailAddress == userEmail)
                     .SingleOrDefault();
             }
-
+            
             await context.SaveChangesAsync();
 
             var payload = new InitGamePayload {

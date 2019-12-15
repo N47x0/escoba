@@ -24,10 +24,10 @@ namespace game_server.Database.Map
 			builder
 				.HasIndex(x => x.GameStatisticId);
 
-			builder.Property<Guid>(x => x.GameSessionId)
-				.HasColumnName("GameSessionId")
-				.ValueGeneratedOnAdd()
-				.HasColumnType("uniqueidentifier");
+			// builder.Property<Guid>(x => x.GameSessionId)
+			// 	.HasColumnName("GameSessionId")
+			// 	.ValueGeneratedOnAdd()
+			// 	.HasColumnType("uniqueidentifier");
 
 			builder
 				.Property<string>(x => x.GameSessionState)
@@ -47,10 +47,7 @@ namespace game_server.Database.Map
 				.IsRequired();
 			builder
 				.HasOne("game_server.Database.Models.GameStatistic", "GameStatistic")
-				.WithOne("GameSession")
-				.HasForeignKey("GameStatistic")
-				.OnDelete(DeleteBehavior.Cascade)
-				.IsRequired();
+				.WithOne("GameSession");
 		}
 	}
 }

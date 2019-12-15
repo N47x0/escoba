@@ -17,7 +17,6 @@ namespace game_server.Web.Converters
 			{
 				UserGameSessionId = source.UserGameSessionId,
 				GameSessionId = source.GameSessionId,
-				GameStatisticId = source.GameStatisticId,
 				GameInfoId = source.GameInfoId,
 				GameInfo = source.GameInfo,
 				GameSession = source.GameSession,

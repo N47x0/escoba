@@ -69,12 +69,10 @@ namespace game_server.Database.Map
 				.IsRequired();
 			builder
 				.HasOne("game_server.Database.Models.GameSession", "GameSession")
-				.WithOne("GameStatistic")
-				// migrations through error You are configuring a relationship between 'GameStatistic' and 'GameSession' but have specified a foreign key on 'GameSessionId'. The foreign key must be defined on a type that is part of the relationship.   
-				// so i changed this from GameSessionId to current form
-				.HasForeignKey("GameSession")
-				.OnDelete(DeleteBehavior.Cascade)
-				.IsRequired();
+				.WithOne("GameStatistic");
+				// .HasForeignKey("GameSession", "GameSessionId");
+			// 	.OnDelete(DeleteBehavior.Cascade)
+			// 	.IsRequired();
 		}
 	}
 }

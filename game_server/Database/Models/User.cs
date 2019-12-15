@@ -11,6 +11,5 @@ namespace game_server.Database.Models
     public ICollection<Rule> Rules { get; set; } = new List<Rule>();
     public ICollection<UserGameSession> UserGameSessions { get; set; } = new List<UserGameSession>();
     public ICollection<UserStatistic> UserStatistics {get; set; } = new List<UserStatistic>();
-    public ICollection<GameStatistic> GameStatistics {get; set; } = new List<GameStatistic>();
   }
 }

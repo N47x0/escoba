@@ -4,23 +4,22 @@ using System.Collections.Generic;
 
 namespace game_server.Database.Models
 {
+
   public class GameStatistic {
     public Guid GameStatisticId { get; set; }
 
     [ForeignKey("GameInfo")]
     public Guid GameInfoId { get; set; }
 
-    [ForeignKey("GameSessions")]
+    [ForeignKey("GameSession")]
     public Guid GameSessionId { get; set; }
 
-    [ForeignKey("UserStatistics")]
+    [ForeignKey("UserStatistic")]
     public Guid UserStatisticId { get; set; }
 
-    public ICollection<User> Users { get; set; } = new List<User>();
     public UserStatistic UserStatistic { get; set; }
     public GameInfo GameInfo { get; set; }
     public GameSession GameSession { get; set; }
-    public ICollection<UserGameSession> UserGameSessions { get; set; } = new List<UserGameSession>();
     public string FinalScore { get; set; }
     public bool? HumanWin { get; set; }
     public bool? AiWin  { get; set; }

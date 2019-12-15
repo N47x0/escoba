@@ -11,8 +11,6 @@ namespace game_server.Database.Models
     [ForeignKey("GameInfo")]
     public Guid GameInfoId { get; set; }
     
-
-    [ForeignKey("GameStatistics")]
     public Guid GameStatisticId { get; set; }
 
     public GameInfo GameInfo { get; set; }

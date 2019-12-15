@@ -41,17 +41,17 @@ namespace game_server.Context
     = LoggerFactory.Create(builder =>
         {
             builder
-                .AddFilter((category, level) =>
-                    category == DbLoggerCategory.Database.Command.Name
-                    && level == LogLevel.Information)
                 .AddConsole();
-                var standardOutput = new StreamWriter(Console.OpenStandardOutput());
-                standardOutput.AutoFlush = true;
-                Console.SetOut(standardOutput);
-                using (var sw = new StreamWriter(targetDir + @"\sql_output.txt")) 
-                {
-                  Console.SetOut(sw);
-                }
+                // .AddFilter((category, level) =>
+                //     category == DbLoggerCategory.Database.Command.Name
+                //     && level == LogLevel.Information);
+                // var standardOutput = new StreamWriter(Console.OpenStandardOutput());
+                // standardOutput.AutoFlush = true;
+                // Console.SetOut(standardOutput);
+                // using (var sw = new StreamWriter(targetDir + @"\sql_output.txt")) 
+                // {
+                //   Console.SetOut(sw);
+                // }
         });
     
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
